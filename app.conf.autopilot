@@ -1,0 +1,31 @@
+[app]
+loglevel=debug
+provider_id=4af95a5f-3663-4832-b080-8ba1548e78f5
+uzi_number=12345678
+
+[pseudonym_api]
+endpoint=http://pseudonym:8504
+timeout=10
+# mtls_cert=secrets/ssl/pseudonym_api.cert
+# mtls_key=secrets/ssl/pseudonym_api.key
+# mtls_ca=secrets/ssl/pseudonym_api_ca.cert
+
+[referral_api]
+endpoint=http://referral:8501
+timeout=10
+# mtls_cert=secrets/ssl/referral_api.cert
+# mtls_key=secrets/ssl/referral_api.key
+# mtls_ca=secrets/ssl/referral_api_ca.cert
+
+[uvicorn]
+swagger_enabled = True
+docs_url = /docs
+redoc_url = /redocs
+host = 0.0.0.0
+port = 8510
+reload = True
+
+use_ssl = False
+ssl_base_dir = secrets/ssl
+ssl_cert_file = server.cert
+ssl_key_file = server.key

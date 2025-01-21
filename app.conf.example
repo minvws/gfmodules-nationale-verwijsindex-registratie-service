@@ -1,0 +1,41 @@
+[app]
+# Loglevel can be one of: debug, info, warning, error, critical
+loglevel=debug
+# Provider ID (UUID) of this service
+provider_id=
+# UZI number that will register the referrals
+uzi_number=
+
+[pseudonym_api]
+endpoint=http://localhost:8504
+timeout=10
+# mtls_cert=secrets/ssl/pseudonym_api.cert
+# mtls_key=secrets/ssl/pseudonym_api.key
+# mtls_ca=secrets/ssl/pseudonym_api_ca.cert
+
+[referral_api]
+endpoint=http://referral:8501
+timeout=10
+# mtls_cert=secrets/ssl/referral_api.cert
+# mtls_key=secrets/ssl/referral_api.key
+# mtls_ca=secrets/ssl/referral_api_ca.cert
+
+[uvicorn]
+# If true, the api docs will be enabled
+swagger_enabled = True
+# Endpoint for swagger api docs
+docs_url = /docs
+# Endpoint for redoc api docs
+redoc_url = /redocs
+# Host for the uvicorn server
+host = 0.0.0.0
+# Port for the uvicorn server
+port = 8510
+# Live reload for uvicorn server
+reload = True
+
+# SSL configuration
+use_ssl = False
+ssl_base_dir = secrets/ssl
+ssl_cert_file = server.cert
+ssl_key_file = server.key
