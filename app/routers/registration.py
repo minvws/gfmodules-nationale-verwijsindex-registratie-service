@@ -33,7 +33,7 @@ def validate_careplan(resource: Dict[str, Any]) -> Tuple[Resource, DataDomain, B
     bsn = extractor.get_subject_bsn()
     uzi = extractor.get_author_uzi()
 
-    return resource, DataDomain.CarePlan, bsn, uzi
+    return careplan, DataDomain.CarePlan, bsn, uzi
 
 
 @router.post("")
