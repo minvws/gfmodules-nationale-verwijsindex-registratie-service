@@ -4,9 +4,10 @@ import logging
 import requests
 from requests import HTTPError
 
-from app.data import Pseudonym, UraNumber, DataDomain, UziNumber
+from app.data import DataDomain, Pseudonym, UraNumber, UziNumber
 
 logger = logging.getLogger(__name__)
+
 
 class ApiError(Exception):
     pass
@@ -27,7 +28,6 @@ class ReferralService:
         self.mtls_key = mtls_key
         self.mtls_ca = mtls_ca
 
-
     def create_referral(
         self,
         pseudonym: Pseudonym,
@@ -35,7 +35,7 @@ class ReferralService:
         ura_number: UraNumber,
         uzi_number: UziNumber,
     ) -> None:
-        logger.info(f"Creating refererral")
+        logger.info("Creating refererral")
 
         try:
             req = requests.post(

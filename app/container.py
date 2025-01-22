@@ -32,6 +32,7 @@ def container_config(binder: inject.Binder) -> None:
 def get_pseudonym_service() -> PseudonymService:
     return inject.instance(PseudonymService)
 
+
 def get_referral_service() -> ReferralService:
     return inject.instance(ReferralService)
 

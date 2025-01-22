@@ -18,6 +18,7 @@ class UraNumber:
     def __repr__(self) -> str:
         return f"UraNumber({self.value})"
 
+
 @dataclass
 class UziNumber:
     def __init__(self, value: Any) -> None:
@@ -28,6 +29,7 @@ class UziNumber:
 
     def __repr__(self) -> str:
         return f"UziNumber({self.value})"
+
 
 @dataclass
 class BSN:
@@ -47,6 +49,7 @@ class BSN:
 
     def __repr__(self) -> str:
         return f"BSN({self.value})"
+
 
 @dataclass
 class Pseudonym:
@@ -104,5 +107,3 @@ class DataDomain(Enum):
 
     def __str__(self) -> str:
         return self.value
-
-

@@ -39,6 +39,7 @@ class ConfigReferralApi(BaseModel):
     mtls_key: str | None = Field(default=None)
     mtls_ca: str | None = Field(default=None)
 
+
 class ConfigUvicorn(BaseModel):
     swagger_enabled: bool = Field(default=False)
     docs_url: str = Field(default="/docs")

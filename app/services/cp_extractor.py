@@ -2,7 +2,7 @@ from fhir.resources.R4B.careplan import CarePlan
 from fhir.resources.R4B.identifier import Identifier
 from fhir.resources.R4B.reference import Reference
 
-from app.data import UziNumber, BSN
+from app.data import BSN, UziNumber
 from app.exceptions.service_exceptions import InvalidResourceException
 
 
@@ -63,4 +63,3 @@ class CarePlanExtractor:
             raise InvalidResourceException("Field 'author.identifier.value' is missing in the request")
 
         return UziNumber(self.careplan.author.identifier.value)
-

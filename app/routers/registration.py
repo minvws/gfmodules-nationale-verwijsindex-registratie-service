@@ -1,16 +1,14 @@
 import logging
-from typing import Tuple, Dict, Any
+from typing import Any, Dict, Tuple
 
-from fastapi import APIRouter, Depends, Body
+from fastapi import APIRouter, Body, Depends
 from fhir.resources.R4B.careplan import CarePlan
-from fhir.resources.R4B.identifier import Identifier
-from fhir.resources.R4B.reference import Reference
 from fhir.resources.R4B.resource import Resource
 from starlette.responses import Response
 
 from app.config import get_config
 from app.container import get_pseudonym_service, get_referral_service
-from app.data import DataDomain, UraNumber, UziNumber, BSN
+from app.data import BSN, DataDomain, UraNumber, UziNumber
 from app.exceptions.service_exceptions import InvalidResourceException
 from app.services.cp_extractor import CarePlanExtractor
 from app.services.pseudonym_service import PseudonymService
@@ -42,7 +40,7 @@ def validate_careplan(resource: Dict[str, Any]) -> Tuple[Resource, DataDomain, B
 def create(
     request: Dict[str, Any] = Body(...),
     pseudonym_service: PseudonymService = Depends(get_pseudonym_service),
-    referral_service: ReferralService = Depends(get_referral_service)
+    referral_service: ReferralService = Depends(get_referral_service),
 ) -> Response:
     if request is None:
         logger.error("Resource is missing in the request")

@@ -1,9 +1,9 @@
-from typing import Dict, Any
+from typing import Any, Dict
 
 from fastapi import Body
 from pydantic import BaseModel, field_validator
 
-from app.data import UraNumber, BSN
+from app.data import BSN, UraNumber
 
 
 class RegistrationRequest(BaseModel):
@@ -18,4 +18,3 @@ class RegistrationRequest(BaseModel):
     @field_validator("bsn", mode="before")
     def validate_bsn(cls, bsn: str) -> BSN:
         return BSN(bsn)
-

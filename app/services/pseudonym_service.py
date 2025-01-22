@@ -4,7 +4,7 @@ import logging
 import requests
 from requests import HTTPError
 
-from app.data import Pseudonym, BSN
+from app.data import BSN, Pseudonym
 
 logger = logging.getLogger(__name__)
 
@@ -31,7 +31,6 @@ class PseudonymService:
         self.mtls_cert = mtls_cert
         self.mtls_key = mtls_key
         self.mtls_ca = mtls_ca
-
 
     def exchange_for_bsn(self, bsn: BSN) -> Pseudonym:
         logger.info(f"Exchanging BSN for provider {self._provider_id}")
@@ -62,7 +61,6 @@ class PseudonymService:
             raise PseudonymError("Failed to exchange pseudonym: invalid pseudonym")
 
         return new_pseudonym
-
 
     def exchange(self, pseudonym: Pseudonym) -> Pseudonym:
         logger.info(f"Exchanging pseudonym {str(pseudonym)} for provider {self._provider_id}")
