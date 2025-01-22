@@ -4,7 +4,7 @@ import logging
 import requests
 from requests import HTTPError
 
-from app.data import Pseudonym, UraNumber, DataDomain
+from app.data import Pseudonym, UraNumber, DataDomain, UziNumber
 
 logger = logging.getLogger(__name__)
 
@@ -33,7 +33,7 @@ class ReferralService:
         pseudonym: Pseudonym,
         data_domain: DataDomain,
         ura_number: UraNumber,
-        uzi_number: str,
+        uzi_number: UziNumber,
     ) -> None:
         logger.info(f"Creating refererral")
 
@@ -44,7 +44,7 @@ class ReferralService:
                     "pseudonym": str(pseudonym),
                     "data_domain": str(data_domain),
                     "ura_number": str(ura_number),
-                    "requesting_uzi_number": uzi_number,
+                    "requesting_uzi_number": str(uzi_number),
                 },
                 timeout=self.timeout,
                 cert=(self.mtls_cert, self.mtls_key) if self.mtls_cert and self.mtls_key else None,

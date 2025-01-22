@@ -19,7 +19,7 @@ class LogLevel(str, Enum):
 class ConfigApp(BaseModel):
     loglevel: LogLevel = Field(default=LogLevel.info)
     provider_id: str
-    uzi_number: str
+    ura_number: str
 
 
 class ConfigPseudonymApi(BaseModel):

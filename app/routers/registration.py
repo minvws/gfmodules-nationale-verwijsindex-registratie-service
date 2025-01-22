@@ -1,16 +1,18 @@
 import logging
 from typing import Tuple, Dict, Any
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Body
 from fhir.resources.R4B.careplan import CarePlan
+from fhir.resources.R4B.identifier import Identifier
+from fhir.resources.R4B.reference import Reference
 from fhir.resources.R4B.resource import Resource
 from starlette.responses import Response
 
 from app.config import get_config
 from app.container import get_pseudonym_service, get_referral_service
-from app.data import DataDomain
+from app.data import DataDomain, UraNumber, UziNumber, BSN
 from app.exceptions.service_exceptions import InvalidResourceException
-from app.params.registration_request import RegistrationRequest
+from app.services.cp_extractor import CarePlanExtractor
 from app.services.pseudonym_service import PseudonymService
 from app.services.referral_service import ReferralService
 
@@ -20,44 +22,41 @@ router = APIRouter(
     tags=["Registration Service"],
 )
 
-def validate_resource(resource: Dict[str, Any]) -> Tuple[Resource, DataDomain]:
-    """
-    Extracts the resource and data domain from the resource. Raises an exception
-    when the resource if not a valid resource.
-    """
+
+def validate_careplan(resource: Dict[str, Any]) -> Tuple[Resource, DataDomain, BSN, UziNumber]:
     if "resourceType" not in resource:
         raise InvalidResourceException("Field 'resourceType' is missing in the request")
 
-    resource_type = resource["resourceType"].lower()
-    if resource_type == "careplan":
-        resource = CarePlan.parse_obj(resource)
-        if resource is None:
-            raise InvalidResourceException("Resource is not a valid CarePlan")
+    careplan = CarePlan.parse_obj(resource)
+    if careplan is None:
+        raise InvalidResourceException("Resource is not a valid CarePlan")
 
-        return resource, DataDomain.CarePlan
-    else:
-        raise InvalidResourceException("Resource type is not a CarePlan")
+    extractor = CarePlanExtractor(careplan)
+    bsn = extractor.get_subject_bsn()
+    uzi = extractor.get_author_uzi()
+
+    return resource, DataDomain.CarePlan, bsn, uzi
 
 
 @router.post("")
 def create(
-    request: RegistrationRequest,
+    request: Dict[str, Any] = Body(...),
     pseudonym_service: PseudonymService = Depends(get_pseudonym_service),
     referral_service: ReferralService = Depends(get_referral_service)
 ) -> Response:
-    if request.resource is None:
+    if request is None:
         logger.error("Resource is missing in the request")
         raise InvalidResourceException("Resource is missing in the request")
 
-    (resource, data_domain) = validate_resource(request.resource)
+    (resource, data_domain, bsn, uzi) = validate_careplan(request)
 
-    requesting_uzi_number = get_config().app.uzi_number
-    local_pseudonym = pseudonym_service.exchange_for_bsn(request.bsn)
+    ura = UraNumber(get_config().app.ura_number)
+    local_pseudonym = pseudonym_service.exchange_for_bsn(bsn)
 
     referral_service.create_referral(
         local_pseudonym,
         data_domain,
-        request.ura,
-        requesting_uzi_number,
+        ura,
+        uzi,
     )
     return Response(status_code=201)

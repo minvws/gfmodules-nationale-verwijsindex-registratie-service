@@ -18,6 +18,16 @@ class UraNumber:
     def __repr__(self) -> str:
         return f"UraNumber({self.value})"
 
+@dataclass
+class UziNumber:
+    def __init__(self, value: Any) -> None:
+        self.value = str(value)
+
+    def __str__(self) -> str:
+        return self.value
+
+    def __repr__(self) -> str:
+        return f"UziNumber({self.value})"
 
 @dataclass
 class BSN:
