@@ -1,7 +1,7 @@
 [app]
 loglevel=debug
 provider_id=4af95a5f-3663-4832-b080-8ba1548e78f5
-uzi_number=12345678
+ura_number=12345678
 
 [pseudonym_api]
 endpoint=http://pseudonym:8504

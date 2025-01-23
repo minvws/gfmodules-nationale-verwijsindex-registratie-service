@@ -3,8 +3,8 @@
 loglevel=debug
 # Provider ID (UUID) of this service
 provider_id=
-# UZI number that will register the referrals
-uzi_number=
+# URA number that will register the referrals
+ura_number=
 
 [pseudonym_api]
 endpoint=http://localhost:8504
