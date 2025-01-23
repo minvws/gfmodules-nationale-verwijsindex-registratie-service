@@ -14,7 +14,7 @@ def get_test_config() -> Config:
             docs_url="/docs",
             redoc_url="/redoc",
             host="0.0.0.0",
-            port=8510,
+            port=8511,
             reload=True,
             use_ssl=False,
             ssl_base_dir=None,
