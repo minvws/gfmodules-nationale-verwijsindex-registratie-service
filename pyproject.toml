@@ -1,0 +1,52 @@
+[tool.poetry]
+name = "gfmodules-nvi-prox"
+version = "0.1.0"
+description = ""
+license = "EUPL-1.2"
+authors = ["Ministerie van Volksgezondheid, Welzijn en Sport"]
+repository = "https://github.com/minvws/nl-irealisatie-zmodules-nvi-referral-manager"
+readme = "README.md"
+packages = [{ include = "app" }]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+uvicorn = "^0.34"
+fastapi = "^0.115.1"
+mypy = "^1.8.0"
+pydantic-settings = "^2.1.0"
+inject = "^5.2.0"
+sqlalchemy = "^2.0.25"
+psycopg = { extras = ["binary", "pool"], version = "^3.1.17" }
+requests = "^2.32.0"
+fhir-resources = "^8.0"
+
+[tool.poetry.group.dev.dependencies]
+types-requests = "^2.32.0"
+faker = "^25.9.1"
+pytest = "^7.4.4"
+pytest-cov = "^4.1.0"
+pytest-mock = "^3.14.0"
+httpx = "^0.26.0"
+ruff = "0.8.2"
+safety = "^2.3.5"
+codespell = "^2.2.6"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+cache-dir = "~/.cache/ruff"
+include = ["pyproject.toml", "app/*.py", "tests/*.py"]
+line-length = 120
+
+[tool.mypy]
+files = "app,tests"
+python_version = "3.11"
+strict = true
+cache_dir = "~/.cache/mypy"
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+cache_dir = "~/.cache/pytest"
+testpaths = ["tests"]

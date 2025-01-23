@@ -1,0 +1,3 @@
+# use unix-style line endings (LF)
+* text=auto eol=lf
+*.{cmd,[cC][mM][dD]} text eol=crlf
