@@ -1,15 +1,27 @@
 import logging
 from typing import Any
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+
+from app import container
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
+def ok_or_error(value: bool) -> str:
+    return "ok" if value else "error"
+
 
 @router.get("/health")
-def health() -> dict[str, Any]:
-    # There are currently no systems to check for health status
-    healthy = True
+def health(
+    pseudonym_service = Depends(container.get_pseudonym_service),
+    referral_service = Depends(container.get_referral_service),
+) -> dict[str, Any]:
 
-    return {"status": healthy}
+    components = {
+        "pseudonym_service": ok_or_error(pseudonym_service.is_healthy()),
+        "referral_service": ok_or_error(referral_service.is_healthy()),
+    }
+    healthy = ok_or_error(all(value == "ok" for value in components.values()))
+
+    return {"status": healthy, "components": components}

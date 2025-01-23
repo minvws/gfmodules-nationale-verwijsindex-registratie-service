@@ -28,6 +28,18 @@ class ReferralService:
         self.mtls_key = mtls_key
         self.mtls_ca = mtls_ca
 
+    def is_healthy(self) -> bool:
+        try:
+            req = requests.get(
+                f"{self.endpoint}/health",
+                timeout=self.timeout,
+                cert=(self.mtls_cert, self.mtls_key) if self.mtls_cert and self.mtls_key else None,
+                verify=self.mtls_ca if self.mtls_ca else True,
+            )
+            return req.status_code == 200
+        except (Exception, HTTPError):
+            return False
+
     def create_referral(
         self,
         pseudonym: Pseudonym,
