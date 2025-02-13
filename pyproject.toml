@@ -28,7 +28,7 @@ pytest-cov = "^6.0.0"
 pytest-mock = "^3.14.0"
 httpx = "^0.28.1"
 ruff = "0.9.6"
-safety = "^2.3.5"
+safety = "^3.2.14"
 codespell = "^2.4.1"
 
 [build-system]
