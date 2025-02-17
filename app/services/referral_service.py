@@ -9,7 +9,7 @@ from app.data import DataDomain, Pseudonym, UraNumber
 logger = logging.getLogger(__name__)
 
 
-MOCK_UZI_NUMBER = 90000000
+MOCK_UZI_NUMBER = "90000000"
 
 
 class ApiError(Exception):
