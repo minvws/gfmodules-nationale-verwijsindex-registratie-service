@@ -22,13 +22,13 @@ fhir-resources = "^8.0"
 
 [tool.poetry.group.dev.dependencies]
 types-requests = "^2.32.0"
-faker = "^36.1.0"
+faker = "^36.1.1"
 pytest = "^8.3.4"
 pytest-cov = "^6.0.0"
 pytest-mock = "^3.14.0"
 httpx = "^0.28.1"
 ruff = "0.9.6"
-safety = "^3.2.14"
+safety = "^3.3.0"
 codespell = "^2.4.1"
 
 [build-system]
