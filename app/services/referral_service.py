@@ -9,7 +9,7 @@ from app.data import DataDomain, Pseudonym, UraNumber
 logger = logging.getLogger(__name__)
 
 
-MOCK_UZI_NUMBER = 90000000
+MOCK_UZI_NUMBER = "90000000"
 
 
 class ApiError(Exception):
@@ -66,6 +66,6 @@ class ReferralService:
             http.HTTPStatus.OK,
             http.HTTPStatus.CREATED,
         ]
-
+        print(req.text)
         if req.status_code not in valid_status:
             raise ApiError(f"Failed to register referral: {req.status_code}")
