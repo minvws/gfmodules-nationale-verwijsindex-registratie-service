@@ -59,7 +59,7 @@ class Config(BaseModel):
     app: ConfigApp
     uvicorn: ConfigUvicorn
     pseudonym_api: ConfigPseudonymApi
-    referral_api: ConfigPseudonymApi
+    referral_api: ConfigReferralApi
 
 
 def read_ini_file(path: str) -> Any:
