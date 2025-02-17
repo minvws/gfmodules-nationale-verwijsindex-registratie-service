@@ -2,7 +2,7 @@ from fhir.resources.R4B.careplan import CarePlan
 from fhir.resources.R4B.identifier import Identifier
 from fhir.resources.R4B.reference import Reference
 
-from app.data import BSN, UziNumber
+from app.data import BSN
 from app.exceptions.service_exceptions import InvalidResourceException
 
 
@@ -36,30 +36,3 @@ class CarePlanExtractor:
             raise InvalidResourceException("Field 'subject.identifier.value' is missing in the request")
 
         return BSN(self.careplan.subject.identifier.value)
-
-    def get_author_uzi(self) -> UziNumber:
-        if self.careplan.author is None:
-            raise InvalidResourceException("Field 'author' is missing in the request")
-
-        if not isinstance(self.careplan.author, Reference):
-            raise InvalidResourceException("Field 'author' is not a Reference")
-
-        if self.careplan.author.type != "PractitionerRole":
-            raise InvalidResourceException("Field 'author' is not a PractitionerRole")
-
-        if self.careplan.author.identifier is None:
-            raise InvalidResourceException("Field 'author.identifier' is missing in the request")
-
-        if not isinstance(self.careplan.author.identifier, Identifier):
-            raise InvalidResourceException("Field 'author.identifier' is not an Identifier")
-
-        if self.careplan.author.identifier.system is None:
-            raise InvalidResourceException("Field 'author.identifier.system' is missing in the request")
-
-        if self.careplan.author.identifier.system != "http://fhir.nl/fhir/NamingSystem/uzi":
-            raise InvalidResourceException("Field 'author.identifier.system' is not 'http://fhir.nl/NamingSystem/uzi'")
-
-        if self.careplan.author.identifier.value is None:
-            raise InvalidResourceException("Field 'author.identifier.value' is missing in the request")
-
-        return UziNumber(self.careplan.author.identifier.value)

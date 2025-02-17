@@ -4,9 +4,12 @@ import logging
 import requests
 from requests import HTTPError
 
-from app.data import DataDomain, Pseudonym, UraNumber, UziNumber
+from app.data import DataDomain, Pseudonym, UraNumber
 
 logger = logging.getLogger(__name__)
+
+
+MOCK_UZI_NUMBER = 90000000
 
 
 class ApiError(Exception):
@@ -40,13 +43,7 @@ class ReferralService:
         except (Exception, HTTPError):
             return False
 
-    def create_referral(
-        self,
-        pseudonym: Pseudonym,
-        data_domain: DataDomain,
-        ura_number: UraNumber,
-        uzi_number: UziNumber,
-    ) -> None:
+    def create_referral(self, pseudonym: Pseudonym, data_domain: DataDomain, ura_number: UraNumber) -> None:
         logger.info("Creating refererral")
 
         try:
@@ -56,7 +53,7 @@ class ReferralService:
                     "pseudonym": str(pseudonym),
                     "data_domain": str(data_domain),
                     "ura_number": str(ura_number),
-                    "requesting_uzi_number": str(uzi_number),
+                    "requesting_uzi_number": MOCK_UZI_NUMBER,
                 },
                 timeout=self.timeout,
                 cert=(self.mtls_cert, self.mtls_key) if self.mtls_cert and self.mtls_key else None,
