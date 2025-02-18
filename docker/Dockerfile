@@ -34,7 +34,7 @@ RUN apt update && \
         curl
 
 RUN pip3 install --upgrade pip && \
-    pip3 install poetry==1.7 --no-cache-dir
+    pip3 install poetry --no-cache-dir
 
 WORKDIR ${PROJECT_DIR}
 
