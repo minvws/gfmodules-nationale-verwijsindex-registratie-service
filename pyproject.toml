@@ -13,10 +13,10 @@ python = "^3.11"
 uvicorn = "^0.34"
 fastapi = "^0.115.8"
 mypy = "^1.15.0"
-pydantic-settings = "^2.1.0"
+pydantic-settings = "^2.8.0"
 inject = "^5.2.0"
 sqlalchemy = "^2.0.38"
-psycopg = { extras = ["binary", "pool"], version = "^3.1.17" }
+psycopg = { extras = ["binary", "pool"], version = "^3.2.5" }
 requests = "^2.32.0"
 fhir-resources = "^8.0"
 
@@ -27,7 +27,7 @@ pytest = "^8.3.4"
 pytest-cov = "^6.0.0"
 pytest-mock = "^3.14.0"
 httpx = "^0.28.1"
-ruff = "0.9.6"
+ruff = "0.9.7"
 safety = "^3.3.0"
 codespell = "^2.4.1"
 
