@@ -15,8 +15,8 @@ fastapi = "^0.115.11"
 mypy = "^1.15.0"
 pydantic-settings = "^2.8.1"
 inject = "^5.2.0"
-sqlalchemy = "^2.0.38"
-psycopg = { extras = ["binary", "pool"], version = "^3.2.5" }
+sqlalchemy = "^2.0.39"
+psycopg = { extras = ["binary", "pool"], version = "^3.2.6" }
 requests = "^2.32.0"
 fhir-resources = "^8.0"
 
@@ -27,7 +27,7 @@ pytest = "^8.3.5"
 pytest-cov = "^6.0.0"
 pytest-mock = "^3.14.0"
 httpx = "^0.28.1"
-ruff = "0.9.10"
+ruff = "0.11.0"
 safety = "^3.3.0"
 codespell = "^2.4.1"
 
