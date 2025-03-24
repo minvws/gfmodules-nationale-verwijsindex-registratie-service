@@ -11,7 +11,7 @@ packages = [{ include = "app" }]
 [tool.poetry.dependencies]
 python = "^3.11"
 uvicorn = "^0.34"
-fastapi = "^0.115.11"
+fastapi = "^0.115.12"
 mypy = "^1.15.0"
 pydantic-settings = "^2.8.1"
 inject = "^5.2.0"
@@ -22,12 +22,12 @@ fhir-resources = "^8.0"
 
 [tool.poetry.group.dev.dependencies]
 types-requests = "^2.32.0"
-faker = "^37.0.0"
+faker = "^37.0.2"
 pytest = "^8.3.5"
 pytest-cov = "^6.0.0"
 pytest-mock = "^3.14.0"
 httpx = "^0.28.1"
-ruff = "0.11.0"
+ruff = "0.11.2"
 safety = "^3.3.0"
 codespell = "^2.4.1"
 
