@@ -36,10 +36,10 @@ safety-check: ## Check for security vulnerabilities
 	$(RUN_PREFIX) safety check
 
 spelling-check: ## Check spelling mistakes
-	$(RUN_PREFIX) codespell . --skip="./mocks" --ignore-words=codespell-ignore.txt
+	$(RUN_PREFIX) codespell .
 
 spelling-fix: ## Fix spelling mistakes
-	$(RUN_PREFIX) codespell . --write-changes --interactive=3 --skip="./mocks" --ignore-words=codespell-ignore.txt
+	$(RUN_PREFIX) codespell . --write-changes --interactive=3
 
 test: ## Runs automated tests
 	$(RUN_PREFIX) pytest --cov --cov-report=term --cov-report=xml
