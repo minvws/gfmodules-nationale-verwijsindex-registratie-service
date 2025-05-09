@@ -1,0 +1,12 @@
+{
+  "beeldbank": [
+    {
+      "resource_type": "ImagingStudy"
+    }
+  ],
+  "medicatie verklaring": [
+    {
+      "resource_type": "MedicationStatement"
+    }
+  ]
+}

@@ -7,15 +7,18 @@ from starlette.requests import Request
 from starlette.responses import JSONResponse
 
 from app.config import get_config
-from app.container import setup_container
+from app.container import get_scheduler, setup_container
 from app.exceptions.fhir_exception import (
     OperationOutcome,
     OperationOutcomeDetail,
     OperationOutcomeIssue,
 )
+from app.routers.cache import router as cache_router
 from app.routers.default import router as default_router
 from app.routers.health import router as health_router
 from app.routers.registration import router as registration_router
+from app.routers.scheduler import router as scheduler_router
+from app.routers.synchronize import router as synchronization_router
 
 
 def get_uvicorn_params() -> dict[str, Any]:
@@ -53,6 +56,8 @@ def create_fastapi_app() -> FastAPI:
 def application_init() -> None:
     setup_container()
     setup_logging()
+    scheduler = get_scheduler()
+    scheduler.start()
 
 
 def setup_logging() -> None:
@@ -79,6 +84,9 @@ def setup_fastapi() -> FastAPI:
         default_router,
         health_router,
         registration_router,
+        synchronization_router,
+        cache_router,
+        scheduler_router,
     ]
     for router in routers:
         fastapi.include_router(router)
