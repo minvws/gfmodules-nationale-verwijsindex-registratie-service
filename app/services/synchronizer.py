@@ -2,14 +2,14 @@ import logging
 from datetime import datetime
 from typing import Dict, List
 
+from app.data import BSN
 from app.models.domains_map import DomainMapEntry, DomainsMap
-from app.models.pseudonym import PseudonymCreateDto
 from app.models.referrals import CreateRefferalDTO, ReferralQueryDTO
 from app.models.update_scheme import BsnUpdateScheme, UpdateScheme
 from app.services.api.metadata_api_service import MetadataApiService
 from app.services.api.nvi_api_service import NviApiService
-from app.services.api.pseudonym_api_service import PseudonymApiService
 from app.services.domain_map_service import DomainsMapService
+from app.services.pseudonym_service import PseudonymService
 
 logger = logging.getLogger(__name__)
 
@@ -18,13 +18,13 @@ class Synchronizer:
     def __init__(
         self,
         nvi_api: NviApiService,
-        pseudonym_api: PseudonymApiService,
+        pseudonym_service: PseudonymService,
         metadata_api: MetadataApiService,
         domains_map_service: DomainsMapService,
         ura_number: str,
     ) -> None:
         self.__nvi_api = nvi_api
-        self.__pseudonym_api = pseudonym_api
+        self.__pseudonym_service = pseudonym_service
         self.__metadata_api = metadata_api
         self.__domains_map_service = domains_map_service
         self.__ura_number = ura_number
@@ -34,7 +34,7 @@ class Synchronizer:
         return {
             "nvi_api": self.__nvi_api.api_healthy(),
             "metadata_api": self.__metadata_api.api_healthy(),
-            "pseudonym_api": self.__pseudonym_api.api_healthy(),
+            "pseudonym_service": self.__pseudonym_service.is_healthy(),
         }
 
     def synchronize_all_domains(self) -> Dict[str, List[UpdateScheme]]:
@@ -60,10 +60,10 @@ class Synchronizer:
         )
 
         for bsn in updated_bsns:
-            pseudonym = self.__pseudonym_api.register(PseudonymCreateDto(bsn=bsn, provider_id=self.__ura_number))
+            pseudonym = self.__pseudonym_service.exchange_for_bsn(bsn=BSN(bsn), provider_id=self.__ura_number)
             referral = self.__nvi_api.get_referrals(
                 ReferralQueryDTO(
-                    pseudonym=pseudonym.pseudonym,
+                    pseudonym=str(pseudonym),
                     data_domain=data_domain,
                     ura_number=self.__ura_number,
                 )
@@ -74,14 +74,14 @@ class Synchronizer:
             new_referal = self.__nvi_api.register(
                 CreateRefferalDTO(
                     ura_number=self.__ura_number,
-                    pseudonym=pseudonym.pseudonym,
+                    pseudonym=str(pseudonym),
                     data_domain=data_domain,
                     requesting_uzi_number=self.__ura_number,
                 )
             )
             if latest_timestamp is not None and domain_entry.last_resource_update != latest_timestamp:
                 logging.info(
-                    f"Updating timestamp for resournce {domain_entry.resource_type} from {domain_entry.last_resource_update} to {latest_timestamp}"
+                    f"Updating timestamp for resource {domain_entry.resource_type} from {domain_entry.last_resource_update} to {latest_timestamp}"
                 )
                 domain_entry.last_resource_update = latest_timestamp
 

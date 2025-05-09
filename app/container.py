@@ -3,7 +3,6 @@ import inject
 from app.config import get_config
 from app.services.api.metadata_api_service import MetadataApiService
 from app.services.api.nvi_api_service import NviApiService
-from app.services.api.pseudonym_api_service import PseudonymApiService
 from app.services.domain_map_service import DomainsMapService
 from app.services.pseudonym_service import PseudonymService
 from app.services.referral_service import ReferralService
@@ -37,12 +36,11 @@ def container_config(binder: inject.Binder) -> None:
 
     nv_api = NviApiService(url=config.app.nvi_url)
     metadata_api = MetadataApiService(url=config.app.metadata_url)
-    pseudonym_api = PseudonymApiService(url=config.app.pseudonym_url)
     domain_map_service = DomainsMapService(domains_map=create_domains_map(config.app.domains_map_json_path))
 
     synchronizer = Synchronizer(
         nvi_api=nv_api,
-        pseudonym_api=pseudonym_api,
+        pseudonym_service=pseudonym_service,
         metadata_api=metadata_api,
         ura_number=config.app.ura_number,
         domains_map_service=domain_map_service,

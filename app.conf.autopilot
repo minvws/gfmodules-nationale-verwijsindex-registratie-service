@@ -5,7 +5,6 @@ ura_number=12345678
 
 nvi_url=http://nvi-app:8501
 metadata_url=http://hapi-metadata-addressing:8513/fhir
-pseudonym_url=http://pseudonym:8504
 domains_map_json_path=./domains_map.json
 scheduled_delay=5
 
