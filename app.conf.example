@@ -12,9 +12,6 @@ nvi_url=http://nvi-app:8501
 # the base url of a fhir store (metadata register)
 metadata_url=http://hapi-metadata-addressing:8513/fhir
 
-# path the domains map json file
-domains_map_json_path=./domains_map.json
-
 # the amount of seconds the update will run in the background
 scheduled_delay=5
 

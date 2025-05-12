@@ -44,7 +44,7 @@ class PseudonymService:
         except (Exception, HTTPError):
             return False
 
-    def exchange_for_bsn(self, bsn: BSN, provider_id: str|None = None) -> Pseudonym:
+    def exchange_for_bsn(self, bsn: BSN, provider_id: str | None = None) -> Pseudonym:
         if provider_id is None:
             provider_id = self._provider_id
 

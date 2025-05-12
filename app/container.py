@@ -8,7 +8,6 @@ from app.services.pseudonym_service import PseudonymService
 from app.services.referral_service import ReferralService
 from app.services.scheduler import Scheduler
 from app.services.synchronizer import Synchronizer
-from app.utils import create_domains_map
 
 
 def container_config(binder: inject.Binder) -> None:
@@ -36,7 +35,7 @@ def container_config(binder: inject.Binder) -> None:
 
     nv_api = NviApiService(url=config.app.nvi_url)
     metadata_api = MetadataApiService(url=config.app.metadata_url)
-    domain_map_service = DomainsMapService(domains_map=create_domains_map(config.app.domains_map_json_path))
+    domain_map_service = DomainsMapService()
 
     synchronizer = Synchronizer(
         nvi_api=nv_api,
@@ -44,6 +43,7 @@ def container_config(binder: inject.Binder) -> None:
         metadata_api=metadata_api,
         ura_number=config.app.ura_number,
         domains_map_service=domain_map_service,
+        provider_id=provider_id,
     )
     binder.bind(Synchronizer, synchronizer)
 

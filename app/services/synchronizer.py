@@ -2,7 +2,7 @@ import logging
 from datetime import datetime
 from typing import Dict, List
 
-from app.data import BSN
+from app.data import BSN, DataDomain
 from app.models.domains_map import DomainMapEntry, DomainsMap
 from app.models.referrals import CreateRefferalDTO, ReferralQueryDTO
 from app.models.update_scheme import BsnUpdateScheme, UpdateScheme
@@ -22,12 +22,14 @@ class Synchronizer:
         metadata_api: MetadataApiService,
         domains_map_service: DomainsMapService,
         ura_number: str,
+        provider_id: str,
     ) -> None:
         self.__nvi_api = nvi_api
         self.__pseudonym_service = pseudonym_service
         self.__metadata_api = metadata_api
         self.__domains_map_service = domains_map_service
         self.__ura_number = ura_number
+        self.__provider_id = provider_id
         self.__last_run: str | None = None
 
     def healthcheck_apis(self) -> Dict[str, bool]:
@@ -44,27 +46,27 @@ class Synchronizer:
             for k, v in self.synchronize_domain(domain).items()
         }
 
-    def synchronize_domain(self, data_domain: str) -> Dict[str, List[UpdateScheme]]:
+    def synchronize_domain(self, data_domain: DataDomain) -> Dict[str, List[UpdateScheme]]:
         data: Dict[str, List[UpdateScheme]] = {f"{data_domain}": []}
         logger.info(f"Synchronizing: {data_domain}")
         for entry in self.__domains_map_service.get_entries(data_domain):
             logger.info(f"Updating resource: {entry.resource_type}")
             update_scheme = self.synchronize(data_domain, entry)
-            data[data_domain].append(update_scheme)
+            data[str(data_domain)].append(update_scheme)
         return data
 
-    def synchronize(self, data_domain: str, domain_entry: DomainMapEntry) -> UpdateScheme:
+    def synchronize(self, data_domain: DataDomain, domain_entry: DomainMapEntry) -> UpdateScheme:
         bsn_update_scheme: List[BsnUpdateScheme] = []
         updated_bsns, latest_timestamp = self.__metadata_api.get_update_scheme(
             domain_entry.resource_type, domain_entry.last_resource_update
         )
 
         for bsn in updated_bsns:
-            pseudonym = self.__pseudonym_service.exchange_for_bsn(bsn=BSN(bsn), provider_id=self.__ura_number)
+            pseudonym = self.__pseudonym_service.exchange_for_bsn(bsn=BSN(bsn), provider_id=self.__provider_id)
             referral = self.__nvi_api.get_referrals(
                 ReferralQueryDTO(
                     pseudonym=str(pseudonym),
-                    data_domain=data_domain,
+                    data_domain=str(data_domain),
                     ura_number=self.__ura_number,
                 )
             )
@@ -75,7 +77,7 @@ class Synchronizer:
                 CreateRefferalDTO(
                     ura_number=self.__ura_number,
                     pseudonym=str(pseudonym),
-                    data_domain=data_domain,
+                    data_domain=str(data_domain),
                     requesting_uzi_number=self.__ura_number,
                 )
             )
@@ -91,8 +93,8 @@ class Synchronizer:
         logging.info(f"last run {self.__last_run}")
         return UpdateScheme(updated_data=bsn_update_scheme, domain_entry=domain_entry)
 
-    def clear_cache(self, data_domain: str | None = None) -> DomainsMap:
+    def clear_cache(self, data_domain: DataDomain | None = None) -> DomainsMap:
         if data_domain is not None:
             return self.__domains_map_service.clear_entries_timestamp(data_domain)
 
-        return self.__domains_map_service.clear_all_entries_timepstam()
+        return self.__domains_map_service.clear_all_entries_timestamp()
