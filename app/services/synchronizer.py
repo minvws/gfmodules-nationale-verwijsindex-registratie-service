@@ -22,14 +22,12 @@ class Synchronizer:
         metadata_api: MetadataApiService,
         domains_map_service: DomainsMapService,
         ura_number: str,
-        provider_id: str,
     ) -> None:
         self.__nvi_api = nvi_api
         self.__pseudonym_service = pseudonym_service
         self.__metadata_api = metadata_api
         self.__domains_map_service = domains_map_service
         self.__ura_number = ura_number
-        self.__provider_id = provider_id
         self.__last_run: str | None = None
 
     def healthcheck_apis(self) -> Dict[str, bool]:
@@ -62,7 +60,7 @@ class Synchronizer:
         )
 
         for bsn in updated_bsns:
-            pseudonym = self.__pseudonym_service.exchange_for_bsn(bsn=BSN(bsn), provider_id=self.__provider_id)
+            pseudonym = self.__pseudonym_service.exchange_for_bsn(bsn=BSN(bsn))
             referral = self.__nvi_api.get_referrals(
                 ReferralQueryDTO(
                     pseudonym=str(pseudonym),
