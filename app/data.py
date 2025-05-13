@@ -60,6 +60,10 @@ class DataDomain(Enum):
     CarePlan = "zorgplan"
 
     @classmethod
+    def get_all(cls) -> list["DataDomain"]:
+        return [DataDomain.BeeldBank, DataDomain.MedicatieVerklaring, DataDomain.Medicatie, DataDomain.CarePlan]
+
+    @classmethod
     def from_str(cls, label: str) -> Optional["DataDomain"]:
         try:
             return cls(label.lower())

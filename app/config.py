@@ -20,6 +20,10 @@ class ConfigApp(BaseModel):
     loglevel: LogLevel = Field(default=LogLevel.info)
     provider_id: str
     ura_number: str
+    nvi_url: str = Field(default="http://nvi-app:8501")
+    metadata_url: str = Field(default="http://metadata:8503")
+    domains_map_json_path: str = Field(default="./domains_map.json")
+    scheduled_delay: int = Field(default=5)
 
 
 class ConfigPseudonymApi(BaseModel):

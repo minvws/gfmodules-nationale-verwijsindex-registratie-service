@@ -44,8 +44,11 @@ class PseudonymService:
         except (Exception, HTTPError):
             return False
 
-    def exchange_for_bsn(self, bsn: BSN) -> Pseudonym:
-        logger.info(f"Exchanging BSN for provider {self._provider_id}")
+    def exchange_for_bsn(self, bsn: BSN, provider_id: str | None = None) -> Pseudonym:
+        if provider_id is None:
+            provider_id = self._provider_id
+
+        logger.info(f"Exchanging BSN for provider {provider_id}")
 
         bsn_hash = hashlib.sha256(str(bsn).encode()).hexdigest()
 
@@ -53,7 +56,7 @@ class PseudonymService:
             req = requests.post(
                 f"{self.endpoint}/register",
                 json={
-                    "provider_id": str(self._provider_id),
+                    "provider_id": str(provider_id),
                     "bsn_hash": bsn_hash,
                 },
                 timeout=self.timeout,

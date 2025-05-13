@@ -3,6 +3,10 @@ loglevel=debug
 provider_id=4af95a5f-3663-4832-b080-8ba1548e78f5
 ura_number=12345678
 
+nvi_url=http://nvi-app:8501
+metadata_url=http://hapi-metadata-addressing:8513/fhir
+scheduled_delay=5
+
 [pseudonym_api]
 endpoint=http://pseudonym:8504
 timeout=10
