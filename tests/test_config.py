@@ -5,6 +5,8 @@ from app.config import (
     ConfigReferralApi,
     ConfigUvicorn,
     LogLevel,
+    ConfigScheduler,
+    ConfigMetadataApi,
 )
 
 
@@ -18,11 +20,20 @@ def get_test_config() -> Config:
             docs_url="/docs",
             redoc_url="/redoc",
             host="0.0.0.0",
-            port=8511,
+            port=8515,
             reload=True,
             use_ssl=False,
             ssl_base_dir=None,
             ssl_cert_file=None,
             ssl_key_file=None,
         ),
+        metadata_api=ConfigMetadataApi(
+            mock=True,
+            endpoint="http://example.com",
+            timeout=30,
+            mtls_cert=None,
+            mtls_key=None,
+            mtls_ca=None,
+        ),
+        scheduler=ConfigScheduler(scheduled_delay=5),
     )
