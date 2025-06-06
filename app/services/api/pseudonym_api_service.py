@@ -50,7 +50,7 @@ class PseudonymApiService(GfApiService[PseudonymModel, PseudonymCreateDto]):
             logger.error(f"Failed to exchange BSN for pseudonym: {e}")
             raise PseudonymError(f"Failed to exchange BSN for pseudonym: {e}")
 
-        if response.status_code != 200:
+        if response.status_code not in [201, 200]:
             raise PseudonymError(f"Failed to exchange BSN for pseudonym: {response.status_code}")
 
         response_data = response.json()

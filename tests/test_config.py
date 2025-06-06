@@ -1,12 +1,12 @@
 from app.config import (
     Config,
     ConfigApp,
+    ConfigMetadataApi,
     ConfigPseudonymApi,
     ConfigReferralApi,
+    ConfigScheduler,
     ConfigUvicorn,
     LogLevel,
-    ConfigScheduler,
-    ConfigMetadataApi,
 )
 
 

@@ -44,7 +44,7 @@ def container_config(binder: inject.Binder) -> None:
 
     synchronizer = Synchronizer(
         nvi_api=nvi_api,
-        pseudonym_service=pseudonym_api_service,
+        pseudonym_api=pseudonym_api_service,
         metadata_api=metadata_api,
         ura_number=config.app.ura_number,
         domains_map_service=domain_map_service,

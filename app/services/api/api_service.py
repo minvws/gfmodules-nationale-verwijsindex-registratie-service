@@ -1,9 +1,9 @@
-from abc import ABC, abstractmethod
 import logging
+from abc import ABC, abstractmethod
 from typing import Any, Generic, Literal, TypeVar
 
-from pydantic import BaseModel
 import requests
+from pydantic import BaseModel
 from requests.exceptions import ConnectionError, Timeout
 
 logger = logging.getLogger(__name__)
@@ -71,10 +71,10 @@ class ApiService(ABC):
             return response
         except (ConnectionError, Timeout) as e:
             logger.error(f"Request failed: {e}")
-            raise
+            raise e
         except requests.HTTPError as e:
             logger.error(f"HTTP error occurred: {e}")
-            raise
+            raise e
 
 
 class GfApiService(ApiService, ABC, Generic[T, TArgs]):

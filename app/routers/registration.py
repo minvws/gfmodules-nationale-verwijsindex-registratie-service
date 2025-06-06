@@ -3,7 +3,6 @@ from typing import Any, Dict, Tuple
 
 from fastapi import APIRouter, Body, Depends
 from fhir.resources.R4B.careplan import CarePlan
-from fhir.resources.R4B.resource import Resource
 from starlette.responses import Response
 
 from app.config import get_config

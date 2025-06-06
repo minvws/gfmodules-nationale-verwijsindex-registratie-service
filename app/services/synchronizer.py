@@ -19,13 +19,13 @@ class Synchronizer:
     def __init__(
         self,
         nvi_api: NviApiService,
-        pseudonym_service: PseudonymApiService,
+        pseudonym_api: PseudonymApiService,
         metadata_api: MetadataApiService,
         domains_map_service: DomainsMapService,
         ura_number: str,
     ) -> None:
         self.__nvi_api = nvi_api
-        self.__pseudonym_service = pseudonym_service
+        self.__pseudonym_api = pseudonym_api
         self.__metadata_api = metadata_api
         self.__domains_map_service = domains_map_service
         self.__ura_number = ura_number
@@ -36,14 +36,10 @@ class Synchronizer:
         return {
             "nvi_api": self.__nvi_api.api_healthy(),
             "metadata_api": self.__metadata_api.api_healthy(),
-            "pseudonym_service": self.__pseudonym_service.api_healthy(),
+            "pseudonym_api": self.__pseudonym_api.api_healthy(),
         }
 
     def synchronize_all_domains(self) -> Dict[str, List[UpdateScheme]]:
-        for health_status in self._healthcheck_apis().items():
-            if not health_status[1]:
-                logger.warning(f"API {health_status[0]} health check failed")
-                raise Exception(f"API {health_status[0]} health check failed")
         return {
             k: v
             for domain in self.__domains_map_service.get_domains()
@@ -51,10 +47,6 @@ class Synchronizer:
         }
 
     def synchronize_domain(self, data_domain: DataDomain) -> Dict[str, List[UpdateScheme]]:
-        for health_status in self._healthcheck_apis().items():
-            if not health_status[1]:
-                logger.warning(f"API {health_status[0]} health check failed")
-                raise Exception(f"API {health_status[0]} health check failed")
         data: Dict[str, List[UpdateScheme]] = {f"{data_domain}": []}
         logger.info(f"Synchronizing: {data_domain}")
         for entry in self.__domains_map_service.get_entries(data_domain):
@@ -64,13 +56,17 @@ class Synchronizer:
         return data
 
     def synchronize(self, data_domain: DataDomain, domain_entry: DomainMapEntry) -> UpdateScheme:
+        for health_status in self._healthcheck_apis().items():
+            if not health_status[1]:
+                logger.warning(f"API {health_status[0]} health check failed")
+                raise Exception(f"API {health_status[0]} health check failed")
         bsn_update_scheme: List[BsnUpdateScheme] = []
         updated_bsns, latest_timestamp = self.__metadata_api.get_update_scheme(
             domain_entry.resource_type, domain_entry.last_resource_update
         )
 
         for bsn in updated_bsns:
-            pseudonym = self.__pseudonym_service.submit(PseudonymCreateDto(bsn=BSN(bsn)))
+            pseudonym = self.__pseudonym_api.submit(PseudonymCreateDto(bsn=BSN(bsn)))
             referral = self.__nvi_api.get_referrals(
                 ReferralQueryDTO(
                     pseudonym=str(pseudonym),
