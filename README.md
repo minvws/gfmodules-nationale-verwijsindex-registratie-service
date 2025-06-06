@@ -84,6 +84,12 @@ make container-build-sa
 Both containers only differ in their init script and the default version usually will mount its own local src directory
 into the container's /src dir.
 
+```bash
+docker run -ti --rm -p 8511:8511 \
+  --mount type=bind,source=./app.conf.autopilot,target=/src/app.conf \
+  gfmodules-nvi-referral-manager-private
+```
+
 ## API Endpoints
 
 ### Registration Endpoint
