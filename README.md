@@ -74,7 +74,7 @@ make container-build
 
 This will build a docker container that will run its migrations to the database specified in app.conf.
 
-The second mode is a "standalone" mode, where it will not generate migrations, and where you must explicitly specify
+The second mode is a "standalone" mode, where it will not run migrations, and where you must explicitly specify
 an app.conf mount.
 
 ```bash
