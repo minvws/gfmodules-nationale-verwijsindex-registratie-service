@@ -10,6 +10,8 @@ services:
       dockerfile: docker/Dockerfile
     volumes:
       - ./:/src
+    environment:
+      FASTAPI_CONFIG_PATH: /src/app.conf
     ports:
       - "8515:8515"
     healthcheck:

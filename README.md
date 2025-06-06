@@ -69,7 +69,12 @@ Or build manually:
 There are two ways to build a docker container from this application. The first is the default mode created with:
 
 ```bash
-make container-build
+docker build \
+  --build-arg="NEW_UID=1000" \
+  --build-arg="NEW_GID=1000" \
+  -f docker/Dockerfile \
+  -t gfmodules-nvi-referral-manager \
+  .
 ```
 
 This will build a docker container that will run its migrations to the database specified in app.conf.
@@ -78,16 +83,20 @@ The second mode is a "standalone" mode, where it will not run migrations, and wh
 an app.conf mount.
 
 ```bash
-make container-build-sa
+docker build \
+  --build-arg="standalone=true" \
+  -f docker/Dockerfile \
+  -t gfmodules-nvi-referral-manager \
+  .
 ```
 
 Both containers only differ in their init script and the default version usually will mount its own local src directory
 into the container's /src dir.
 
 ```bash
-docker run -ti --rm -p 8511:8511 \
+docker run -ti --rm -p 8515:8515 \
   --mount type=bind,source=./app.conf.autopilot,target=/src/app.conf \
-  gfmodules-nvi-referral-manager-private
+  gfmodules-nvi-referral-manager
 ```
 
 ## API Endpoints
