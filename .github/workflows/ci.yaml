@@ -40,7 +40,7 @@ jobs:
                 python_version: "3.11"
 
             - name: Lint
-              run: make POETRY=true lint
+              run: poetry run $(make lint --just-print --silent)
 
     type-check:
         name: Check static types
@@ -57,7 +57,7 @@ jobs:
                 python_version: "3.11"
 
             - name: Check static types
-              run: make POETRY=true type-check
+              run: poetry run $(make type-check --just-print --silent)
 
     safety-check:
         name: Scan packages for vulnerabilities
@@ -74,7 +74,7 @@ jobs:
                 python_version: "3.11"
 
             - name: Scan packages for vulnerabilities
-              run: make POETRY=true safety-check
+              run: poetry run $(make safety-check --just-print --silent)
 
     spelling-check:
         name: Run spelling check
@@ -93,7 +93,7 @@ jobs:
             - uses: codespell-project/codespell-problem-matcher@v1
 
             - name: Run spelling check
-              run: make POETRY=true spelling-check
+              run: poetry run $(make spelling-check --just-print --silent)
 
     test:
         name: Run the tests
@@ -109,8 +109,7 @@ jobs:
                 python_version: "3.11"
 
             - name: Run the tests
-              run: |
-                make POETRY=true test
+              run: poetry run $(make test --just-print --silent)
 
             - name: Upload coverage report
               uses: actions/upload-artifact@v4

@@ -17,6 +17,9 @@ class CarePlanExtractor:
         if not isinstance(self.careplan.subject, Reference):
             raise InvalidResourceException("Field 'subject' is not a Reference")
 
+        if self.careplan.subject.type is None:
+            raise InvalidResourceException("Field 'subject.type' is missing in the request")
+
         if self.careplan.subject.type != "Patient":
             raise InvalidResourceException("Field 'subject' is not a Patient")
 

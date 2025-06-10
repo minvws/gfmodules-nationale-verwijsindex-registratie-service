@@ -8,4 +8,3 @@ secrets/*
 *.pub
 docker-compose.override.yml
 coverage.xml
-domains_map.json

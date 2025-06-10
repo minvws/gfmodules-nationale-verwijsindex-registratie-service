@@ -1,3 +1,4 @@
+import hashlib
 import uuid
 from dataclasses import dataclass
 from enum import Enum
@@ -38,6 +39,9 @@ class BSN:
     def __repr__(self) -> str:
         return f"BSN({self.value})"
 
+    def hash(self) -> str:
+        return hashlib.sha256(self.value.encode()).hexdigest()
+
 
 @dataclass
 class Pseudonym:
@@ -56,12 +60,11 @@ class DataDomain(Enum):
     Unknown = "unknown"
     BeeldBank = "beeldbank"
     MedicatieVerklaring = "medicatie verklaring"
-    Medicatie = "medicatie"
     CarePlan = "zorgplan"
 
     @classmethod
     def get_all(cls) -> list["DataDomain"]:
-        return [DataDomain.BeeldBank, DataDomain.MedicatieVerklaring, DataDomain.Medicatie, DataDomain.CarePlan]
+        return [DataDomain.BeeldBank, DataDomain.MedicatieVerklaring, DataDomain.CarePlan]
 
     @classmethod
     def from_str(cls, label: str) -> Optional["DataDomain"]:
@@ -77,8 +80,6 @@ class DataDomain(Enum):
                 return DataDomain.BeeldBank
             case "MedicationStatement":
                 return DataDomain.MedicatieVerklaring
-            case "Medication":
-                return DataDomain.Medicatie
             case "CarePlan":
                 return DataDomain.CarePlan
             case _:
@@ -90,8 +91,6 @@ class DataDomain(Enum):
                 return "ImagingStudy"
             case DataDomain.MedicatieVerklaring:
                 return "MedicationStatement"
-            case DataDomain.Medicatie:
-                return "Medication"
             case DataDomain.CarePlan:
                 return "CarePlan"
             case _:

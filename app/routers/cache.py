@@ -8,6 +8,6 @@ from app.services.synchronizer import Synchronizer
 router = APIRouter(prefix="/cache", tags=["Cache Management"])
 
 
-@router.post("/clear")
+@router.post("/clear", description="Clear the cache for a specific data domain or all domains")
 def clear_cache(data_domain: DataDomain | None = None, service: Synchronizer = Depends(get_synchronizer)) -> DomainsMap:
     return service.clear_cache(data_domain)

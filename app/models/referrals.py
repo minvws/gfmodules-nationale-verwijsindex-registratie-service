@@ -11,5 +11,5 @@ class ReferralQueryDTO(Referral):
     pass
 
 
-class CreateRefferalDTO(Referral):
+class CreateReferralDTO(Referral):
     requesting_uzi_number: str

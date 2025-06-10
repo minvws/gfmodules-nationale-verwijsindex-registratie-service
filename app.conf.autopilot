@@ -1,21 +1,27 @@
 [app]
 loglevel=debug
 provider_id=4af95a5f-3663-4832-b080-8ba1548e78f5
-ura_number=12345678
+ura_number=98765432
 
-nvi_url=http://nvi-app:8501
-metadata_url=http://hapi-metadata-addressing:8513/fhir
+[scheduler]
 scheduled_delay=5
 
+[metadata_api]
+endpoint=http://lmr-noord:9500
+timeout=10
+# mtls_cert=secrets/ssl/pseudonym_api.cert
+# mtls_key=secrets/ssl/pseudonym_api.key
+# mtls_ca=secrets/ssl/pseudonym_api_ca.cert
+
 [pseudonym_api]
-endpoint=http://pseudonym:8504
+endpoint=http://prs-stub:8504
 timeout=10
 # mtls_cert=secrets/ssl/pseudonym_api.cert
 # mtls_key=secrets/ssl/pseudonym_api.key
 # mtls_ca=secrets/ssl/pseudonym_api_ca.cert
 
 [referral_api]
-endpoint=http://referral:8501
+endpoint=http://nvi-app:8501
 timeout=10
 # mtls_cert=secrets/ssl/referral_api.cert
 # mtls_key=secrets/ssl/referral_api.key
@@ -26,7 +32,7 @@ swagger_enabled = True
 docs_url = /docs
 redoc_url = /redocs
 host = 0.0.0.0
-port = 8511
+port = 8515
 reload = True
 
 use_ssl = False

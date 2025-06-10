@@ -1,12 +1,13 @@
 import configparser
 from enum import Enum
+import os
 from typing import Any
 
-from pydantic import BaseModel, Field, ValidationError
+from pydantic import BaseModel, Field
 
 _PATH = "app.conf"
 _CONFIG = None
-
+_ENVIRONMENT_CONFIG_PATH_NAME = "FASTAPI_CONFIG_PATH"
 
 class LogLevel(str, Enum):
     debug = "debug"
@@ -20,10 +21,19 @@ class ConfigApp(BaseModel):
     loglevel: LogLevel = Field(default=LogLevel.info)
     provider_id: str
     ura_number: str
-    nvi_url: str = Field(default="http://nvi-app:8501")
-    metadata_url: str = Field(default="http://metadata:8503")
-    domains_map_json_path: str = Field(default="./domains_map.json")
+
+
+class ConfigScheduler(BaseModel):
     scheduled_delay: int = Field(default=5)
+
+
+class ConfigMetadataApi(BaseModel):
+    mock: bool = Field(default=False)
+    endpoint: str
+    timeout: int = Field(default=30, gt=0)
+    mtls_cert: str | None = Field(default=None)
+    mtls_key: str | None = Field(default=None)
+    mtls_ca: str | None = Field(default=None)
 
 
 class ConfigPseudonymApi(BaseModel):
@@ -61,6 +71,8 @@ class ConfigUvicorn(BaseModel):
 
 class Config(BaseModel):
     app: ConfigApp
+    scheduler: ConfigScheduler
+    metadata_api: ConfigMetadataApi
     uvicorn: ConfigUvicorn
     pseudonym_api: ConfigPseudonymApi
     referral_api: ConfigReferralApi
@@ -95,15 +107,12 @@ def get_config(path: str | None = None) -> Config:
         return _CONFIG
 
     if path is None:
-        path = _PATH
-
+        path = path or os.environ.get(_ENVIRONMENT_CONFIG_PATH_NAME) or _PATH
+    
     # To be inline with other python code, we use INI-type files for configuration. Since this isn't
     # a standard format for pydantic, we need to do some manual parsing first.
     ini_data = read_ini_file(path)
 
-    try:
-        _CONFIG = Config(**ini_data)
-    except ValidationError as e:
-        raise e
+    _CONFIG = Config(**ini_data)
 
     return _CONFIG

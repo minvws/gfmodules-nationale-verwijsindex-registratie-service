@@ -2,27 +2,27 @@ import itertools
 from datetime import datetime
 from typing import List
 
-import requests
-
 from app.models.metadata.fhir import Bundle, Entry, Identifier
 from app.models.metadata.params import MetadataResourceParams
-from app.services.api.api_service import FhirApiService
+from app.services.api.api_service import ApiService
 
 BSN_SYSTEM = "http://fhir.nl/fhir/NamingSystem/bsn"
 
 
-class MetadataApiService(FhirApiService):
+class MetadataApiService(ApiService):
+    def api_healthy(self) -> bool:
+        return self._api_healthy("actuator/health")
+
     def get_resource_bundle(self, resource_type: str, last_updated: str | None = None) -> Bundle:
         params = MetadataResourceParams(
             _lastUpdated=f"ge{last_updated}" if last_updated else None,
             _include=f"{resource_type}:subject",
         )
-        response = requests.get(
-            f"{self._base_url}/{resource_type}/_search",
+        response = self._do_request(
+            method="GET",
+            sub_route=f"fhir/{resource_type}/_search",
             params=params.model_dump(by_alias=True, exclude_none=True),
         )
-        response.raise_for_status()
-
         data = response.json()
         return Bundle(**data)
 

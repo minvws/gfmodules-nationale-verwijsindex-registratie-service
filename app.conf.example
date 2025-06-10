@@ -6,24 +6,28 @@ provider_id=
 # URA number that will register the referrals
 ura_number=
 
-# the base url for the National Referral Index
-nvi_url=http://nvi-app:8501
-
-# the base url of a fhir store (metadata register)
-metadata_url=http://hapi-metadata-addressing:8513/fhir
-
+[scheduler]
 # the amount of seconds the update will run in the background
 scheduled_delay=5
 
+[metadata_api]
+# the base urls of fhir stores (metadata registers)
+endpoint=http://example.com
+# timeout in seconds
+timeout=10
+# mtls_cert=secrets/ssl/pseudonym_api.cert
+# mtls_key=secrets/ssl/pseudonym_api.key
+# mtls_ca=secrets/ssl/pseudonym_api_ca.cert
+
 [pseudonym_api]
-endpoint=http://localhost:8504
+endpoint=http://example.com
 timeout=10
 # mtls_cert=secrets/ssl/pseudonym_api.cert
 # mtls_key=secrets/ssl/pseudonym_api.key
 # mtls_ca=secrets/ssl/pseudonym_api_ca.cert
 
 [referral_api]
-endpoint=http://referral:8501
+endpoint=http://example.com
 timeout=10
 # mtls_cert=secrets/ssl/referral_api.cert
 # mtls_key=secrets/ssl/referral_api.key
@@ -39,7 +43,7 @@ redoc_url = /redocs
 # Host for the uvicorn server
 host = 0.0.0.0
 # Port for the uvicorn server
-port = 8511
+port = 8515
 # Live reload for uvicorn server
 reload = True
 
