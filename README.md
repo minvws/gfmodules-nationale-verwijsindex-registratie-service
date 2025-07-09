@@ -23,12 +23,13 @@ risk and that the authors assume no liability for any consequences of its use.
 
 ## Setup
 
-To ensure this application functions properly, make sure the [NVI service](https://github.com/minvws/gfmodules-nvi-referral-manager), the [PRS-stub](https://github.com/minvws/gfmodules-pseudonym-stub), and a FHIR store (e.g. [HAPI](https://hapi.fhir.org/)) are running and accessible.
+To ensure this application functions properly, make sure the [NVI service](https://github.com/minvws/gfmodules-national-referral-index), the [PRS-stub](https://github.com/minvws/gfmodules-pseudonym-stub), and a FHIR store (e.g. [HAPI](https://hapi.fhir.org/)) are running and accessible.
 The application is a FastAPI application, so you can use the [FastAPI documentation](https://fastapi.tiangolo.com/) to see how to use the application.
 
 Run the referral manager via:
 
 ```bash
+cp app.conf.autopilot app.conf
 docker compose up -d
 ```
 
