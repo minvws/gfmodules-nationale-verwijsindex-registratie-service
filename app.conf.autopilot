@@ -9,9 +9,9 @@ scheduled_delay=5
 [metadata_api]
 endpoint=http://lmr-noord:9500
 timeout=10
-# mtls_cert=secrets/ssl/pseudonym_api.cert
-# mtls_key=secrets/ssl/pseudonym_api.key
-# mtls_ca=secrets/ssl/pseudonym_api_ca.cert
+# mtls_cert=secrets/ssl/metadata_api.cert
+# mtls_key=secrets/ssl/metadata_api.key
+# mtls_ca=secrets/ssl/metadata_api_ca.cert
 
 [pseudonym_api]
 endpoint=http://prs-stub:8504

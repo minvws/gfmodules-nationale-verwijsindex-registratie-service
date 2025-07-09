@@ -15,9 +15,9 @@ scheduled_delay=5
 endpoint=http://example.com
 # timeout in seconds
 timeout=10
-# mtls_cert=secrets/ssl/pseudonym_api.cert
-# mtls_key=secrets/ssl/pseudonym_api.key
-# mtls_ca=secrets/ssl/pseudonym_api_ca.cert
+# mtls_cert=secrets/ssl/metadata_api.cert
+# mtls_key=secrets/ssl/metadata_api.key
+# mtls_ca=secrets/ssl/metadata_api_ca.cert
 
 [pseudonym_api]
 endpoint=http://example.com
