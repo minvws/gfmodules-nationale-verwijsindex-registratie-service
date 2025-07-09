@@ -29,7 +29,6 @@ The application is a FastAPI application, so you can use the [FastAPI documentat
 Run the referral manager via:
 
 ```bash
-cp app.conf.autopilot app.conf
 docker compose up -d
 ```
 

@@ -8,7 +8,7 @@ echo "➡️ Creating the configuration file"
 if [ -e "$APP_PATH" ]; then
     echo "⚠️ Configuration file already exists. Skipping."
 else
-    cp app.conf.autopilot "$APP_PATH"
+    cp app.conf.autopilot $APP_PATH
 fi
 
 echo "Start main process"
