@@ -1,18 +1,19 @@
 [app]
 # Loglevel can be one of: debug, info, warning, error, critical
 loglevel=debug
-# Provider ID (UUID) of this service
-provider_id=
-# URA number that will register the referrals
-ura_number=
+# Provider ID (UUID) of this service - example UUID for local development
+provider_id=4af95a5f-3663-4832-b080-8ba1548e78f5
+# URA number that will register the referrals, should be same as URA in NVI - example number for local development
+ura_number=98765432
 
 [scheduler]
 # the amount of seconds the update will run in the background
 scheduled_delay=5
 
 [metadata_api]
-# the base urls of fhir stores (metadata registers)
-endpoint=http://example.com
+# The base URLs of FHIR stores (metadata registers)
+# For local development, use the local metadata service
+endpoint=http://localhost:9500
 # timeout in seconds
 timeout=10
 # mtls_cert=secrets/ssl/metadata_api.cert
@@ -20,14 +21,16 @@ timeout=10
 # mtls_ca=secrets/ssl/metadata_api_ca.cert
 
 [pseudonym_api]
-endpoint=http://example.com
+# For local development, use the pseudonym stub service
+endpoint=http://localhost:8504
 timeout=10
 # mtls_cert=secrets/ssl/pseudonym_api.cert
 # mtls_key=secrets/ssl/pseudonym_api.key
 # mtls_ca=secrets/ssl/pseudonym_api_ca.cert
 
 [referral_api]
-endpoint=http://example.com
+# For local development, use the local NVI service
+endpoint=http://localhost:8501
 timeout=10
 # mtls_cert=secrets/ssl/referral_api.cert
 # mtls_key=secrets/ssl/referral_api.key
