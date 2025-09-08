@@ -21,12 +21,12 @@ fhir-resources = "^8.1"
 [tool.poetry.group.dev.dependencies]
 types-requests = "^2.32.4"
 faker = "^37.6.0"
-pytest = "^8.4.1"
-pytest-cov = "^6.2.1"
-pytest-mock = "^3.14.1"
+pytest = "^8.4.2"
+pytest-cov = "^6.3.0"
+pytest-mock = "^3.15.0"
 httpx = "^0.28.1"
-ruff = "0.12.11"
-safety = "^3.6.0"
+ruff = "0.12.12"
+safety = "^3.6.1"
 codespell = "^2.4.1"
 
 [build-system]
