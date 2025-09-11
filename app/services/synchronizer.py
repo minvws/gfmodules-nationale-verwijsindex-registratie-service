@@ -69,7 +69,7 @@ class Synchronizer:
             pseudonym = self.__pseudonym_api.submit(PseudonymCreateDto(bsn=BSN(bsn)))
             referral = self.__nvi_api.get_referrals(
                 ReferralQueryDTO(
-                    pseudonym=str(pseudonym),
+                    pseudonym=pseudonym.pseudonym,
                     data_domain=str(data_domain),
                     ura_number=self.__ura_number,
                 )
@@ -77,14 +77,13 @@ class Synchronizer:
             if referral is not None:
                 continue
 
-            new_referal = self.__nvi_api.submit(
-                CreateReferralDTO(
-                    ura_number=self.__ura_number,
-                    pseudonym=str(pseudonym),
-                    data_domain=str(data_domain),
-                    requesting_uzi_number=self.__ura_number,
-                )
+            referral_dto = CreateReferralDTO(
+                ura_number=self.__ura_number,
+                pseudonym=pseudonym.pseudonym,
+                data_domain=str(data_domain),
+                requesting_uzi_number=self.__ura_number,
             )
+            new_referal = self.__nvi_api.submit(referral_dto)
             if latest_timestamp is not None and domain_entry.last_resource_update != latest_timestamp:
                 logging.info(
                     f"Updating timestamp for resource {domain_entry.resource_type} from {domain_entry.last_resource_update} to {latest_timestamp}"

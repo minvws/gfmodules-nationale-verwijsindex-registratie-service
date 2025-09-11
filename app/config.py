@@ -1,6 +1,6 @@
 import configparser
-from enum import Enum
 import os
+from enum import Enum
 from typing import Any
 
 from pydantic import BaseModel, Field
@@ -8,6 +8,7 @@ from pydantic import BaseModel, Field
 _PATH = "app.conf"
 _CONFIG = None
 _ENVIRONMENT_CONFIG_PATH_NAME = "FASTAPI_CONFIG_PATH"
+
 
 class LogLevel(str, Enum):
     debug = "debug"
@@ -108,7 +109,7 @@ def get_config(path: str | None = None) -> Config:
 
     if path is None:
         path = path or os.environ.get(_ENVIRONMENT_CONFIG_PATH_NAME) or _PATH
-    
+
     # To be inline with other python code, we use INI-type files for configuration. Since this isn't
     # a standard format for pydantic, we need to do some manual parsing first.
     ini_data = read_ini_file(path)
