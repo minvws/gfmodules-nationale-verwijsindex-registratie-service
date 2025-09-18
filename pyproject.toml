@@ -26,8 +26,8 @@ pytest-cov = "^7.0.0"
 pytest-mock = "^3.15.0"
 httpx = "^0.28.1"
 ruff = "0.13.0"
-safety = "^3.6.1"
 codespell = "^2.4.1"
+pip-audit = "^2.9.0"
 
 [build-system]
 requires = ["poetry-core"]
