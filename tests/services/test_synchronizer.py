@@ -11,8 +11,8 @@ from app.models.update_scheme import BsnUpdateScheme, UpdateScheme
 from app.services.synchronizer import Synchronizer
 
 PATCHED_METADATA_API = "app.services.api.metadata_api_service.MetadataApiService"
-PATCHED_NVI_API = "app.services.nvi.GfHttpService"
-PATCHED_PSEUDONYM_API = "app.services.api.pseudonym_api_service.PseudonymApiService"
+PATCHED_NVI_API = "app.services.nvi.NviService"
+PATCHED_PSEUDONYM_API = "app.services.pseudonym.PseudonymService"
 PATCHED_SYNCHRONIZE = "app.services.synchronizer.Synchronizer.synchronize"
 PATCHED_SYNCHRONIZE_HEALTH = "app.services.synchronizer.Synchronizer._healthcheck_apis"
 
@@ -24,25 +24,17 @@ def mock_domain_map_entry() -> DomainMapEntry:
 
 @pytest.fixture
 def mock_domain_map_entry_with_timestamp(datetime_now: str) -> DomainMapEntry:
-    return DomainMapEntry(
-        resource_type="ImagingStudy", last_resource_update=datetime_now
-    )
+    return DomainMapEntry(resource_type="ImagingStudy", last_resource_update=datetime_now)
 
 
 @pytest.fixture
-def mock_bsn_update_scheme(
-    mock_bsn_number: str, mock_referral: Referral
-) -> BsnUpdateScheme:
+def mock_bsn_update_scheme(mock_bsn_number: str, mock_referral: Referral) -> BsnUpdateScheme:
     return BsnUpdateScheme(bsn=mock_bsn_number, referral=mock_referral)
 
 
 @pytest.fixture
-def mock_update_scheme(
-    mock_bsn_update_scheme: BsnUpdateScheme, mock_domain_map_entry: DomainMapEntry
-) -> UpdateScheme:
-    return UpdateScheme(
-        updated_data=[mock_bsn_update_scheme], domain_entry=mock_domain_map_entry
-    )
+def mock_update_scheme(mock_bsn_update_scheme: BsnUpdateScheme, mock_domain_map_entry: DomainMapEntry) -> UpdateScheme:
+    return UpdateScheme(updated_data=[mock_bsn_update_scheme], domain_entry=mock_domain_map_entry)
 
 
 @pytest.fixture
@@ -73,9 +65,9 @@ def mock_update_scheme_with_only_new_timestamp(
     )
 
 
-@patch(f"{PATCHED_METADATA_API}.api_healthy", return_value=True)
-@patch(f"{PATCHED_NVI_API}.api_healthy", return_value=True)
-@patch(f"{PATCHED_PSEUDONYM_API}.api_healthy", return_value=True)
+@patch(f"{PATCHED_METADATA_API}.server_healthy", return_value=True)
+@patch(f"{PATCHED_NVI_API}.server_healthy", return_value=True)
+@patch(f"{PATCHED_PSEUDONYM_API}.server_healthy", return_value=True)
 def test_healthcheck_apis_should_succeed(
     mock_pseudonym_call: MagicMock,
     mock_nvi_call: MagicMock,
@@ -175,15 +167,10 @@ def test_synchronize_should_succeed_and_update_timestamp_on_domain_entry_when_th
         ),
     )
 
-    actual = synchronizer.synchronize(
-        DataDomain("beeldbank"), mock_domain_map_entry_with_timestamp
-    )
+    actual = synchronizer.synchronize(DataDomain("beeldbank"), mock_domain_map_entry_with_timestamp)
 
     assert expected == actual
-    assert (
-        expected.domain_entry.last_resource_update
-        == actual.domain_entry.last_resource_update
-    )
+    assert expected.domain_entry.last_resource_update == actual.domain_entry.last_resource_update
 
     mock_metadata_get_update_scheme.assert_called()
     mock_nvi_register.assert_called()
@@ -215,9 +202,7 @@ def test_synchronize_should_succeed_and_return_only_new_domain_entries_when_no_p
     expected = mock_update_scheme_with_only_new_timestamp
     mock_metadata_get_update_scheme.return_value = [], datetime_now
 
-    actual = synchronizer.synchronize(
-        DataDomain("beeldbank"), mock_domain_map_entry_with_timestamp
-    )
+    actual = synchronizer.synchronize(DataDomain("beeldbank"), mock_domain_map_entry_with_timestamp)
 
     assert expected == actual
 
@@ -256,9 +241,7 @@ def test_syncrhonize_should_succeed_and_update_timestamp_when_referral_exists(
     mock_pseudonym_register.return_value = mock_pseudonym
     expected = mock_update_scheme_with_only_new_timestamp
 
-    actual = synchronizer.synchronize(
-        DataDomain("beeldbank"), mock_domain_map_entry_with_timestamp
-    )
+    actual = synchronizer.synchronize(DataDomain("beeldbank"), mock_domain_map_entry_with_timestamp)
 
     assert expected == actual
     mock_metadata_get_update_scheme.assert_called()
