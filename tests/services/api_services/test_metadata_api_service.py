@@ -9,9 +9,9 @@ from app.models.metadata.fhir import Bundle, Entry, Identifier, Link, Meta, Reso
 from app.models.metadata.params import MetadataResourceParams
 from app.models.referrals import ReferralQueryDTO
 from app.services.api.metadata_api_service import BSN_SYSTEM, MetadataApiService
-from app.services.api.nvi_api_service import NviApiService
+from app.services.nvi import NviService
 
-PATCHED_MODULE = "app.services.api.api_service.ApiService._do_request"
+PATCHED_MODULE = "app.services.api.http_service.HttpService.do_request"
 
 
 @pytest.fixture
@@ -50,7 +50,9 @@ def regular_bundle(imaging_study: Resource, patient: Resource) -> Bundle:
 
 
 @pytest.fixture
-def bundle_without_bsn_system(imaging_study: Resource, patient_withou_bsn_system: Resource) -> Bundle:
+def bundle_without_bsn_system(
+    imaging_study: Resource, patient_withou_bsn_system: Resource
+) -> Bundle:
     return Bundle(
         link=[Link(relation="self", url="http://example.org")],
         entry=[
@@ -70,21 +72,25 @@ def bundle_without_patient(imaging_study: Resource) -> Bundle:
 
 @pytest.fixture
 def query_param() -> Dict[str, Any]:
-    return MetadataResourceParams(_include="ImagingStudy:subject", _lastUpdated=datetime.now().isoformat()).model_dump(
-        by_alias=True
-    )
+    return MetadataResourceParams(
+        _include="ImagingStudy:subject", _lastUpdated=datetime.now().isoformat()
+    ).model_dump(by_alias=True)
 
 
 @pytest.fixture
 def query_params_without_last_update() -> Dict[str, Any]:
-    return MetadataResourceParams(_include="ImagingStudy:subject").model_dump(by_alias=True, exclude_none=True)
+    return MetadataResourceParams(_include="ImagingStudy:subject").model_dump(
+        by_alias=True, exclude_none=True
+    )
 
 
 @pytest.fixture()
 def fhir_error() -> Dict[str, Any]:
     return {
         "resourceType": "OperationOutcome",
-        "issue": [{"severity": "error", "code": "some_error", "diagnostics": "some_error"}],
+        "issue": [
+            {"severity": "error", "code": "some_error", "diagnostics": "some_error"}
+        ],
     }
 
 
@@ -101,14 +107,19 @@ def test_get_resource_bunlde_should_succed(
     mock_response.params.return_value = query_param
     mock_get.return_value = mock_response
 
-    actual = metadata_api_service.get_resource_bundle("ImagingStudy", query_param["_lastUpdated"])
+    actual = metadata_api_service.get_resource_bundle(
+        "ImagingStudy", query_param["_lastUpdated"]
+    )
 
     assert regular_bundle == actual
 
     mock_get.assert_called_once_with(
         method="GET",
         sub_route="fhir/ImagingStudy/_search",
-        params={"_lastUpdated": f"ge{query_param['_lastUpdated']}", "_include": "ImagingStudy:subject"},
+        params={
+            "_lastUpdated": f"ge{query_param['_lastUpdated']}",
+            "_include": "ImagingStudy:subject",
+        },
     )
 
 
@@ -153,7 +164,9 @@ def test_get_update_scheme_should_succeed(
     mock_response.json.return_value = regular_bundle.model_dump()
     mock_get.return_value = mock_response
 
-    actual_bsn_scheme, actual_latest_timestamp = metadata_api_service.get_update_scheme("ImagingStudy")
+    actual_bsn_scheme, actual_latest_timestamp = metadata_api_service.get_update_scheme(
+        "ImagingStudy"
+    )
 
     assert expected_bsn_scheme == actual_bsn_scheme
     assert expected_latest_timestamp == actual_latest_timestamp
@@ -172,7 +185,9 @@ def test_get_update_scheme_should_succeed_and_return_empty_list_and_timestamp_wh
     mock_response.json.return_value = bundle_without_bsn_system.model_dump()
     mock_get.return_value = mock_response
 
-    actual_bsn_scheme, actual_latest_timestamp = metadata_api_service.get_update_scheme("ImagingStudy")
+    actual_bsn_scheme, actual_latest_timestamp = metadata_api_service.get_update_scheme(
+        "ImagingStudy"
+    )
     assert expected_bsn_scheme == actual_bsn_scheme
     assert expected_latest_timestamp == actual_latest_timestamp
     mock_get.assert_called_once()
@@ -191,7 +206,9 @@ def test_get_update_scheme_should_succeed_and_return_empty_list_when_bundle_has_
     mock_response.json.return_value = bundle_without_patient.model_dump()
     mock_get.return_value = mock_response
 
-    actual_bsn_scheme, actual_timestamp = metadata_api_service.get_update_scheme("ImagingStudy")
+    actual_bsn_scheme, actual_timestamp = metadata_api_service.get_update_scheme(
+        "ImagingStudy"
+    )
     assert expected_bsn_scheme == actual_bsn_scheme
     assert expected_timestamp == actual_timestamp
     mock_get.assert_called_once()
@@ -200,7 +217,7 @@ def test_get_update_scheme_should_succeed_and_return_empty_list_when_bundle_has_
 @patch(PATCHED_MODULE)
 def test_get_referrals_should_return_none_if_not_found(
     mock_post: MagicMock,
-    nvi_api_service: NviApiService,
+    nvi_api_service: NviService,
     referral_query: ReferralQueryDTO,
 ) -> None:
     mock_post.side_effect = requests.HTTPError("Not Found")
@@ -218,7 +235,7 @@ def test_get_referrals_should_return_none_if_not_found(
 @patch(PATCHED_MODULE)
 def test_get_referrals_should_return_none_if_connection_timedout(
     mock_post: MagicMock,
-    nvi_api_service: NviApiService,
+    nvi_api_service: NviService,
     referral_query: ReferralQueryDTO,
 ) -> None:
     mock_post.side_effect = requests.Timeout
@@ -236,7 +253,7 @@ def test_get_referrals_should_return_none_if_connection_timedout(
 @patch(PATCHED_MODULE)
 def test_get_refferals_should_fail_when_connection_is_not_established(
     mock_post: MagicMock,
-    nvi_api_service: NviApiService,
+    nvi_api_service: NviService,
     referral_query: ReferralQueryDTO,
 ) -> None:
     mock_post.side_effect = ConnectionError

@@ -4,21 +4,21 @@ from typing import List
 
 from app.models.metadata.fhir import Bundle, Entry, Identifier
 from app.models.metadata.params import MetadataResourceParams
-from app.services.api.api_service import ApiService
+from app.services.api.http_service import HttpService
 
 BSN_SYSTEM = "http://fhir.nl/fhir/NamingSystem/bsn"
 
 
-class MetadataApiService(ApiService):
-    def api_healthy(self) -> bool:
-        return self._api_healthy("actuator/health")
+class MetadataApiService(HttpService):
+    def server_healthy(self) -> bool:
+        return self._server_healthy("actuator/health")
 
     def get_resource_bundle(self, resource_type: str, last_updated: str | None = None) -> Bundle:
         params = MetadataResourceParams(
             _lastUpdated=f"ge{last_updated}" if last_updated else None,
             _include=f"{resource_type}:subject",
         )
-        response = self._do_request(
+        response = self.do_request(
             method="GET",
             sub_route=f"fhir/{resource_type}/_search",
             params=params.model_dump(by_alias=True, exclude_none=True),

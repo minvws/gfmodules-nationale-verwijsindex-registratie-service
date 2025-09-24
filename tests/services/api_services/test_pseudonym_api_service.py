@@ -5,7 +5,7 @@ from requests.exceptions import ConnectionError, Timeout
 
 from app.data import BSN
 from app.models.pseudonym import PseudonymCreateDto
-from app.services.api.pseudonym_api_service import PseudonymApiService, PseudonymError
+from app.services.pseudonym import PseudonymService, PseudonymError
 
 PATCHED_MODULE = "app.services.api.api_service.ApiService._do_request"
 
@@ -18,13 +18,15 @@ def mock_dto() -> PseudonymCreateDto:
 @patch(PATCHED_MODULE)
 def test_register_should_succeed(
     mock_post: MagicMock,
-    pseudonym_api_service: PseudonymApiService,
+    pseudonym_api_service: PseudonymService,
     mock_dto: PseudonymCreateDto,
 ) -> None:
     expected = {"pseudonym": "83cce2aa-dcd6-4aac-b688-11e76902606b"}
     mock_response = MagicMock()
     mock_response.status_code = 201
-    mock_response.json.return_value = {"pseudonym": "83cce2aa-dcd6-4aac-b688-11e76902606b"}
+    mock_response.json.return_value = {
+        "pseudonym": "83cce2aa-dcd6-4aac-b688-11e76902606b"
+    }
     mock_post.return_value = mock_response
 
     actual = pseudonym_api_service.submit(mock_dto)
@@ -40,7 +42,7 @@ def test_register_should_succeed(
 @patch(PATCHED_MODULE)
 def test_register_should_timeout_when_there_is_no_connection(
     mock_post: MagicMock,
-    pseudonym_api_service: PseudonymApiService,
+    pseudonym_api_service: PseudonymService,
     mock_dto: PseudonymCreateDto,
 ) -> None:
     mock_post.side_effect = Timeout("Request time out")
@@ -54,7 +56,7 @@ def test_register_should_timeout_when_there_is_no_connection(
 @patch(PATCHED_MODULE)
 def test_register_should_fail_when_server_is_down(
     mock_post: MagicMock,
-    pseudonym_api_service: PseudonymApiService,
+    pseudonym_api_service: PseudonymService,
     mock_dto: PseudonymCreateDto,
 ) -> None:
     mock_post.side_effect = ConnectionError

@@ -3,7 +3,7 @@ import logging
 from app.data import Pseudonym
 from app.models.pseudonym import Pseudonym as PseudonymModel
 from app.models.pseudonym import PseudonymCreateDto
-from app.services.api.api_service import GfApiService
+from app.services.api.http_service import GfHttpService
 
 logger = logging.getLogger(__name__)
 
@@ -12,7 +12,7 @@ class PseudonymError(Exception):
     pass
 
 
-class PseudonymApiService(GfApiService[PseudonymModel, PseudonymCreateDto]):
+class PseudonymService:
     def __init__(
         self,
         provider_id: str,
@@ -22,7 +22,7 @@ class PseudonymApiService(GfApiService[PseudonymModel, PseudonymCreateDto]):
         mtls_key: str | None,
         mtls_ca: str | None,
     ) -> None:
-        super().__init__(
+        self.http_service = GfHttpService(
             endpoint=endpoint,
             timeout=timeout,
             mtls_cert=mtls_cert,
@@ -38,7 +38,7 @@ class PseudonymApiService(GfApiService[PseudonymModel, PseudonymCreateDto]):
         logger.info(f"Exchanging BSN for provider {data.provider_id}")
 
         try:
-            response = self._do_request(
+            response = self.http_service.do_request(
                 method="POST",
                 sub_route="/register",
                 data={
@@ -60,3 +60,6 @@ class PseudonymApiService(GfApiService[PseudonymModel, PseudonymCreateDto]):
             raise PseudonymError("Failed to exchange BSN for pseudonym: invalid pseudonym")
 
         return PseudonymModel(pseudonym=str(new_pseudonym))
+
+    def server_healthy(self) -> bool:
+        return self.http_service.server_healthy()
