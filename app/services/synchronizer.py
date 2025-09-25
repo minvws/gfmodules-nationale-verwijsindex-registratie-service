@@ -8,9 +8,9 @@ from app.models.pseudonym import PseudonymCreateDto
 from app.models.referrals import CreateReferralDTO, ReferralQueryDTO
 from app.models.update_scheme import BsnUpdateScheme, UpdateScheme
 from app.services.api.metadata_api_service import MetadataApiService
-from app.services.api.nvi_api_service import NviApiService
-from app.services.api.pseudonym_api_service import PseudonymApiService
 from app.services.domain_map_service import DomainsMapService
+from app.services.nvi import NviService
+from app.services.pseudonym import PseudonymService
 
 logger = logging.getLogger(__name__)
 
@@ -18,8 +18,8 @@ logger = logging.getLogger(__name__)
 class Synchronizer:
     def __init__(
         self,
-        nvi_api: NviApiService,
-        pseudonym_api: PseudonymApiService,
+        nvi_api: NviService,
+        pseudonym_api: PseudonymService,
         metadata_api: MetadataApiService,
         domains_map_service: DomainsMapService,
         ura_number: str,
@@ -34,9 +34,9 @@ class Synchronizer:
     def _healthcheck_apis(self) -> Dict[str, bool]:
         logger.info("Checking health of APIs")
         return {
-            "nvi_api": self.__nvi_api.api_healthy(),
-            "metadata_api": self.__metadata_api.api_healthy(),
-            "pseudonym_api": self.__pseudonym_api.api_healthy(),
+            "nvi_api": self.__nvi_api.server_healthy(),
+            "metadata_api": self.__metadata_api.server_healthy(),
+            "pseudonym_api": self.__pseudonym_api.server_healthy(),
         }
 
     def synchronize_all_domains(self) -> Dict[str, List[UpdateScheme]]:

@@ -2,9 +2,9 @@ import inject
 
 from app.config import get_config
 from app.services.api.metadata_api_service import MetadataApiService
-from app.services.api.nvi_api_service import NviApiService
-from app.services.api.pseudonym_api_service import PseudonymApiService
 from app.services.domain_map_service import DomainsMapService
+from app.services.nvi import NviService
+from app.services.pseudonym import PseudonymService
 from app.services.scheduler import Scheduler
 from app.services.synchronizer import Synchronizer
 
@@ -12,7 +12,7 @@ from app.services.synchronizer import Synchronizer
 def container_config(binder: inject.Binder) -> None:
     config = get_config()
 
-    pseudonym_api_service = PseudonymApiService(
+    pseudonym_api_service = PseudonymService(
         endpoint=config.pseudonym_api.endpoint,
         timeout=config.pseudonym_api.timeout,
         mtls_cert=config.pseudonym_api.mtls_cert,
@@ -20,16 +20,16 @@ def container_config(binder: inject.Binder) -> None:
         mtls_ca=config.pseudonym_api.mtls_ca,
         provider_id=config.app.provider_id,
     )
-    binder.bind(PseudonymApiService, pseudonym_api_service)
+    binder.bind(PseudonymService, pseudonym_api_service)
 
-    nvi_api = NviApiService(
+    nvi_api = NviService(
         endpoint=config.referral_api.endpoint,
         timeout=config.referral_api.timeout,
         mtls_cert=config.referral_api.mtls_cert,
         mtls_key=config.referral_api.mtls_key,
         mtls_ca=config.referral_api.mtls_ca,
     )
-    binder.bind(NviApiService, nvi_api)
+    binder.bind(NviService, nvi_api)
 
     metadata_api = MetadataApiService(
         endpoint=config.metadata_api.endpoint,
@@ -51,16 +51,19 @@ def container_config(binder: inject.Binder) -> None:
     )
     binder.bind(Synchronizer, synchronizer)
 
-    scheduler = Scheduler(function=synchronizer.synchronize_all_domains, delay=config.scheduler.scheduled_delay)
+    scheduler = Scheduler(
+        function=synchronizer.synchronize_all_domains,
+        delay=config.scheduler.scheduled_delay,
+    )
     binder.bind(Scheduler, scheduler)
 
 
-def get_pseudonym_api_service() -> PseudonymApiService:
-    return inject.instance(PseudonymApiService)
+def get_pseudonym_api_service() -> PseudonymService:
+    return inject.instance(PseudonymService)
 
 
-def get_nvi_api_service() -> NviApiService:
-    return inject.instance(NviApiService)
+def get_nvi_api_service() -> NviService:
+    return inject.instance(NviService)
 
 
 def get_metadata_api_service() -> MetadataApiService:

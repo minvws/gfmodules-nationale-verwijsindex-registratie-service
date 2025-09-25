@@ -9,9 +9,9 @@ from app.models.metadata.fhir import Bundle, Entry, Identifier, Link, Meta, Reso
 from app.models.metadata.params import MetadataResourceParams
 from app.models.referrals import ReferralQueryDTO
 from app.services.api.metadata_api_service import BSN_SYSTEM, MetadataApiService
-from app.services.api.nvi_api_service import NviApiService
+from app.services.nvi import NviService
 
-PATCHED_MODULE = "app.services.api.api_service.ApiService._do_request"
+PATCHED_MODULE = "app.services.api.http_service.HttpService.do_request"
 
 
 @pytest.fixture
@@ -108,7 +108,10 @@ def test_get_resource_bunlde_should_succed(
     mock_get.assert_called_once_with(
         method="GET",
         sub_route="fhir/ImagingStudy/_search",
-        params={"_lastUpdated": f"ge{query_param['_lastUpdated']}", "_include": "ImagingStudy:subject"},
+        params={
+            "_lastUpdated": f"ge{query_param['_lastUpdated']}",
+            "_include": "ImagingStudy:subject",
+        },
     )
 
 
@@ -200,12 +203,12 @@ def test_get_update_scheme_should_succeed_and_return_empty_list_when_bundle_has_
 @patch(PATCHED_MODULE)
 def test_get_referrals_should_return_none_if_not_found(
     mock_post: MagicMock,
-    nvi_api_service: NviApiService,
+    nvi_service: NviService,
     referral_query: ReferralQueryDTO,
 ) -> None:
     mock_post.side_effect = requests.HTTPError("Not Found")
 
-    actual = nvi_api_service.get_referrals(referral_query)
+    actual = nvi_service.get_referrals(referral_query)
 
     mock_post.assert_called_once_with(
         method="POST",
@@ -218,12 +221,12 @@ def test_get_referrals_should_return_none_if_not_found(
 @patch(PATCHED_MODULE)
 def test_get_referrals_should_return_none_if_connection_timedout(
     mock_post: MagicMock,
-    nvi_api_service: NviApiService,
+    nvi_service: NviService,
     referral_query: ReferralQueryDTO,
 ) -> None:
     mock_post.side_effect = requests.Timeout
 
-    actual = nvi_api_service.get_referrals(referral_query)
+    actual = nvi_service.get_referrals(referral_query)
 
     mock_post.assert_called_once_with(
         method="POST",
@@ -236,12 +239,12 @@ def test_get_referrals_should_return_none_if_connection_timedout(
 @patch(PATCHED_MODULE)
 def test_get_refferals_should_fail_when_connection_is_not_established(
     mock_post: MagicMock,
-    nvi_api_service: NviApiService,
+    nvi_service: NviService,
     referral_query: ReferralQueryDTO,
 ) -> None:
     mock_post.side_effect = ConnectionError
 
-    actual = nvi_api_service.get_referrals(referral_query)
+    actual = nvi_service.get_referrals(referral_query)
 
     mock_post.assert_called_once_with(
         method="POST",
