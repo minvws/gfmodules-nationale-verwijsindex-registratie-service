@@ -5,8 +5,8 @@ import pytest
 from app.models.pseudonym import Pseudonym
 from app.models.referrals import CreateReferralDTO, Referral, ReferralQueryDTO
 from app.models.update_scheme import BsnUpdateScheme
-from app.services.api.metadata_api_service import MetadataApiService
 from app.services.domain_map_service import DomainsMapService
+from app.services.metadata import MetadataService
 from app.services.nvi import NviService
 from app.services.pseudonym import PseudonymService
 from app.services.synchronizer import Synchronizer
@@ -41,12 +41,16 @@ def pseudonym_service(mock_url: str, mock_ura_number: str) -> PseudonymService:
 
 @pytest.fixture
 def nvi_service(mock_url: str) -> NviService:
-    return NviService(endpoint=mock_url, timeout=1, mtls_cert=None, mtls_key=None, mtls_ca=None)
+    return NviService(
+        endpoint=mock_url, timeout=1, mtls_cert=None, mtls_key=None, mtls_ca=None
+    )
 
 
 @pytest.fixture
-def metadata_api_service(mock_url: str) -> MetadataApiService:
-    return MetadataApiService(endpoint=mock_url, timeout=1, mtls_cert=None, mtls_key=None, mtls_ca=None)
+def metadata_service(mock_url: str) -> MetadataService:
+    return MetadataService(
+        endpoint=mock_url, timeout=1, mtls_cert=None, mtls_key=None, mtls_ca=None
+    )
 
 
 @pytest.fixture
@@ -54,13 +58,13 @@ def synchronizer(
     domains_map_service: DomainsMapService,
     pseudonym_service: PseudonymService,
     nvi_service: NviService,
-    metadata_api_service: MetadataApiService,
+    metadata_service: MetadataService,
     mock_ura_number: str,
 ) -> Synchronizer:
     return Synchronizer(
         nvi_api=nvi_service,
         pseudonym_api=pseudonym_service,
-        metadata_api=metadata_api_service,
+        metadata_api=metadata_service,
         domains_map_service=domains_map_service,
         ura_number=mock_ura_number,
     )
@@ -68,12 +72,16 @@ def synchronizer(
 
 @pytest.fixture
 def referral_query() -> ReferralQueryDTO:
-    return ReferralQueryDTO(pseudonym="some_pseudonym", data_domain="some_domain", ura_number="1234566789")
+    return ReferralQueryDTO(
+        pseudonym="some_pseudonym", data_domain="some_domain", ura_number="1234566789"
+    )
 
 
 @pytest.fixture
 def create_referral_dto(referral_query: ReferralQueryDTO) -> CreateReferralDTO:
-    return CreateReferralDTO(**referral_query.model_dump(), requesting_uzi_number="some_uzi_number")
+    return CreateReferralDTO(
+        **referral_query.model_dump(), requesting_uzi_number="some_uzi_number"
+    )
 
 
 @pytest.fixture

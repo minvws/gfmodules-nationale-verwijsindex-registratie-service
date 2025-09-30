@@ -3,6 +3,7 @@ import inject
 from app.config import get_config
 from app.services.api.metadata_api_service import MetadataApiService
 from app.services.domain_map_service import DomainsMapService
+from app.services.metadata import MetadataService
 from app.services.nvi import NviService
 from app.services.pseudonym import PseudonymService
 from app.services.scheduler import Scheduler
@@ -12,7 +13,7 @@ from app.services.synchronizer import Synchronizer
 def container_config(binder: inject.Binder) -> None:
     config = get_config()
 
-    pseudonym_api_service = PseudonymService(
+    pseudonym_service = PseudonymService(
         endpoint=config.pseudonym_api.endpoint,
         timeout=config.pseudonym_api.timeout,
         mtls_cert=config.pseudonym_api.mtls_cert,
@@ -20,32 +21,32 @@ def container_config(binder: inject.Binder) -> None:
         mtls_ca=config.pseudonym_api.mtls_ca,
         provider_id=config.app.provider_id,
     )
-    binder.bind(PseudonymService, pseudonym_api_service)
+    binder.bind(PseudonymService, pseudonym_service)
 
-    nvi_api = NviService(
+    nvi_service = NviService(
         endpoint=config.referral_api.endpoint,
         timeout=config.referral_api.timeout,
         mtls_cert=config.referral_api.mtls_cert,
         mtls_key=config.referral_api.mtls_key,
         mtls_ca=config.referral_api.mtls_ca,
     )
-    binder.bind(NviService, nvi_api)
+    binder.bind(NviService, nvi_service)
 
-    metadata_api = MetadataApiService(
+    metadata_service = MetadataService(
         endpoint=config.metadata_api.endpoint,
         timeout=config.metadata_api.timeout,
         mtls_cert=config.metadata_api.mtls_cert,
         mtls_key=config.metadata_api.mtls_key,
         mtls_ca=config.metadata_api.mtls_ca,
     )
-    binder.bind(MetadataApiService, metadata_api)
+    binder.bind(MetadataApiService, metadata_service)
 
     domain_map_service = DomainsMapService()
 
     synchronizer = Synchronizer(
-        nvi_api=nvi_api,
-        pseudonym_api=pseudonym_api_service,
-        metadata_api=metadata_api,
+        nvi_api=nvi_service,
+        pseudonym_api=pseudonym_service,
+        metadata_api=metadata_service,
         ura_number=config.app.ura_number,
         domains_map_service=domain_map_service,
     )
