@@ -46,9 +46,7 @@ class Synchronizer:
             for k, v in self.synchronize_domain(domain).items()
         }
 
-    def synchronize_domain(
-        self, data_domain: DataDomain
-    ) -> Dict[str, List[UpdateScheme]]:
+    def synchronize_domain(self, data_domain: DataDomain) -> Dict[str, List[UpdateScheme]]:
         data: Dict[str, List[UpdateScheme]] = {f"{data_domain}": []}
         logger.info(f"Synchronizing: {data_domain}")
         for entry in self.__domains_map_service.get_entries(data_domain):
@@ -57,9 +55,7 @@ class Synchronizer:
             data[str(data_domain)].append(update_scheme)
         return data
 
-    def synchronize(
-        self, data_domain: DataDomain, domain_entry: DomainMapEntry
-    ) -> UpdateScheme:
+    def synchronize(self, data_domain: DataDomain, domain_entry: DomainMapEntry) -> UpdateScheme:
         for health_status in self._healthcheck_apis().items():
             if not health_status[1]:
                 logger.warning(f"API {health_status[0]} health check failed")
@@ -88,10 +84,7 @@ class Synchronizer:
                 requesting_uzi_number=self.__ura_number,
             )
             new_referal = self.__nvi_api.submit(create_referral_dto)
-            if (
-                latest_timestamp is not None
-                and domain_entry.last_resource_update != latest_timestamp
-            ):
+            if latest_timestamp is not None and domain_entry.last_resource_update != latest_timestamp:
                 logging.info(
                     f"Updating timestamp for resource {domain_entry.resource_type} from {domain_entry.last_resource_update} to {latest_timestamp}"
                 )

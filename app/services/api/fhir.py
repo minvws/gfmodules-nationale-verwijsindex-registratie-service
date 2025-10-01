@@ -17,10 +17,9 @@ class FhirHttpService(HttpService):
         super().__init__(endpoint, timeout, mtls_cert, mtls_key, mtls_ca)
 
     def server_healthy(self) -> bool:
-        return self._server_healthy("actuator/health")
+        return self._server_healthy("metadata")
 
     def search(self, resource_type: str, params: Dict[str, Any] | None = None) -> Bundle:
-        response = self.do_request("GET", sub_route=f"/fhir/{resource_type}", params=params)
-        response.raise_for_status()
+        response = self.do_request(method="GET", sub_route=f"{resource_type}/_search", params=params)
 
         return Bundle.model_validate(response.json())

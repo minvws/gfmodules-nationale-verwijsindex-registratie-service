@@ -1,7 +1,6 @@
 import inject
 
 from app.config import get_config
-from app.services.api.metadata_api_service import MetadataApiService
 from app.services.domain_map_service import DomainsMapService
 from app.services.metadata import MetadataService
 from app.services.nvi import NviService
@@ -39,7 +38,7 @@ def container_config(binder: inject.Binder) -> None:
         mtls_key=config.metadata_api.mtls_key,
         mtls_ca=config.metadata_api.mtls_ca,
     )
-    binder.bind(MetadataApiService, metadata_service)
+    binder.bind(MetadataService, metadata_service)
 
     domain_map_service = DomainsMapService()
 
@@ -59,16 +58,16 @@ def container_config(binder: inject.Binder) -> None:
     binder.bind(Scheduler, scheduler)
 
 
-def get_pseudonym_api_service() -> PseudonymService:
+def get_pseudonym_service() -> PseudonymService:
     return inject.instance(PseudonymService)
 
 
-def get_nvi_api_service() -> NviService:
+def get_nvi_service() -> NviService:
     return inject.instance(NviService)
 
 
-def get_metadata_api_service() -> MetadataApiService:
-    return inject.instance(MetadataApiService)
+def get_metadata_service() -> MetadataService:
+    return inject.instance(MetadataService)
 
 
 def get_synchronizer() -> Synchronizer:

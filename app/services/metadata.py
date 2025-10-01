@@ -5,6 +5,8 @@ from app.services.api.fhir import FhirHttpService
 from app.services.parsers.bundle import BundleParser
 from app.services.parsers.patient import PatientParser
 
+BSN_SYSTEM = "http://fhir.nl/fhir/NamingSystem/bsn"  # NOSONAR
+
 
 class MetadataService:
     def __init__(
@@ -26,10 +28,7 @@ class MetadataService:
     def server_healthy(self) -> bool:
         return self.http_service.server_healthy()
 
-    # TODO: type the response
-    def get_update_scheme(
-        self, resource_type: str, last_updated: str | None = None
-    ) -> Tuple[List[str], str | None]:
+    def get_update_scheme(self, resource_type: str, last_updated: str | None = None) -> Tuple[List[str], str | None]:
         params = MetadataResourceParams(
             _lastUpdated=f"ge{last_updated}" if last_updated else None,
             _include=f"{resource_type}:subject",
@@ -47,6 +46,6 @@ class MetadataService:
         identiefiers = PatientParser.get_identifiers(patients)
 
         matched_identifiers = [
-            identifier.value for identifier in identiefiers if identifier.value
+            identifier.value for identifier in identiefiers if identifier.value if identifier.system == BSN_SYSTEM
         ]
         return matched_identifiers, latest_resource_update

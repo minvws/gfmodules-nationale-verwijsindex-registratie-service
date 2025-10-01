@@ -32,26 +32,21 @@ def test_get_referrals_should_succeed(
 
 
 @patch(PATCHED_MODULE)
-def test_register_should_succeed(
+def test_get_referrals_should_return_none_if_not_found(
     mock_post: MagicMock,
     nvi_service: NviService,
-    create_referral_dto: CreateReferralDTO,
+    referral_query: ReferralQueryDTO,
 ) -> None:
-    expected = Referral(**create_referral_dto.model_dump(exclude={"requesting_uzi_number"}))
-    mock_response = MagicMock()
-    mock_response.status_code = 201
-    mock_response.json.return_value = expected.model_dump()
-    mock_post.return_value = mock_response
+    mock_post.side_effect = HTTPError("Not Found")
 
-    actual = nvi_service.submit(create_referral_dto)
+    actual = nvi_service.get_referrals(referral_query)
 
     mock_post.assert_called_once_with(
         method="POST",
-        sub_route="registrations",
-        data=create_referral_dto.model_dump(),
+        sub_route="registrations/query",
+        data=referral_query.model_dump(),
     )
-
-    assert expected == actual
+    assert actual is None
 
 
 @patch(PATCHED_MODULE)

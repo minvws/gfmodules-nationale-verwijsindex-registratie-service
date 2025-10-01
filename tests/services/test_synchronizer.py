@@ -10,7 +10,7 @@ from app.models.referrals import Referral
 from app.models.update_scheme import BsnUpdateScheme, UpdateScheme
 from app.services.synchronizer import Synchronizer
 
-PATCHED_METADATA_API = "app.services.api.metadata_api_service.MetadataApiService"
+PATCHED_METADATA_API = "app.services.metadata.MetadataService"
 PATCHED_NVI_API = "app.services.nvi.NviService"
 PATCHED_PSEUDONYM_API = "app.services.pseudonym.PseudonymService"
 PATCHED_SYNCHRONIZE = "app.services.synchronizer.Synchronizer.synchronize"
