@@ -10,10 +10,10 @@ packages = [{ include = "app" }]
 
 [tool.poetry.dependencies]
 python = "^3.11"
-uvicorn = "^0.36"
+uvicorn = "^0.37"
 fastapi = "^0.117.1"
 mypy = "^1.18.2"
-pydantic-settings = "^2.10.1"
+pydantic-settings = "^2.11.0"
 inject = "^5.3.0"
 requests = "^2.32.5"
 fhir-resources = "^8.1"
@@ -25,7 +25,7 @@ pytest = "^8.4.2"
 pytest-cov = "^7.0.0"
 pytest-mock = "^3.15.1"
 httpx = "^0.28.1"
-ruff = "0.13.1"
+ruff = "0.13.2"
 codespell = "^2.4.1"
 pip-audit = "^2.9.0"
 
