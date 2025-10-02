@@ -13,7 +13,7 @@ scheduled_delay=5
 [metadata_api]
 # The base URLs of FHIR stores (metadata registers)
 # For local development, use the local metadata service
-endpoint=http://localhost:9500
+endpoint=http://localhost:9500/fhir
 # timeout in seconds
 timeout=10
 # mtls_cert=secrets/ssl/metadata_api.cert

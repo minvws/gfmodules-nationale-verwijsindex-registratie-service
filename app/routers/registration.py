@@ -6,7 +6,7 @@ from fhir.resources.R4B.careplan import CarePlan
 from starlette.responses import Response
 
 from app.config import get_config
-from app.container import get_nvi_api_service, get_pseudonym_api_service
+from app.container import get_nvi_service, get_pseudonym_service
 from app.data import BSN, DataDomain
 from app.exceptions.service_exceptions import InvalidResourceException
 from app.models.pseudonym import PseudonymCreateDto
@@ -36,8 +36,8 @@ def validate_careplan(resource: Dict[str, Any]) -> Tuple[DataDomain, BSN]:
 @router.post("", description="Register a referral through a FHIR CarePlan resource")
 def create(
     request: Dict[str, Any] | None = Body(...),
-    pseudonym_api_service: PseudonymService = Depends(get_pseudonym_api_service),
-    nvi_api_service: NviService = Depends(get_nvi_api_service),
+    pseudonym_api_service: PseudonymService = Depends(get_pseudonym_service),
+    nvi_api_service: NviService = Depends(get_nvi_service),
 ) -> Response:
     if request is None:
         logger.error("Resource is missing in the request")

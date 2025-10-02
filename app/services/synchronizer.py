@@ -7,8 +7,8 @@ from app.models.domains_map import DomainMapEntry, DomainsMap
 from app.models.pseudonym import PseudonymCreateDto
 from app.models.referrals import CreateReferralDTO, ReferralQueryDTO
 from app.models.update_scheme import BsnUpdateScheme, UpdateScheme
-from app.services.api.metadata_api_service import MetadataApiService
 from app.services.domain_map_service import DomainsMapService
+from app.services.metadata import MetadataService
 from app.services.nvi import NviService
 from app.services.pseudonym import PseudonymService
 
@@ -20,7 +20,7 @@ class Synchronizer:
         self,
         nvi_api: NviService,
         pseudonym_api: PseudonymService,
-        metadata_api: MetadataApiService,
+        metadata_api: MetadataService,
         domains_map_service: DomainsMapService,
         ura_number: str,
     ) -> None:

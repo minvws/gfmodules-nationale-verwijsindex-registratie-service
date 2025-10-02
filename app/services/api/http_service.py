@@ -57,6 +57,7 @@ class HttpService(ABC):
                 verify=verify,
             )
             response.raise_for_status()
+
             return response
         except (ConnectionError, Timeout) as e:
             logger.error(f"Request failed: {e}")

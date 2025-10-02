@@ -4,7 +4,7 @@ from typing import Any
 from fastapi import APIRouter, Depends
 
 from app import container
-from app.services.api.metadata_api_service import MetadataApiService
+from app.services.metadata import MetadataService
 from app.services.nvi import NviService
 from app.services.pseudonym import PseudonymService
 
@@ -18,9 +18,9 @@ def ok_or_error(value: bool) -> str:
 
 @router.get("/health", description="Health check for the API services")
 def health(
-    pseudonym_service: PseudonymService = Depends(container.get_pseudonym_api_service),
-    referral_service: NviService = Depends(container.get_nvi_api_service),
-    metadata_service: MetadataApiService = Depends(container.get_metadata_api_service),
+    pseudonym_service: PseudonymService = Depends(container.get_pseudonym_service),
+    referral_service: NviService = Depends(container.get_nvi_service),
+    metadata_service: MetadataService = Depends(container.get_metadata_service),
 ) -> dict[str, Any]:
     components = {
         "pseudonym_service": ok_or_error(pseudonym_service.server_healthy()),
