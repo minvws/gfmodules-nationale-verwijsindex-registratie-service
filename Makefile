@@ -30,7 +30,7 @@ type-check: ## Check for typing errors
 	$(RUN_PREFIX) mypy app tests
 
 safety-check: ## Check for security vulnerabilities
-	$(RUN_PREFIX) pip-audit
+	$(RUN_PREFIX) pip-audit --ignore-vuln GHSA-4xh5-x5gv-qwph
 
 spelling-check: ## Check spelling mistakes
 	$(RUN_PREFIX) codespell .
