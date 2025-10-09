@@ -27,20 +27,16 @@ class UraNumberService:
 
             ura_number = UraNumber.from_certificate(cert_data)
             if ura_number:
-                logger.info(
-                    "Extracting UraNumber from certificate is succsseful, will use this number in the app"
-                )
+                logger.info(f"Successfully extracted UraNumber from certificate, will use {ura_number.value} in app")
                 return ura_number
 
         # no ura number found anywhere
         if not config.app.ura_number:
-            raise RuntimeError(
-                "Cannot start application if no UraNumber exits in uzi certificate or app config"
-            )
+            raise RuntimeError("Cannot start application if no UraNumber exits in uzi certificate or app config")
 
-        logger.info(
-            "No UraNumber found in Certificate, will default to the one in the config"
-        )
+        logger.info("No UraNumber found in Certificate, will default to the one in the config")
         # get the one from config
         ura_number = UraNumber(config.app.ura_number)
+
+        logger.info(f"Successfully extracted UraNumber from app.config, will use {ura_number.value} in app")
         return ura_number
