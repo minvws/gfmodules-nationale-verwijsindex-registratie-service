@@ -7,10 +7,13 @@ from app.services.nvi import NviService
 from app.services.pseudonym import PseudonymService
 from app.services.scheduler import Scheduler
 from app.services.synchronizer import Synchronizer
+from app.services.ura import UraNumberService
 
 
 def container_config(binder: inject.Binder) -> None:
     config = get_config()
+
+    ura_number = UraNumberService.get_ura_number(config)
 
     pseudonym_service = PseudonymService(
         endpoint=config.pseudonym_api.endpoint,
@@ -46,7 +49,7 @@ def container_config(binder: inject.Binder) -> None:
         nvi_api=nvi_service,
         pseudonym_api=pseudonym_service,
         metadata_api=metadata_service,
-        ura_number=config.app.ura_number,
+        ura_number=ura_number.value,
         domains_map_service=domain_map_service,
     )
     binder.bind(Synchronizer, synchronizer)
