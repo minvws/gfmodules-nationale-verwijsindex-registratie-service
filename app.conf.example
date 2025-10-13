@@ -3,8 +3,6 @@
 loglevel=debug
 # Provider ID (UUID) of this service - example UUID for local development
 provider_id=4af95a5f-3663-4832-b080-8ba1548e78f5
-# URA number that will register the referrals, should be same as URA in NVI - example number for local development
-ura_number=98765432
 
 [scheduler]
 # the amount of seconds the update will run in the background

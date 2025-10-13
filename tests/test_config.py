@@ -12,7 +12,7 @@ from app.config import (
 
 def get_test_config() -> Config:
     return Config(
-        app=ConfigApp(loglevel=LogLevel.error, provider_id="00000001", ura_number="00000012"),
+        app=ConfigApp(loglevel=LogLevel.error, provider_id="00000001"),
         pseudonym_api=ConfigPseudonymApi(endpoint="http://example.com"),
         referral_api=ConfigReferralApi(endpoint="http://example.com"),
         uvicorn=ConfigUvicorn(

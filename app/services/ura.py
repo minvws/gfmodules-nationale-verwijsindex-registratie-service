@@ -19,24 +19,20 @@ def get_cert(path: str) -> str | None:
 class UraNumberService:
     @staticmethod
     def get_ura_number(config: Config) -> UraNumber:
-        # attempt to get config from certificate
         logger.info("Attempting to extract UraNumber from UziCertificate")
-        referral_config = config.referral_api
-        if referral_config.mtls_ca:
-            cert_data = get_cert(referral_config.mtls_ca)
+        if not config.referral_api.mtls_cert:
+            raise RuntimeError(
+                "Unable to find mTLS Certificate path, please check app.conf for correct values especially 'referral_api' section."
+            )
 
-            ura_number = UraNumber.from_certificate(cert_data)
-            if ura_number:
-                logger.info(f"Successfully extracted UraNumber from certificate, will use {ura_number.value} in app")
-                return ura_number
+        cert_data = get_cert(config.referral_api.mtls_cert)
+        if cert_data is None:
+            raise RuntimeError("Unable to extract certificate data from file, check path or file format.")
 
-        # no ura number found anywhere
-        if not config.app.ura_number:
-            raise RuntimeError("Cannot start application if no UraNumber exits in uzi certificate or app config")
+        ura_number = UraNumber.from_certificate(cert_data)
+        if not ura_number:
+            raise RuntimeError(
+                "Unable to start application if UraNumber does not exist in certificate, please verify that the certificate is valid."
+            )
 
-        logger.info("No UraNumber found in Certificate, will default to the one in the config")
-        # get the one from config
-        ura_number = UraNumber(config.app.ura_number)
-
-        logger.info(f"Successfully extracted UraNumber from app.config, will use {ura_number.value} in app")
         return ura_number

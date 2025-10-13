@@ -23,7 +23,7 @@ class UraNumber:
         return f"UraNumber({self.value})"
 
     @classmethod
-    def from_certificate(cls, cert_data: str | None) -> Self | None:
+    def from_certificate(cls, cert_data: str) -> Self | None:
         try:
             uzi_server = UziServer(verify="SUCCESS", cert=cert_data)
             subscriber_number = uzi_server["SubscriberNumber"]
