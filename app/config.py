@@ -21,7 +21,6 @@ class LogLevel(str, Enum):
 class ConfigApp(BaseModel):
     loglevel: LogLevel = Field(default=LogLevel.info)
     provider_id: str
-    ura_number: str
 
 
 class ConfigScheduler(BaseModel):

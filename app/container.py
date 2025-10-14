@@ -1,16 +1,21 @@
 import inject
 
 from app.config import get_config
+from app.models.ura_number import UraNumber
 from app.services.domain_map_service import DomainsMapService
 from app.services.metadata import MetadataService
 from app.services.nvi import NviService
 from app.services.pseudonym import PseudonymService
 from app.services.scheduler import Scheduler
 from app.services.synchronizer import Synchronizer
+from app.services.ura import UraNumberService
 
 
 def container_config(binder: inject.Binder) -> None:
     config = get_config()
+
+    ura_number = UraNumberService.get_ura_number(config)
+    binder.bind(UraNumber, ura_number)
 
     pseudonym_service = PseudonymService(
         endpoint=config.pseudonym_api.endpoint,
@@ -46,7 +51,7 @@ def container_config(binder: inject.Binder) -> None:
         nvi_api=nvi_service,
         pseudonym_api=pseudonym_service,
         metadata_api=metadata_service,
-        ura_number=config.app.ura_number,
+        ura_number=ura_number.value,
         domains_map_service=domain_map_service,
     )
     binder.bind(Synchronizer, synchronizer)
@@ -76,6 +81,10 @@ def get_synchronizer() -> Synchronizer:
 
 def get_scheduler() -> Scheduler:
     return inject.instance(Scheduler)
+
+
+def get_ura_number() -> UraNumber:
+    return inject.instance(UraNumber)
 
 
 def setup_container() -> None:

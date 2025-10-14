@@ -5,12 +5,12 @@ from fastapi import APIRouter, Body, Depends
 from fhir.resources.R4B.careplan import CarePlan
 from starlette.responses import Response
 
-from app.config import get_config
-from app.container import get_nvi_service, get_pseudonym_service
+from app.container import get_nvi_service, get_pseudonym_service, get_ura_number
 from app.data import BSN, DataDomain
 from app.exceptions.service_exceptions import InvalidResourceException
 from app.models.pseudonym import PseudonymCreateDto
 from app.models.referrals import CreateReferralDTO
+from app.models.ura_number import UraNumber
 from app.services.cp_extractor import CarePlanExtractor
 from app.services.nvi import NviService
 from app.services.pseudonym import PseudonymService
@@ -38,6 +38,7 @@ def create(
     request: Dict[str, Any] | None = Body(...),
     pseudonym_api_service: PseudonymService = Depends(get_pseudonym_service),
     nvi_api_service: NviService = Depends(get_nvi_service),
+    ura_number: UraNumber = Depends(get_ura_number),
 ) -> Response:
     if request is None:
         logger.error("Resource is missing in the request")
@@ -48,8 +49,8 @@ def create(
     local_pseudonym = pseudonym_api_service.submit(PseudonymCreateDto(bsn=BSN(bsn)))
 
     create_referral_dto = CreateReferralDTO(
-        ura_number=get_config().app.ura_number,
-        requesting_uzi_number=get_config().app.ura_number,
+        ura_number=ura_number.value,
+        requesting_uzi_number=ura_number.value,
         pseudonym=str(local_pseudonym.pseudonym),
         data_domain=data_domain.value,
     )
