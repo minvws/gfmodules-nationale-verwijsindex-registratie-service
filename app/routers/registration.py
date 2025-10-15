@@ -6,8 +6,9 @@ from fhir.resources.R4B.careplan import CarePlan
 from starlette.responses import Response
 
 from app.container import get_nvi_service, get_pseudonym_service, get_ura_number
-from app.data import BSN, DataDomain
+from app.data import BSN
 from app.exceptions.service_exceptions import InvalidResourceException
+from app.models.data_domain import DataDomain
 from app.models.pseudonym import PseudonymCreateDto
 from app.models.referrals import CreateReferralDTO
 from app.models.ura_number import UraNumber

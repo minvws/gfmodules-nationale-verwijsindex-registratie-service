@@ -3,7 +3,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 from requests.exceptions import ConnectionError
 
-from app.data import DataDomain
+from app.models.data_domain import DataDomain
 from app.models.domains_map import DomainMapEntry
 from app.models.pseudonym import Pseudonym
 from app.models.referrals import Referral

@@ -3,11 +3,13 @@ from datetime import datetime
 
 import pytest
 
-from app.data import DataDomain
+from app.models.data_domain import DataDomain
 from app.services.domain_map_service import DomainsMapService
 
 
-def test_get_domains_should_return_a_list(domains_map_service: DomainsMapService) -> None:
+def test_get_domains_should_return_a_list(
+    domains_map_service: DomainsMapService,
+) -> None:
     expected = [domain for domain in DataDomain.get_all()]
     actual = domains_map_service.get_domains()
 
@@ -38,7 +40,9 @@ def test_clear_entries_timestamp_should_succeed(domains_map_service: DomainsMapS
     assert [e.resource_type for e in cleared] == [e.resource_type for e in original]
 
 
-def test_clear_all_entries_timestamps_should_succeed(domains_map_service: DomainsMapService) -> None:
+def test_clear_all_entries_timestamps_should_succeed(
+    domains_map_service: DomainsMapService,
+) -> None:
     domains_map_service.clear_all_entries_timestamp()
     for domain in domains_map_service.get_domains():
         entries = domains_map_service.get_entries(domain)

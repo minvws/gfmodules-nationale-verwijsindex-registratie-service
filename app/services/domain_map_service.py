@@ -1,6 +1,6 @@
 from typing import Dict, List
 
-from app.data import DataDomain
+from app.models.data_domain import DataDomain
 from app.models.domains_map import DomainMapEntry, DomainsMap
 
 
