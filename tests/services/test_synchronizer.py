@@ -240,7 +240,7 @@ def test_syncrhonize_should_succeed_and_update_timestamp_when_referral_exists(
     mock_pseudonym_register.return_value = mock_pseudonym
     expected = mock_update_scheme_with_only_new_timestamp
 
-    actual = synchronizer.synchronize("ImagignStudy", mock_domain_map_entry_with_timestamp)
+    actual = synchronizer.synchronize("ImagingStudy", mock_domain_map_entry_with_timestamp)
 
     assert expected == actual
     mock_metadata_get_update_scheme.assert_called()

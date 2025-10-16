@@ -5,7 +5,6 @@ from app.models.domains_map import DomainMapEntry, DomainsMap
 
 class DomainsMapService:
     def __init__(self, data_domains: List[str]) -> None:
-        # self.__domain_map: dict[str, List[DomainMapEntry]] = {}
         self.__domain_map: Dict[str, List[DomainMapEntry]] = {
             k: [DomainMapEntry(resource_type=k)] for k in data_domains
         }
