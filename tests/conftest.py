@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 import pytest
 from fhir.resources.R4B.bundle import Bundle
@@ -15,6 +15,7 @@ from app.services.domain_map_service import DomainsMapService
 from app.services.metadata import BSN_SYSTEM, MetadataService
 from app.services.nvi import NviService
 from app.services.pseudonym import PseudonymService
+from app.services.registration import RegistrationService
 from app.services.synchronizer import Synchronizer
 
 
@@ -29,8 +30,13 @@ def mock_ura_number() -> str:
 
 
 @pytest.fixture
-def domains_map_service() -> DomainsMapService:
-    return DomainsMapService()
+def data_domains() -> List[str]:
+    return ["ImagingStudy", "MedicationStatement"]
+
+
+@pytest.fixture
+def domains_map_service(data_domains: List[str]) -> DomainsMapService:
+    return DomainsMapService(data_domains)
 
 
 @pytest.fixture
@@ -61,19 +67,26 @@ def metadata_service(mock_url: str) -> MetadataService:
 
 
 @pytest.fixture
+def registration_service(
+    nvi_service: NviService, pseudonym_service: PseudonymService, mock_ura_number: str
+) -> RegistrationService:
+    return RegistrationService(
+        nvi_service=nvi_service,
+        pseudonym_service=pseudonym_service,
+        ura_number=mock_ura_number,
+    )
+
+
+@pytest.fixture
 def synchronizer(
     domains_map_service: DomainsMapService,
-    pseudonym_service: PseudonymService,
-    nvi_service: NviService,
     metadata_service: MetadataService,
-    mock_ura_number: str,
+    registration_service: RegistrationService,
 ) -> Synchronizer:
     return Synchronizer(
-        nvi_api=nvi_service,
-        pseudonym_api=pseudonym_service,
+        registration_service=registration_service,
         metadata_api=metadata_service,
         domains_map_service=domains_map_service,
-        ura_number=mock_ura_number,
     )
 
 

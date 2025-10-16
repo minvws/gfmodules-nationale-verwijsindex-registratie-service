@@ -38,8 +38,6 @@ class MetadataService:
             params=params.model_dump(by_alias=True, exclude_none=True),
         )
 
-        print(bundle.model_dump_json())
-
         latest_resource_update = BundleParser.get_latest_timestamp(bundle)
         if bundle.entry is None:
             return [], latest_resource_update

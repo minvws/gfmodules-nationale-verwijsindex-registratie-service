@@ -57,7 +57,6 @@ def container_config(binder: inject.Binder) -> None:
     synchronizer = Synchronizer(
         registration_service=registration_service,
         metadata_api=metadata_service,
-        ura_number=ura_number.value,
         domains_map_service=domain_map_service,
     )
     binder.bind(Synchronizer, synchronizer)

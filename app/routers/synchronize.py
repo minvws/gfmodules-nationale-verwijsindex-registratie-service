@@ -17,7 +17,6 @@ router = APIRouter(prefix="/synchronize", tags=["Synchronizer"])
 def synchronize_domain(
     data_domain: str | None = None, service: Synchronizer = Depends(get_synchronizer)
 ) -> Dict[str, List[UpdateScheme]]:
-    # dd = DataDomain.from_str(data_domain) if data_domain else None
     if data_domain is not None:
         return service.synchronize_domain(data_domain)
     else:

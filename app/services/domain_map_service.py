@@ -19,19 +19,10 @@ class DomainsMapService:
 
         return self.__domain_map[data_domain]
 
-        # if str(data_domain.to_fhir()) not in self.__domain_map:
-        #     self.__domain_map[str(data_domain.to_fhir())] = [
-        #         DomainMapEntry(resource_type=str(data_domain.to_fhir()))
-        #     ]
-        # return self.__domain_map[str(data_domain.to_fhir())]
-
     def clear_entries_timestamp(self, data_domain: str) -> Dict[str, List[DomainMapEntry]]:
         entries = self.get_entries(data_domain)
         self.__domain_map[data_domain] = [DomainMapEntry(resource_type=data_domain) for _ in entries]
-        # self.__domain_map[str(data_domain.to_fhir())] = [
-        #     DomainMapEntry(resource_type=str(data_domain.to_fhir()))
-        #     for entry in entries
-        # ]
+
         return self.__domain_map
 
     def clear_all_entries_timestamp(self) -> DomainsMap:

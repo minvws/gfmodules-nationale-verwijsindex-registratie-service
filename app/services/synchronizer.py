@@ -17,12 +17,10 @@ class Synchronizer:
         registration_service: RegistrationService,
         metadata_api: MetadataService,
         domains_map_service: DomainsMapService,
-        ura_number: str,
     ) -> None:
         self._registration_service = registration_service
         self._metadata_api = metadata_api
         self._domains_map_service = domains_map_service
-        self._ura_number = ura_number
         self._last_run: str | None = None
 
     def _healthcheck_apis(self) -> Dict[str, bool]:
@@ -58,7 +56,6 @@ class Synchronizer:
         updated_bsns, latest_timestamp = self._metadata_api.get_update_scheme(
             domain_entry.resource_type, domain_entry.last_resource_update
         )
-        print(updated_bsns)
 
         for bsn in updated_bsns:
             new_referral = self._registration_service.register(bsn, data_domain)
@@ -70,9 +67,6 @@ class Synchronizer:
                     f"Updating timestamp for resource {domain_entry.resource_type} from {domain_entry.last_resource_update} to {latest_timestamp}"
                 )
                 domain_entry.last_resource_update = latest_timestamp
-
-            print(bsn)
-            print(new_referral)
 
             bsn_update_scheme.append(BsnUpdateScheme(bsn=bsn, referral=new_referral))
 
