@@ -2,7 +2,6 @@ import logging
 from datetime import datetime
 from typing import Dict, List
 
-from app.models.data_domain import DataDomain
 from app.models.domains_map import DomainMapEntry, DomainsMap
 from app.models.update_scheme import BsnUpdateScheme, UpdateScheme
 from app.services.domain_map_service import DomainsMapService
@@ -16,15 +15,11 @@ class Synchronizer:
     def __init__(
         self,
         registration_service: RegistrationService,
-        # nvi_api: NviService,
-        # pseudonym_api: PseudonymService,
         metadata_api: MetadataService,
         domains_map_service: DomainsMapService,
         ura_number: str,
     ) -> None:
         self._registration_service = registration_service
-        # self.__nvi_api = nvi_api
-        # self.__pseudonym_api = pseudonym_api
         self._metadata_api = metadata_api
         self._domains_map_service = domains_map_service
         self._ura_number = ura_number
@@ -45,9 +40,7 @@ class Synchronizer:
             for k, v in self.synchronize_domain(domain).items()
         }
 
-    def synchronize_domain(
-        self, data_domain: DataDomain
-    ) -> Dict[str, List[UpdateScheme]]:
+    def synchronize_domain(self, data_domain: str) -> Dict[str, List[UpdateScheme]]:
         data: Dict[str, List[UpdateScheme]] = {f"{data_domain}": []}
         logger.info(f"Synchronizing: {data_domain}")
         for entry in self._domains_map_service.get_entries(data_domain):
@@ -56,9 +49,7 @@ class Synchronizer:
             data[str(data_domain)].append(update_scheme)
         return data
 
-    def synchronize(
-        self, data_domain: DataDomain, domain_entry: DomainMapEntry
-    ) -> UpdateScheme:
+    def synchronize(self, data_domain: str, domain_entry: DomainMapEntry) -> UpdateScheme:
         for health_status in self._healthcheck_apis().items():
             if not health_status[1]:
                 logger.warning(f"API {health_status[0]} health check failed")
@@ -67,22 +58,21 @@ class Synchronizer:
         updated_bsns, latest_timestamp = self._metadata_api.get_update_scheme(
             domain_entry.resource_type, domain_entry.last_resource_update
         )
+        print(updated_bsns)
 
         for bsn in updated_bsns:
-            new_referral = self._registration_service.register(
-                bsn, data_domain.to_fhir()
-            )
+            new_referral = self._registration_service.register(bsn, data_domain)
             if new_referral is None:
                 continue
 
-            if (
-                latest_timestamp is not None
-                and domain_entry.last_resource_update != latest_timestamp
-            ):
+            if latest_timestamp is not None and domain_entry.last_resource_update != latest_timestamp:
                 logging.info(
                     f"Updating timestamp for resource {domain_entry.resource_type} from {domain_entry.last_resource_update} to {latest_timestamp}"
                 )
                 domain_entry.last_resource_update = latest_timestamp
+
+            print(bsn)
+            print(new_referral)
 
             bsn_update_scheme.append(BsnUpdateScheme(bsn=bsn, referral=new_referral))
 
@@ -90,7 +80,7 @@ class Synchronizer:
         logging.info(f"last run {self._last_run}")
         return UpdateScheme(updated_data=bsn_update_scheme, domain_entry=domain_entry)
 
-    def clear_cache(self, data_domain: DataDomain | None = None) -> DomainsMap:
+    def clear_cache(self, data_domain: str | None = None) -> DomainsMap:
         if data_domain is not None:
             return self._domains_map_service.clear_entries_timestamp(data_domain)
 

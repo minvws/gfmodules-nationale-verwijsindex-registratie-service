@@ -52,12 +52,10 @@ def container_config(binder: inject.Binder) -> None:
         ura_number=ura_number.value,
     )
 
-    domain_map_service = DomainsMapService()
+    domain_map_service = DomainsMapService(data_domains=config.app.data_domains)
 
     synchronizer = Synchronizer(
         registration_service=registration_service,
-        # nvi_api=nvi_service,
-        # pseudonym_api=pseudonym_service,
         metadata_api=metadata_service,
         ura_number=ura_number.value,
         domains_map_service=domain_map_service,

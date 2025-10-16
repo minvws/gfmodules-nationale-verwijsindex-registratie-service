@@ -1,26 +1,37 @@
 from typing import Dict, List
 
-from app.models.data_domain import DataDomain
 from app.models.domains_map import DomainMapEntry, DomainsMap
 
 
 class DomainsMapService:
-    def __init__(self) -> None:
-        self.__domain_map: dict[str, List[DomainMapEntry]] = {}
+    def __init__(self, data_domains: List[str]) -> None:
+        # self.__domain_map: dict[str, List[DomainMapEntry]] = {}
+        self.__domain_map: Dict[str, List[DomainMapEntry]] = {
+            k: [DomainMapEntry(resource_type=k)] for k in data_domains
+        }
 
-    def get_domains(self) -> List["DataDomain"]:
-        return DataDomain.get_all()
+    def get_domains(self) -> List[str]:
+        return [k for k in self.__domain_map.keys()]
 
-    def get_entries(self, data_domain: DataDomain) -> List[DomainMapEntry]:
-        if str(data_domain.to_fhir()) not in self.__domain_map:
-            self.__domain_map[str(data_domain.to_fhir())] = [DomainMapEntry(resource_type=str(data_domain.to_fhir()))]
-        return self.__domain_map[str(data_domain.to_fhir())]
+    def get_entries(self, data_domain: str) -> List[DomainMapEntry]:
+        if data_domain not in self.__domain_map.keys():
+            self.__domain_map[data_domain] = [DomainMapEntry(resource_type=data_domain)]
 
-    def clear_entries_timestamp(self, data_domain: DataDomain) -> Dict[str, List[DomainMapEntry]]:
+        return self.__domain_map[data_domain]
+
+        # if str(data_domain.to_fhir()) not in self.__domain_map:
+        #     self.__domain_map[str(data_domain.to_fhir())] = [
+        #         DomainMapEntry(resource_type=str(data_domain.to_fhir()))
+        #     ]
+        # return self.__domain_map[str(data_domain.to_fhir())]
+
+    def clear_entries_timestamp(self, data_domain: str) -> Dict[str, List[DomainMapEntry]]:
         entries = self.get_entries(data_domain)
-        self.__domain_map[str(data_domain.to_fhir())] = [
-            DomainMapEntry(resource_type=str(data_domain.to_fhir())) for entry in entries
-        ]
+        self.__domain_map[data_domain] = [DomainMapEntry(resource_type=data_domain) for _ in entries]
+        # self.__domain_map[str(data_domain.to_fhir())] = [
+        #     DomainMapEntry(resource_type=str(data_domain.to_fhir()))
+        #     for entry in entries
+        # ]
         return self.__domain_map
 
     def clear_all_entries_timestamp(self) -> DomainsMap:

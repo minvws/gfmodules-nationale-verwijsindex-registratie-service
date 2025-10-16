@@ -1,7 +1,6 @@
 import logging
 
 from app.data import BSN
-from app.models.data_domain import DataDomain
 from app.models.pseudonym import PseudonymCreateDto
 from app.models.referrals import CreateReferralDTO, Referral, ReferralQueryDTO
 from app.services.nvi import NviService
@@ -21,29 +20,24 @@ class RegistrationService:
         self.pseudonym_service = pseudonym_service
         self._ura_number = ura_number
 
-    def register(self, bsn: str, resource_type: str) -> Referral | None:
-        data_domain = DataDomain.from_fhir(resource_type)
+    def register(self, bsn: str, data_domain: str) -> Referral | None:
         pseudonym = self.pseudonym_service.submit(PseudonymCreateDto(bsn=BSN(bsn)))
         referral = self.nvi_service.get_referrals(
             ReferralQueryDTO(
                 pseudonym=pseudonym.pseudonym,
-                data_domain=str(data_domain),
+                data_domain=data_domain,
                 ura_number=self._ura_number,
             )
         )
 
-        print("\n\n", bsn, "\n\n")
-        print("\n\n", referral, "\n\n")
         if referral:
-            logger.info(
-                f"referral for {pseudonym.pseudonym} and data domain {str(data_domain)} already registered"
-            )
+            logger.info(f"referral for {pseudonym.pseudonym} and data domain {str(data_domain)} already registered")
             return None
 
         new_referral = self.nvi_service.submit(
             CreateReferralDTO(
                 pseudonym=pseudonym.pseudonym,
-                data_domain=str(data_domain),
+                data_domain=data_domain,
                 requesting_uzi_number=self._ura_number,
                 ura_number=self._ura_number,
             )
