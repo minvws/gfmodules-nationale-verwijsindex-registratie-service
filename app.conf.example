@@ -7,6 +7,8 @@ provider_id=4af95a5f-3663-4832-b080-8ba1548e78f5
 [scheduler]
 # the amount of seconds the update will run in the background
 scheduled_delay=5
+# background updates automatically start on bootstrap
+automatic_background_update = True
 
 [metadata_api]
 # The base URLs of FHIR stores (metadata registers)

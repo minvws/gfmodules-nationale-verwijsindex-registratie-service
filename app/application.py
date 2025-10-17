@@ -54,10 +54,12 @@ def create_fastapi_app() -> FastAPI:
 
 
 def application_init() -> None:
+    config = get_config()
     setup_container()
     setup_logging()
-    scheduler = get_scheduler()
-    scheduler.start()
+    if config.scheduler.automatic_background_update:
+        scheduler = get_scheduler()
+        scheduler.start()
 
 
 def setup_logging() -> None:

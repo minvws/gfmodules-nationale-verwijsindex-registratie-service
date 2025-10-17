@@ -25,6 +25,7 @@ class ConfigApp(BaseModel):
 
 class ConfigScheduler(BaseModel):
     scheduled_delay: int = Field(default=5)
+    automatic_background_update: bool = Field(default=True)
 
 
 class ConfigMetadataApi(BaseModel):
@@ -114,5 +115,4 @@ def get_config(path: str | None = None) -> Config:
     ini_data = read_ini_file(path)
 
     _CONFIG = Config(**ini_data)
-
     return _CONFIG
