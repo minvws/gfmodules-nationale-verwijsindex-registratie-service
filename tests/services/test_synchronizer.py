@@ -3,7 +3,6 @@ from unittest.mock import MagicMock, patch
 import pytest
 from requests.exceptions import ConnectionError
 
-from app.data import DataDomain
 from app.models.domains_map import DomainMapEntry
 from app.models.pseudonym import Pseudonym
 from app.models.referrals import Referral
@@ -113,7 +112,7 @@ def test_synchronize_should_succeed_when_there_is_data_from_metadata(
     mock_nvi_get_referrals.return_value = None
     expected = mock_update_scheme
 
-    actual = synchronizer.synchronize(DataDomain("beeldbank"), mock_domain_map_entry)
+    actual = synchronizer.synchronize("ImagingStudy", mock_domain_map_entry)
 
     assert expected == actual
     mock_metadata_get_update_scheme.assert_called_once()
@@ -167,7 +166,7 @@ def test_synchronize_should_succeed_and_update_timestamp_on_domain_entry_when_th
         ),
     )
 
-    actual = synchronizer.synchronize(DataDomain("beeldbank"), mock_domain_map_entry_with_timestamp)
+    actual = synchronizer.synchronize("ImagingStudy", mock_domain_map_entry_with_timestamp)
 
     assert expected == actual
     assert expected.domain_entry.last_resource_update == actual.domain_entry.last_resource_update
@@ -202,7 +201,7 @@ def test_synchronize_should_succeed_and_return_only_new_domain_entries_when_no_p
     expected = mock_update_scheme_with_only_new_timestamp
     mock_metadata_get_update_scheme.return_value = [], datetime_now
 
-    actual = synchronizer.synchronize(DataDomain("beeldbank"), mock_domain_map_entry_with_timestamp)
+    actual = synchronizer.synchronize("ImagingStudy", mock_domain_map_entry_with_timestamp)
 
     assert expected == actual
 
@@ -241,7 +240,7 @@ def test_syncrhonize_should_succeed_and_update_timestamp_when_referral_exists(
     mock_pseudonym_register.return_value = mock_pseudonym
     expected = mock_update_scheme_with_only_new_timestamp
 
-    actual = synchronizer.synchronize(DataDomain("beeldbank"), mock_domain_map_entry_with_timestamp)
+    actual = synchronizer.synchronize("ImagingStudy", mock_domain_map_entry_with_timestamp)
 
     assert expected == actual
     mock_metadata_get_update_scheme.assert_called()
@@ -277,7 +276,7 @@ def test_synchronize_should_fail_when_nvi_is_unreachable(
     mock_pseudonym_register.return_value = mock_pseudonym
 
     with pytest.raises(ConnectionError):
-        synchronizer.synchronize(DataDomain("beeldbank"), mock_domain_map_entry)
+        synchronizer.synchronize("ImagingStudy", mock_domain_map_entry)
 
     mock_metadata_get_update_scheme.assert_called_once()
     mock_pseudonym_register.assert_called()
@@ -309,7 +308,7 @@ def test_synchronize_should_fail_when_pseudonym_api_is_unreachable(
     mock_pseudonym_register.side_effect = ConnectionError
 
     with pytest.raises(ConnectionError):
-        synchronizer.synchronize(DataDomain("beeldbank"), mock_domain_map_entry)
+        synchronizer.synchronize("ImagingStudy", mock_domain_map_entry)
 
     mock_metadata_get_update_scheme.assert_called_once()
     mock_pseudonym_register.assert_called_once()
@@ -339,7 +338,7 @@ def test_syncrhonize_should_fail_when_metadata_is_unreachable(
     mock_metadata_get_update_scheme.side_effect = ConnectionError
 
     with pytest.raises(ConnectionError):
-        synchronizer.synchronize(DataDomain("beeldbank"), mock_domain_map_entry)
+        synchronizer.synchronize("ImagingStudy", mock_domain_map_entry)
 
     mock_metadata_get_update_scheme.assert_called_once()
     mock_nvi_register.assert_not_called()
@@ -354,9 +353,9 @@ def test_synchronize_domain_should_succeed_when_there_is_data_to_update(
     mock_update_scheme: UpdateScheme,
 ) -> None:
     mock_synchronize.return_value = mock_update_scheme
-    expected = {"beeldbank": [mock_update_scheme]}
+    expected = {"ImagingStudy": [mock_update_scheme]}
 
-    actual = synchronizer.synchronize_domain(DataDomain("beeldbank"))
+    actual = synchronizer.synchronize_domain("ImagingStudy")
 
     assert expected == actual
     mock_synchronize.assert_called()
@@ -369,6 +368,6 @@ def test_synchronize_should_fail_when_there_is_no_connection_established(
     mock_synchronize.side_effect = ConnectionError
 
     with pytest.raises(ConnectionError):
-        synchronizer.synchronize_domain(DataDomain("beeldbank"))
+        synchronizer.synchronize_domain("ImagingStudy")
 
     mock_synchronize.assert_called()

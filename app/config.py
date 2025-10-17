@@ -1,9 +1,9 @@
 import configparser
 import os
 from enum import Enum
-from typing import Any
+from typing import Any, List
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 
 _PATH = "app.conf"
 _CONFIG = None
@@ -21,6 +21,15 @@ class LogLevel(str, Enum):
 class ConfigApp(BaseModel):
     loglevel: LogLevel = Field(default=LogLevel.info)
     provider_id: str
+    data_domains: List[str] = Field(default=[])
+
+    @field_validator("data_domains", mode="before")
+    @classmethod
+    def split_values(cls, value: object) -> object:
+        if isinstance(value, str):
+            value = value.strip()
+            return [] if value == "" else value.split(",")
+        return value
 
 
 class ConfigScheduler(BaseModel):

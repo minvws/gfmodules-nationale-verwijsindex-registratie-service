@@ -6,6 +6,7 @@ from app.services.domain_map_service import DomainsMapService
 from app.services.metadata import MetadataService
 from app.services.nvi import NviService
 from app.services.pseudonym import PseudonymService
+from app.services.registration import RegistrationService
 from app.services.scheduler import Scheduler
 from app.services.synchronizer import Synchronizer
 from app.services.ura import UraNumberService
@@ -45,13 +46,17 @@ def container_config(binder: inject.Binder) -> None:
     )
     binder.bind(MetadataService, metadata_service)
 
-    domain_map_service = DomainsMapService()
+    registration_service = RegistrationService(
+        nvi_service=nvi_service,
+        pseudonym_service=pseudonym_service,
+        ura_number=ura_number.value,
+    )
+
+    domain_map_service = DomainsMapService(data_domains=config.app.data_domains)
 
     synchronizer = Synchronizer(
-        nvi_api=nvi_service,
-        pseudonym_api=pseudonym_service,
+        registration_service=registration_service,
         metadata_api=metadata_service,
-        ura_number=ura_number.value,
         domains_map_service=domain_map_service,
     )
     binder.bind(Synchronizer, synchronizer)
