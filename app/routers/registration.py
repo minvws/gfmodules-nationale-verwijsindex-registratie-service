@@ -1,7 +1,6 @@
 import logging
 from typing import Any, Dict, Tuple
 
-from app.models.data_domain import DataDomain
 from fastapi import APIRouter, Body, Depends
 from fhir.resources.R4B.careplan import CarePlan
 from starlette.responses import Response
@@ -23,7 +22,7 @@ router = APIRouter(
 )
 
 
-def validate_careplan(resource: Dict[str, Any]) -> Tuple[DataDomain, BSN]:
+def validate_careplan(resource: Dict[str, Any]) -> Tuple[str, BSN]:
     if not resource:
         raise InvalidResourceException("Resource is not a valid CarePlan")
     careplan = CarePlan(**resource)
@@ -31,7 +30,7 @@ def validate_careplan(resource: Dict[str, Any]) -> Tuple[DataDomain, BSN]:
     extractor = CarePlanExtractor(careplan)
     bsn = extractor.get_subject_bsn()
 
-    return DataDomain.CarePlan, bsn
+    return "CarePlan", bsn
 
 
 @router.post("", description="Register a referral through a FHIR CarePlan resource")
@@ -53,7 +52,7 @@ def create(
         ura_number=ura_number.value,
         requesting_uzi_number=ura_number.value,
         pseudonym=str(local_pseudonym.pseudonym),
-        data_domain=data_domain.value,
+        data_domain=data_domain,
     )
     nvi_api_service.submit(create_referral_dto)
 
