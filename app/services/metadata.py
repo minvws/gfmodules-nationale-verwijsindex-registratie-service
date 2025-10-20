@@ -33,7 +33,6 @@ class MetadataService:
             _lastUpdated=f"ge{last_updated}" if last_updated else None,
             _include=f"{resource_type}:subject",
         )
-        print(params.model_dump())
         bundle = self.http_service.search(
             resource_type=resource_type,
             params=params.model_dump(by_alias=True, exclude_none=True),

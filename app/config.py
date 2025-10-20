@@ -27,7 +27,7 @@ class ConfigApp(BaseModel):
     @classmethod
     def split_values(cls, value: object) -> object:
         if isinstance(value, str):
-            value = value.strip()
+            value = "".join(value.split())
             return [] if value == "" else value.split(",")
         return value
 
