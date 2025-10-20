@@ -1,29 +1,28 @@
-from typing import Dict, List
+from typing import List
 
 from app.models.domains_map import DomainMapEntry, DomainsMap
 
 
 class DomainsMapService:
     def __init__(self, data_domains: List[str]) -> None:
-        self.__domain_map: Dict[str, List[DomainMapEntry]] = {
-            k: [DomainMapEntry(resource_type=k)] for k in data_domains
-        }
+        self.__domain_map: DomainsMap = {k: DomainMapEntry() for k in data_domains}
 
     def get_domains(self) -> List[str]:
         return [k for k in self.__domain_map.keys()]
 
-    def get_entries(self, data_domain: str) -> List[DomainMapEntry]:
-        if data_domain not in self.__domain_map.keys():
-            self.__domain_map[data_domain] = [DomainMapEntry(resource_type=data_domain)]
+    def get_entry(self, data_domain: str) -> DomainMapEntry:
+        if data_domain not in self.get_domains():
+            raise KeyError(f"{data_domain} is not known to defined list of DataDomains.")
 
         return self.__domain_map[data_domain]
 
-    def clear_entries_timestamp(self, data_domain: str) -> Dict[str, List[DomainMapEntry]]:
-        entries = self.get_entries(data_domain)
-        self.__domain_map[data_domain] = [DomainMapEntry(resource_type=data_domain) for _ in entries]
+    def clear_entry_timestamp(self, data_domain: str) -> DomainsMap:
+        if data_domain not in self.get_domains():
+            raise KeyError(f"{data_domain} is not known to defined list of DataDomains.")
 
+        self.__domain_map[data_domain] = DomainMapEntry()
         return self.__domain_map
 
     def clear_all_entries_timestamp(self) -> DomainsMap:
-        [self.clear_entries_timestamp(domain) for domain in self.get_domains()]
+        self.__domain_map = {k: DomainMapEntry() for k in self.get_domains()}
         return self.__domain_map

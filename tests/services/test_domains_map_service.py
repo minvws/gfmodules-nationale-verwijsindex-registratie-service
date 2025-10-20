@@ -2,6 +2,9 @@ import copy
 from datetime import datetime
 from typing import List
 
+import pytest
+
+from app.models.domains_map import DomainMapEntry
 from app.services.domain_map_service import DomainsMapService
 
 
@@ -13,34 +16,51 @@ def test_get_domains_should_return_a_list(domains_map_service: DomainsMapService
     assert expected == actual
 
 
-def test_get_entries_should_return_a_list_of_entries_when_given_correct_domain_names(
+def test_get_entry_should_return_an_entry_when_given_correct_domain(
     domains_map_service: DomainsMapService, data_domains: List[str]
 ) -> None:
     for domain in data_domains:
-        entries = domains_map_service.get_entries(domain)
-        assert isinstance(entries, list)
-        for entry in entries:
-            assert entry.resource_type == domain
+        entry = domains_map_service.get_entry(domain)
+        assert isinstance(entry, DomainMapEntry)
+        assert entry.last_resource_update is None
 
 
-def test_cear_entries_timestanp_should_succeed(
+def test_get_entry_should_raise_exception_when_given_unknown_data_domain(
     domains_map_service: DomainsMapService,
 ) -> None:
-    original = copy.deepcopy(domains_map_service.get_entries("ImagingStudy"))
-    for entry in domains_map_service.get_entries("ImaginStudy"):
+    with pytest.raises(KeyError):
+        domains_map_service.get_entry("SomeDomain")
+
+
+def test_clear_entry_timestamp_should_succeed(domains_map_service: DomainsMapService, data_domains: List[str]) -> None:
+    for data_domain in data_domains:
+        actual_entry = copy.deepcopy(domains_map_service.get_entry(data_domain))
+
+        entry = domains_map_service.get_entry(data_domain)
         entry.last_resource_update = datetime.now().isoformat()
+        assert entry.last_resource_update is not None
 
-    domains_map_service.clear_entries_timestamp("ImagingStudy")
-    cleared = domains_map_service.get_entries("ImagingStudy")
+        domains_map_service.clear_entry_timestamp(data_domain)
+        expected = domains_map_service.get_entry(data_domain)
 
-    assert [e.last_resource_update for e in cleared] == [e.last_resource_update for e in original]
+        assert expected.last_resource_update == actual_entry.last_resource_update
+
+
+def test_clear_entry_timestamp_should_raise_exception_when_given_unkown_data_domain(
+    domains_map_service: DomainsMapService,
+) -> None:
+    with pytest.raises(KeyError):
+        domains_map_service.clear_entry_timestamp("SomeDomain")
 
 
 def test_clear_all_entries_timestamps_should_succeed(
-    domains_map_service: DomainsMapService,
+    domains_map_service: DomainsMapService, data_domains: List[str]
 ) -> None:
+    for data_domain in data_domains:
+        entry = domains_map_service.get_entry(data_domain)
+        entry.last_resource_update = datetime.now().isoformat()
+
     domains_map_service.clear_all_entries_timestamp()
-    for domain in domains_map_service.get_domains():
-        entries = domains_map_service.get_entries(domain)
-        for entry in entries:
-            assert entry.last_resource_update is None
+    for data_domain in data_domains:
+        entry = domains_map_service.get_entry(data_domain)
+        assert entry.last_resource_update is None

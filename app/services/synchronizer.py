@@ -20,7 +20,7 @@ class Synchronizer:
     ) -> None:
         self._registration_service = registration_service
         self._metadata_api = metadata_api
-        self._domains_map_service = domains_map_service
+        self._domain_map_service = domains_map_service
         self._last_run: str | None = None
 
     def _healthcheck_apis(self) -> Dict[str, bool]:
@@ -34,17 +34,18 @@ class Synchronizer:
     def synchronize_all_domains(self) -> Dict[str, List[UpdateScheme]]:
         return {
             k: v
-            for domain in self._domains_map_service.get_domains()
+            for domain in self._domain_map_service.get_domains()
             for k, v in self.synchronize_domain(domain).items()
         }
 
     def synchronize_domain(self, data_domain: str) -> Dict[str, List[UpdateScheme]]:
         data: Dict[str, List[UpdateScheme]] = {f"{data_domain}": []}
         logger.info(f"Synchronizing: {data_domain}")
-        for entry in self._domains_map_service.get_entries(data_domain):
-            logger.info(f"Updating resource: {entry.resource_type}")
-            update_scheme = self.synchronize(data_domain, entry)
-            data[str(data_domain)].append(update_scheme)
+
+        entry = self._domain_map_service.get_entry(data_domain)
+        update_scheme = self.synchronize(data_domain, entry)
+        data[data_domain].append(update_scheme)
+
         return data
 
     def synchronize(self, data_domain: str, domain_entry: DomainMapEntry) -> UpdateScheme:
@@ -54,7 +55,7 @@ class Synchronizer:
                 raise Exception(f"API {health_status[0]} health check failed")
         bsn_update_scheme: List[BsnUpdateScheme] = []
         updated_bsns, latest_timestamp = self._metadata_api.get_update_scheme(
-            domain_entry.resource_type, domain_entry.last_resource_update
+            data_domain, domain_entry.last_resource_update
         )
 
         for bsn in updated_bsns:
@@ -64,7 +65,7 @@ class Synchronizer:
 
             if latest_timestamp is not None and domain_entry.last_resource_update != latest_timestamp:
                 logging.info(
-                    f"Updating timestamp for resource {domain_entry.resource_type} from {domain_entry.last_resource_update} to {latest_timestamp}"
+                    f"Updating timestamp for resource {data_domain} from {domain_entry.last_resource_update} to {latest_timestamp}"
                 )
                 domain_entry.last_resource_update = latest_timestamp
 
@@ -76,6 +77,6 @@ class Synchronizer:
 
     def clear_cache(self, data_domain: str | None = None) -> DomainsMap:
         if data_domain is not None:
-            return self._domains_map_service.clear_entries_timestamp(data_domain)
+            return self._domain_map_service.clear_entry_timestamp(data_domain)
 
-        return self._domains_map_service.clear_all_entries_timestamp()
+        return self._domain_map_service.clear_all_entries_timestamp()

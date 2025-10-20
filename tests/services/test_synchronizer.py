@@ -18,12 +18,12 @@ PATCHED_SYNCHRONIZE_HEALTH = "app.services.synchronizer.Synchronizer._healthchec
 
 @pytest.fixture
 def mock_domain_map_entry() -> DomainMapEntry:
-    return DomainMapEntry(resource_type="ImagingStudy")
+    return DomainMapEntry()
 
 
 @pytest.fixture
 def mock_domain_map_entry_with_timestamp(datetime_now: str) -> DomainMapEntry:
-    return DomainMapEntry(resource_type="ImagingStudy", last_resource_update=datetime_now)
+    return DomainMapEntry(last_resource_update=datetime_now)
 
 
 @pytest.fixture
@@ -161,7 +161,6 @@ def test_synchronize_should_succeed_and_update_timestamp_on_domain_entry_when_th
             )
         ],
         domain_entry=DomainMapEntry(
-            resource_type="ImagingStudy",
             last_resource_update=mock_update_scheme_with_new_timestamp[1],
         ),
     )
