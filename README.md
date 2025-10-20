@@ -23,8 +23,35 @@ risk and that the authors assume no liability for any consequences of its use.
 
 ## Setup
 
-To ensure this application functions properly, make sure the [NVI service](https://github.com/minvws/gfmodules-national-referral-index), the [PRS-stub](https://github.com/minvws/gfmodules-pseudonym-stub), and a FHIR store (e.g. [HAPI](https://hapi.fhir.org/)) are running and accessible.
 The application is a FastAPI application, so you can use the [FastAPI documentation](https://fastapi.tiangolo.com/) to see how to use the application.
+In order for the application to run properly, a few components needs to be setup:
+
+### Nationale Verwijs Index:
+The `Registratie service`  connects to the [NVI](https://github.com/minvws/gfmodules-national-referral-index) to register the referrals. Depending on the environment of the 'Registratie service' it needs to connect to either a hosted (eq. production or test) NVI or a local NVI.
+The connection to the NVI MUST be established with an [UZI Server Certificate](https://www.uziregister.nl/softwareleveranciers/testmiddelen-en-testomgeving) and see section [Testset met servercertifficaat aanvragen](https://www.uziregister.nl/softwareleveranciers/documenten/publicaties/2019/07/12/testset-met-servercertificaat). 
+On bootstrap, the app will look for the URA number associated with the certificate, then it will start. An Example of the full 
+setup with mock certificates script can be found in [gfmodules-coordination-repo](https://github.com/minvws/gfmodules-coordination), 
+where a [generate certificates](https://github.com/minvws/gfmodules-coordination/blob/main/tools/generate_certs.sh) will allocate certificates accordingly. 
+
+
+You can find related configuration properties for NVI in the [app.conf.example file](https://github.com/minvws/gfmodules-nationale-verwijsindex-registratie-service-private/blob/c7aa0d10aa92e62420b6f558e95ce3b5287bb538/app.conf.example#L29).
+
+
+The application also pulls data periodically from the FHIR store and registers it in the NVI. This action can 
+be triggered via an HTTP POST request to `base_url/synchronize` and/or a scheduled background job. Parameters to control this feature can 
+be found in [app.conf.example file](https://github.com/minvws/gfmodules-nationale-verwijsindex-registratie-service-private/blob/c7aa0d10aa92e62420b6f558e95ce3b5287bb538/app.conf.example#L7)
+
+It is important to note that the URA number in the certificate needs to match the FHIR Store which the application 
+is pulling data from and register in the NVI.
+
+### Pseudonym Register Stub Service:
+The application also requires a [PRS-stub](https://github.com/minvws/gfmodules-pseudonym-stub) in order for it to work. Where the app can exchange 
+pseudonym based on data provided. You can find related configuration properties in the [app.conf.example file](https://github.com/minvws/gfmodules-nationale-verwijsindex-registratie-service-private/blob/c7aa0d10aa92e62420b6f558e95ce3b5287bb538/app.conf.example#L21)
+
+### FHIR Store: 
+
+In order to make use of the polling feature, a connection to a FHIR store like [HAPI](https://hapi.fhir.org/) for example needs
+to be established. You can find the related configuration properties in the [app.conf.example file](https://github.com/minvws/gfmodules-nationale-verwijsindex-registratie-service-private/blob/c7aa0d10aa92e62420b6f558e95ce3b5287bb538/app.conf.example#L11)
 
 ### Configuration
 
