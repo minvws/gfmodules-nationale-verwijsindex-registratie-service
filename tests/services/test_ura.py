@@ -1,9 +1,10 @@
-from unittest.mock import MagicMock, patch
+import builtins
+from unittest.mock import MagicMock, mock_open, patch
 
 import pytest
 
 from app.models.ura_number import UraNumber
-from app.services.ura import UraNumberService
+from app.services.ura import UraNumberService, get_cert
 
 PATCHED_CONFIG_MODULE = "app.services.ura.Config"
 PATCHED_URA_MODULE = "app.services.ura.UraNumber"
@@ -58,3 +59,22 @@ def test_get_ura_number_should_raise_expection_when_ura_number_cannot_be_extract
     mock_ura_module.return_value = None
     with pytest.raises(RuntimeError):
         UraNumberService.get_ura_number(mock_config)
+
+
+def test_get_cert_should_succeed(monkeypatch: pytest.MonkeyPatch) -> None:
+    expected = "some-cert"
+    monkeypatch.setattr(builtins, "open", mock_open(read_data=expected))
+    actual = get_cert("/some/path")
+
+    assert expected == actual
+
+
+def test_get_cert_should_return_None_when_exception_occurs(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    mocked_open = mock_open(read_data="some-cert")
+    mocked_open.side_effect = IOError
+    monkeypatch.setattr(builtins, "open", mocked_open)
+    actual = get_cert("/some/path")
+
+    assert actual is None
