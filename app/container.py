@@ -2,11 +2,12 @@ import inject
 
 from app.config import get_config
 from app.models.ura_number import UraNumber
-from app.services.synchronization.domain_map import DomainsMapService
 from app.services.metadata import MetadataService
 from app.services.nvi import NviService
 from app.services.pseudonym import PseudonymService
+from app.services.registration.bundle import BundleRegistartionService
 from app.services.registration.referrals import ReferralRegistrationService
+from app.services.synchronization.domain_map import DomainsMapService
 from app.services.synchronization.scheduler import Scheduler
 from app.services.synchronization.synchronizer import Synchronizer
 from app.services.ura import UraNumberService
@@ -46,16 +47,19 @@ def container_config(binder: inject.Binder) -> None:
     )
     binder.bind(MetadataService, metadata_service)
 
-    registration_service = ReferralRegistrationService(
+    referral_registration_service = ReferralRegistrationService(
         nvi_service=nvi_service,
         pseudonym_service=pseudonym_service,
         ura_number=ura_number.value,
     )
 
+    bundle_registration_service = BundleRegistartionService(referrals_service=referral_registration_service)
+    binder.bind(BundleRegistartionService, bundle_registration_service)
+
     domain_map_service = DomainsMapService(data_domains=config.app.data_domains)
 
     synchronizer = Synchronizer(
-        registration_service=registration_service,
+        registration_service=referral_registration_service,
         metadata_api=metadata_service,
         domains_map_service=domain_map_service,
     )
@@ -78,6 +82,10 @@ def get_nvi_service() -> NviService:
 
 def get_metadata_service() -> MetadataService:
     return inject.instance(MetadataService)
+
+
+def get_bundle_registration_service() -> BundleRegistartionService:
+    return inject.instance(BundleRegistartionService)
 
 
 def get_synchronizer() -> Synchronizer:

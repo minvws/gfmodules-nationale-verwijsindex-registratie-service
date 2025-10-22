@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 class ReferralRegistrationService:
     """
-    Service that handles registrating referrals in an NVI register by
+    Service that handles registering referrals in an NVI register by
     relying on a Pseudoym service.
     """
 
@@ -36,9 +36,7 @@ class ReferralRegistrationService:
         )
 
         if referral:
-            logger.info(
-                f"referral for {pseudonym.pseudonym} and data domain {data_domain} already registered"
-            )
+            logger.info(f"referral for {pseudonym.pseudonym} and data domain {data_domain} already registered")
             return None
 
         new_referral = self.nvi_service.submit(

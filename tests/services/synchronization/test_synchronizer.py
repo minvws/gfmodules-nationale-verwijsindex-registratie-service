@@ -12,12 +12,8 @@ from app.services.synchronization.synchronizer import Synchronizer
 PATCHED_METADATA_API = "app.services.metadata.MetadataService"
 PATCHED_NVI_API = "app.services.nvi.NviService"
 PATCHED_PSEUDONYM_API = "app.services.pseudonym.PseudonymService"
-PATCHED_SYNCHRONIZE = (
-    "app.services.synchronization.synchronizer.Synchronizer.synchronize"
-)
-PATCHED_SYNCHRONIZE_HEALTH = (
-    "app.services.synchronization.synchronizer.Synchronizer._healthcheck_apis"
-)
+PATCHED_SYNCHRONIZE = "app.services.synchronization.synchronizer.Synchronizer.synchronize"
+PATCHED_SYNCHRONIZE_HEALTH = "app.services.synchronization.synchronizer.Synchronizer._healthcheck_apis"
 
 
 @pytest.fixture
@@ -31,19 +27,13 @@ def mock_domain_map_entry_with_timestamp(datetime_now: str) -> DomainMapEntry:
 
 
 @pytest.fixture
-def mock_bsn_update_scheme(
-    mock_bsn_number: str, mock_referral: Referral
-) -> BsnUpdateScheme:
+def mock_bsn_update_scheme(mock_bsn_number: str, mock_referral: Referral) -> BsnUpdateScheme:
     return BsnUpdateScheme(bsn=mock_bsn_number, referral=mock_referral)
 
 
 @pytest.fixture
-def mock_update_scheme(
-    mock_bsn_update_scheme: BsnUpdateScheme, mock_domain_map_entry: DomainMapEntry
-) -> UpdateScheme:
-    return UpdateScheme(
-        updated_data=[mock_bsn_update_scheme], domain_entry=mock_domain_map_entry
-    )
+def mock_update_scheme(mock_bsn_update_scheme: BsnUpdateScheme, mock_domain_map_entry: DomainMapEntry) -> UpdateScheme:
+    return UpdateScheme(updated_data=[mock_bsn_update_scheme], domain_entry=mock_domain_map_entry)
 
 
 @pytest.fixture
@@ -175,15 +165,10 @@ def test_synchronize_should_succeed_and_update_timestamp_on_domain_entry_when_th
         ),
     )
 
-    actual = synchronizer.synchronize(
-        "ImagingStudy", mock_domain_map_entry_with_timestamp
-    )
+    actual = synchronizer.synchronize("ImagingStudy", mock_domain_map_entry_with_timestamp)
 
     assert expected == actual
-    assert (
-        expected.domain_entry.last_resource_update
-        == actual.domain_entry.last_resource_update
-    )
+    assert expected.domain_entry.last_resource_update == actual.domain_entry.last_resource_update
 
     mock_metadata_get_update_scheme.assert_called()
     mock_nvi_register.assert_called()
@@ -215,9 +200,7 @@ def test_synchronize_should_succeed_and_return_only_new_domain_entries_when_no_p
     expected = mock_update_scheme_with_only_new_timestamp
     mock_metadata_get_update_scheme.return_value = [], datetime_now
 
-    actual = synchronizer.synchronize(
-        "ImagingStudy", mock_domain_map_entry_with_timestamp
-    )
+    actual = synchronizer.synchronize("ImagingStudy", mock_domain_map_entry_with_timestamp)
 
     assert expected == actual
 
@@ -256,9 +239,7 @@ def test_syncrhonize_should_succeed_and_update_timestamp_when_referral_exists(
     mock_pseudonym_register.return_value = mock_pseudonym
     expected = mock_update_scheme_with_only_new_timestamp
 
-    actual = synchronizer.synchronize(
-        "ImagingStudy", mock_domain_map_entry_with_timestamp
-    )
+    actual = synchronizer.synchronize("ImagingStudy", mock_domain_map_entry_with_timestamp)
 
     assert expected == actual
     mock_metadata_get_update_scheme.assert_called()

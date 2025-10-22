@@ -3,6 +3,9 @@ import uuid
 from dataclasses import dataclass
 from typing import Any
 
+# TODO: This should be in a system data or something
+BSN_SYSTEM = "http://fhir.nl/fhir/NamingSystem/bsn"  # NOSONAR
+
 
 @dataclass
 class BSN:

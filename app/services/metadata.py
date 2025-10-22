@@ -1,11 +1,10 @@
 from typing import List, Tuple
 
+from app.data import BSN_SYSTEM
 from app.models.metadata.params import MetadataResourceParams
 from app.services.api.fhir import FhirHttpService
 from app.services.parsers.bundle import BundleParser
 from app.services.parsers.patient import PatientParser
-
-BSN_SYSTEM = "http://fhir.nl/fhir/NamingSystem/bsn"  # NOSONAR
 
 
 class MetadataService:

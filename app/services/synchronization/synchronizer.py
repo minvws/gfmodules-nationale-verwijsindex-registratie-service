@@ -4,9 +4,9 @@ from typing import Dict, List
 
 from app.models.domains_map import DomainMapEntry, DomainsMap
 from app.models.update_scheme import BsnUpdateScheme, UpdateScheme
-from app.services.synchronization.domain_map import DomainsMapService
 from app.services.metadata import MetadataService
 from app.services.registration.referrals import ReferralRegistrationService
+from app.services.synchronization.domain_map import DomainsMapService
 
 logger = logging.getLogger(__name__)
 
@@ -48,9 +48,7 @@ class Synchronizer:
 
         return data
 
-    def synchronize(
-        self, data_domain: str, domain_entry: DomainMapEntry
-    ) -> UpdateScheme:
+    def synchronize(self, data_domain: str, domain_entry: DomainMapEntry) -> UpdateScheme:
         for health_status in self._healthcheck_apis().items():
             if not health_status[1]:
                 logger.warning(f"API {health_status[0]} health check failed")
@@ -65,10 +63,7 @@ class Synchronizer:
             if new_referral is None:
                 continue
 
-            if (
-                latest_timestamp is not None
-                and domain_entry.last_resource_update != latest_timestamp
-            ):
+            if latest_timestamp is not None and domain_entry.last_resource_update != latest_timestamp:
                 logging.info(
                     f"Updating timestamp for resource {data_domain} from {domain_entry.last_resource_update} to {latest_timestamp}"
                 )
