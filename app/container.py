@@ -2,13 +2,13 @@ import inject
 
 from app.config import get_config
 from app.models.ura_number import UraNumber
-from app.services.domain_map_service import DomainsMapService
+from app.services.synchronization.domain_map import DomainsMapService
 from app.services.metadata import MetadataService
 from app.services.nvi import NviService
 from app.services.pseudonym import PseudonymService
-from app.services.registration import RegistrationService
-from app.services.scheduler import Scheduler
-from app.services.synchronizer import Synchronizer
+from app.services.registration.referrals import ReferralRegistrationService
+from app.services.synchronization.scheduler import Scheduler
+from app.services.synchronization.synchronizer import Synchronizer
 from app.services.ura import UraNumberService
 
 
@@ -46,7 +46,7 @@ def container_config(binder: inject.Binder) -> None:
     )
     binder.bind(MetadataService, metadata_service)
 
-    registration_service = RegistrationService(
+    registration_service = ReferralRegistrationService(
         nvi_service=nvi_service,
         pseudonym_service=pseudonym_service,
         ura_number=ura_number.value,

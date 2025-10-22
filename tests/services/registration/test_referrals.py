@@ -2,10 +2,10 @@ from unittest.mock import MagicMock, patch
 
 from app.data import Pseudonym
 from app.models.referrals import Referral
-from app.services.registration import RegistrationService
+from app.services.registration.referrals import ReferralRegistrationService
 
-PATCHED_NVI = "app.services.registration.NviService"
-PATCHED_PSEUDONYM = "app.services.registration.PseudonymService.submit"
+PATCHED_NVI = "app.services.registration.referrals.NviService"
+PATCHED_PSEUDONYM = "app.services.registration.referrals.PseudonymService.submit"
 
 
 @patch(f"{PATCHED_NVI}.submit")
@@ -15,7 +15,7 @@ def test_register_should_succeed(
     pseudonym_response: MagicMock,
     referral_query_response: MagicMock,
     new_referral_response: MagicMock,
-    registration_service: RegistrationService,
+    registration_service: ReferralRegistrationService,
     mock_referral: Referral,
     mock_pseudonym: Pseudonym,
     mock_bsn_number: str,
@@ -34,7 +34,7 @@ def test_register_should_succeed(
 def test_regsiter_should_return_None_if_referral_exists(
     pseudonym_response: MagicMock,
     referral_query_response: MagicMock,
-    registration_service: RegistrationService,
+    registration_service: ReferralRegistrationService,
     mock_referral: Referral,
     mock_pseudonym: Pseudonym,
     mock_bsn_number: str,

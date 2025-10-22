@@ -3,7 +3,7 @@ from typing import Any
 from fastapi import APIRouter, Depends
 
 from app.container import get_scheduler
-from app.services.scheduler import Scheduler
+from app.services.synchronization.scheduler import Scheduler
 
 router = APIRouter(prefix="/scheduler", tags=["Scheduler"])
 

@@ -11,12 +11,12 @@ from app.models.pseudonym import Pseudonym
 from app.models.referrals import CreateReferralDTO, Referral, ReferralQueryDTO
 from app.models.update_scheme import BsnUpdateScheme
 from app.services.api.fhir import FhirHttpService
-from app.services.domain_map_service import DomainsMapService
+from app.services.synchronization.domain_map import DomainsMapService
 from app.services.metadata import BSN_SYSTEM, MetadataService
 from app.services.nvi import NviService
 from app.services.pseudonym import PseudonymService
-from app.services.registration import RegistrationService
-from app.services.synchronizer import Synchronizer
+from app.services.registration.referrals import ReferralRegistrationService
+from app.services.synchronization.synchronizer import Synchronizer
 
 
 @pytest.fixture
@@ -41,7 +41,9 @@ def domains_map_service(data_domains: List[str]) -> DomainsMapService:
 
 @pytest.fixture
 def fhir_http_service(mock_url: str) -> FhirHttpService:
-    return FhirHttpService(endpoint=mock_url, timeout=1, mtls_ca=None, mtls_cert=None, mtls_key=None)
+    return FhirHttpService(
+        endpoint=mock_url, timeout=1, mtls_ca=None, mtls_cert=None, mtls_key=None
+    )
 
 
 @pytest.fixture
@@ -58,19 +60,23 @@ def pseudonym_service(mock_url: str, mock_ura_number: str) -> PseudonymService:
 
 @pytest.fixture
 def nvi_service(mock_url: str) -> NviService:
-    return NviService(endpoint=mock_url, timeout=1, mtls_cert=None, mtls_key=None, mtls_ca=None)
+    return NviService(
+        endpoint=mock_url, timeout=1, mtls_cert=None, mtls_key=None, mtls_ca=None
+    )
 
 
 @pytest.fixture
 def metadata_service(mock_url: str) -> MetadataService:
-    return MetadataService(endpoint=mock_url, timeout=1, mtls_cert=None, mtls_key=None, mtls_ca=None)
+    return MetadataService(
+        endpoint=mock_url, timeout=1, mtls_cert=None, mtls_key=None, mtls_ca=None
+    )
 
 
 @pytest.fixture
 def registration_service(
     nvi_service: NviService, pseudonym_service: PseudonymService, mock_ura_number: str
-) -> RegistrationService:
-    return RegistrationService(
+) -> ReferralRegistrationService:
+    return ReferralRegistrationService(
         nvi_service=nvi_service,
         pseudonym_service=pseudonym_service,
         ura_number=mock_ura_number,
@@ -81,7 +87,7 @@ def registration_service(
 def synchronizer(
     domains_map_service: DomainsMapService,
     metadata_service: MetadataService,
-    registration_service: RegistrationService,
+    registration_service: ReferralRegistrationService,
 ) -> Synchronizer:
     return Synchronizer(
         registration_service=registration_service,
@@ -92,12 +98,16 @@ def synchronizer(
 
 @pytest.fixture
 def referral_query() -> ReferralQueryDTO:
-    return ReferralQueryDTO(pseudonym="some_pseudonym", data_domain="some_domain", ura_number="1234566789")
+    return ReferralQueryDTO(
+        pseudonym="some_pseudonym", data_domain="some_domain", ura_number="1234566789"
+    )
 
 
 @pytest.fixture
 def create_referral_dto(referral_query: ReferralQueryDTO) -> CreateReferralDTO:
-    return CreateReferralDTO(**referral_query.model_dump(), requesting_uzi_number="some_uzi_number")
+    return CreateReferralDTO(
+        **referral_query.model_dump(), requesting_uzi_number="some_uzi_number"
+    )
 
 
 @pytest.fixture
@@ -201,12 +211,16 @@ def patient(mock_patient: Dict[str, Any]) -> Patient:
 
 
 @pytest.fixture
-def mock_patient_without_bsn_system(mock_bsn_number: str, datetime_past: str) -> Dict[str, Any]:
+def mock_patient_without_bsn_system(
+    mock_bsn_number: str, datetime_past: str
+) -> Dict[str, Any]:
     return {
         "resourceType": "Patient",
         "id": "example-patient",
         "meta": {"lastUpdated": datetime_past},
-        "identifier": [{"system": "SOME-SYSTEM-NOT-BSN-SYSTEM", "value": mock_bsn_number}],
+        "identifier": [
+            {"system": "SOME-SYSTEM-NOT-BSN-SYSTEM", "value": mock_bsn_number}
+        ],
         "name": [{"family": "Doe", "given": ["Jane"]}],
         "gender": "female",
         "birthDate": "1990-02-17",
@@ -214,7 +228,9 @@ def mock_patient_without_bsn_system(mock_bsn_number: str, datetime_past: str) ->
 
 
 @pytest.fixture
-def mock_bundle(mock_patient: Dict[str, Any], mock_imaging_study: Dict[str, Any]) -> Dict[str, Any]:
+def mock_bundle(
+    mock_patient: Dict[str, Any], mock_imaging_study: Dict[str, Any]
+) -> Dict[str, Any]:
     return {
         "resourceType": "Bundle",
         "type": "searchset",
@@ -272,19 +288,23 @@ def bundle_without_patient(mock_bundle_without_patient: Dict[str, Any]) -> Bundl
 
 @pytest.fixture
 def query_param() -> Dict[str, Any]:
-    return MetadataResourceParams(_include="ImagingStudy:subject", _lastUpdated=datetime.now().isoformat()).model_dump(
-        by_alias=True
-    )
+    return MetadataResourceParams(
+        _include="ImagingStudy:subject", _lastUpdated=datetime.now().isoformat()
+    ).model_dump(by_alias=True)
 
 
 @pytest.fixture
 def query_params_without_last_update() -> Dict[str, Any]:
-    return MetadataResourceParams(_include="ImagingStudy:subject").model_dump(by_alias=True, exclude_none=True)
+    return MetadataResourceParams(_include="ImagingStudy:subject").model_dump(
+        by_alias=True, exclude_none=True
+    )
 
 
 @pytest.fixture()
 def fhir_error() -> Dict[str, Any]:
     return {
         "resourceType": "OperationOutcome",
-        "issue": [{"severity": "error", "code": "some_error", "diagnostics": "some_error"}],
+        "issue": [
+            {"severity": "error", "code": "some_error", "diagnostics": "some_error"}
+        ],
     }

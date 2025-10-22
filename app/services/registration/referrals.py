@@ -9,7 +9,12 @@ from app.services.pseudonym import PseudonymService
 logger = logging.getLogger(__name__)
 
 
-class RegistrationService:
+class ReferralRegistrationService:
+    """
+    Service that handles registrating referrals in an NVI register by
+    relying on a Pseudoym service.
+    """
+
     def __init__(
         self,
         nvi_service: NviService,
@@ -31,7 +36,9 @@ class RegistrationService:
         )
 
         if referral:
-            logger.info(f"referral for {pseudonym.pseudonym} and data domain {data_domain} already registered")
+            logger.info(
+                f"referral for {pseudonym.pseudonym} and data domain {data_domain} already registered"
+            )
             return None
 
         new_referral = self.nvi_service.submit(

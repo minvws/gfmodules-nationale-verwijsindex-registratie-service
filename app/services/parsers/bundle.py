@@ -1,10 +1,13 @@
 from datetime import datetime
 from typing import List
 
+from fastapi.openapi.models import Reference
 from fhir.resources.R4B.bundle import Bundle, BundleEntry
+from fhir.resources.R4B.careplan import CarePlan
 from fhir.resources.R4B.domainresource import DomainResource
 from fhir.resources.R4B.meta import Meta
 from fhir.resources.R4B.patient import Patient
+from fhir.resources.R4B.imagingstudy import ImagingStudy
 
 
 class BundleParser:
@@ -17,7 +20,9 @@ class BundleParser:
             return None
 
         entries: List[BundleEntry] = bundle.entry
-        update_timestamps = [BundleParser.get_timestamps(entry) for entry in entries if entry]
+        update_timestamps = [
+            BundleParser.get_timestamps(entry) for entry in entries if entry
+        ]
         filtered_update_timestamps = [ts for ts in update_timestamps if ts]
 
         latest_timestamp = max(filtered_update_timestamps).isoformat()
@@ -54,3 +59,15 @@ class BundleParser:
                 patients.append(entry.resource)
 
         return patients
+
+    @staticmethod
+    def get_patient_reference(bundle_entry: BundleEntry) -> Reference | None:
+        resource = bundle_entry.resource
+        if not resource or not isinstance(resource, DomainResource):
+            return None
+
+        if isinstance(resource, ImagingStudy):
+            return resource.subject
+
+        if isinstance(resource, CarePlan):
+            return resource.subject

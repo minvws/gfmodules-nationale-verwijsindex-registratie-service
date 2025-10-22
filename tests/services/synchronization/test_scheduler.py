@@ -3,7 +3,7 @@ from typing import Any, Callable, Generator
 
 import pytest
 
-from app.services.scheduler import Scheduler
+from app.services.synchronization.scheduler import Scheduler
 
 
 @pytest.fixture

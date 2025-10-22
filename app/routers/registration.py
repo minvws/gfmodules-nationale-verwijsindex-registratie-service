@@ -2,6 +2,7 @@ import logging
 from typing import Any, Dict, Tuple
 
 from fastapi import APIRouter, Body, Depends
+from fhir.resources.R4B.bundle import Bundle
 from fhir.resources.R4B.careplan import CarePlan
 from starlette.responses import Response
 
@@ -44,16 +45,19 @@ def create(
         logger.error("Resource is missing in the request")
         raise InvalidResourceException("Resource is missing in the request")
 
-    (data_domain, bsn) = validate_careplan(request)
+    bundle = Bundle.model_validate(request)
+    print(bundle)
 
-    local_pseudonym = pseudonym_api_service.submit(PseudonymCreateDto(bsn=BSN(bsn)))
-
-    create_referral_dto = CreateReferralDTO(
-        ura_number=ura_number.value,
-        requesting_uzi_number=ura_number.value,
-        pseudonym=str(local_pseudonym.pseudonym),
-        data_domain=data_domain,
-    )
-    nvi_api_service.submit(create_referral_dto)
-
+    # (data_domain, bsn) = validate_careplan(request)
+    #
+    # local_pseudonym = pseudonym_api_service.submit(PseudonymCreateDto(bsn=BSN(bsn)))
+    #
+    # create_referral_dto = CreateReferralDTO(
+    #     ura_number=ura_number.value,
+    #     requesting_uzi_number=ura_number.value,
+    #     pseudonym=str(local_pseudonym.pseudonym),
+    #     data_domain=data_domain,
+    # )
+    # nvi_api_service.submit(create_referral_dto)
+    #
     return Response(status_code=201)
