@@ -2,6 +2,11 @@ import logging
 from datetime import datetime
 from typing import Dict, List
 
+from app.data import (
+    OutcomeResponseSeverity,
+    OutcomeResponseStatusCode,
+)
+from app.exceptions.fhir_exception import FHIRException
 from app.models.domains_map import DomainMapEntry, DomainsMap
 from app.models.update_scheme import BsnUpdateScheme, UpdateScheme
 from app.services.metadata import MetadataService
@@ -51,8 +56,15 @@ class Synchronizer:
     def synchronize(self, data_domain: str, domain_entry: DomainMapEntry) -> UpdateScheme:
         for health_status in self._healthcheck_apis().items():
             if not health_status[1]:
-                logger.warning(f"API {health_status[0]} health check failed")
-                raise Exception(f"API {health_status[0]} health check failed")
+                msg = f"api {health_status[0]} health check failed"
+                logger.warning(f"api {health_status[0]} health check failed")
+                raise FHIRException(
+                    status_code=OutcomeResponseStatusCode.INTERNAL_SERVER_ERROR.value,
+                    severity=OutcomeResponseSeverity.ERROR.value,
+                    code=OutcomeResponseSeverity.ERROR.value,
+                    msg=msg,
+                )
+
         bsn_update_scheme: List[BsnUpdateScheme] = []
         updated_bsns, latest_timestamp = self._metadata_api.get_update_scheme(
             data_domain, domain_entry.last_resource_update

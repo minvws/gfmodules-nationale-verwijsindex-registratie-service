@@ -1,13 +1,13 @@
 from datetime import datetime
 from typing import List
 
-from fastapi.openapi.models import Reference
 from fhir.resources.R4B.bundle import Bundle, BundleEntry
-from fhir.resources.R4B.careplan import CarePlan
 from fhir.resources.R4B.domainresource import DomainResource
-from fhir.resources.R4B.imagingstudy import ImagingStudy
 from fhir.resources.R4B.meta import Meta
 from fhir.resources.R4B.patient import Patient
+from fhir.resources.R4B.reference import Reference
+
+from app.services.parsers.reference import ReferenceParser
 
 
 class BundleParser:
@@ -74,8 +74,4 @@ class BundleParser:
         if not resource or not isinstance(resource, DomainResource):
             return None
 
-        if isinstance(resource, ImagingStudy):
-            return resource.subject
-
-        if isinstance(resource, CarePlan):
-            return resource.subject
+        return ReferenceParser.get_patient_reference(resource)

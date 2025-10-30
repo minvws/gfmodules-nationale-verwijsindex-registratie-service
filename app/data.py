@@ -1,9 +1,9 @@
+import enum
 import hashlib
 import uuid
 from dataclasses import dataclass
 from typing import Any
 
-# TODO: This should be in a system data or something
 BSN_SYSTEM = "http://fhir.nl/fhir/NamingSystem/bsn"  # NOSONAR
 
 
@@ -40,3 +40,22 @@ class Pseudonym:
 
     def __repr__(self) -> str:
         return f"Pseudonym({self.value})"
+
+
+class OutcomeResponseStatusCode(int, enum.Enum):
+    CREATED = 201
+    BAD_REQUEST = 400
+    INTERNAL_SERVER_ERROR = 500
+
+
+class OutcomeResponseSeverity(str, enum.Enum):
+    INFORMATION = "information"
+    WARNING = "warning"
+    ERROR = "error"
+
+
+class OutcomeResponseCode(str, enum.Enum):
+    CREATED = "created"
+    DUPLICATE = "duplicate"
+    INVALID = "invalid"
+    EXCEPTION = "exception"

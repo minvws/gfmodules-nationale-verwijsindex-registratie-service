@@ -15,6 +15,7 @@ from app.services.api.fhir import FhirHttpService
 from app.services.metadata import MetadataService
 from app.services.nvi import NviService
 from app.services.pseudonym import PseudonymService
+from app.services.registration.bundle import BundleRegistartionService
 from app.services.registration.referrals import ReferralRegistrationService
 from app.services.synchronization.domain_map import DomainsMapService
 from app.services.synchronization.synchronizer import Synchronizer
@@ -76,6 +77,13 @@ def registration_service(
         pseudonym_service=pseudonym_service,
         ura_number=mock_ura_number,
     )
+
+
+@pytest.fixture
+def bundle_registration_service(
+    registration_service: ReferralRegistrationService,
+) -> BundleRegistartionService:
+    return BundleRegistartionService(referrals_service=registration_service)
 
 
 @pytest.fixture

@@ -8,7 +8,7 @@ class DomainsMapService:
         self.__domain_map: DomainsMap = {k: DomainMapEntry() for k in data_domains}
 
     def get_domains(self) -> List[str]:
-        return [k for k in self.__domain_map.keys()]
+        return list(self.__domain_map.keys())
 
     def get_entry(self, data_domain: str) -> DomainMapEntry:
         if data_domain not in self.get_domains():
