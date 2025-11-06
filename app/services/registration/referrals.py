@@ -9,7 +9,12 @@ from app.services.pseudonym import PseudonymService
 logger = logging.getLogger(__name__)
 
 
-class RegistrationService:
+class ReferralRegistrationService:
+    """
+    Service that handles registering referrals in an NVI register by
+    relying on a Pseudoym service.
+    """
+
     def __init__(
         self,
         nvi_service: NviService,

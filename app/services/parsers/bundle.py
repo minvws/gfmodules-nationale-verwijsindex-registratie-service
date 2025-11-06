@@ -5,6 +5,9 @@ from fhir.resources.R4B.bundle import Bundle, BundleEntry
 from fhir.resources.R4B.domainresource import DomainResource
 from fhir.resources.R4B.meta import Meta
 from fhir.resources.R4B.patient import Patient
+from fhir.resources.R4B.reference import Reference
+
+from app.services.parsers.reference import ReferenceParser
 
 
 class BundleParser:
@@ -54,3 +57,21 @@ class BundleParser:
                 patients.append(entry.resource)
 
         return patients
+
+    @staticmethod
+    def get_resource(entry: BundleEntry) -> DomainResource | None:
+        if entry.resource is None:
+            return None
+
+        if not isinstance(entry.resource, DomainResource):
+            return None
+
+        return entry.resource
+
+    @staticmethod
+    def get_patient_reference(bundle_entry: BundleEntry) -> Reference | None:
+        resource = bundle_entry.resource
+        if not resource or not isinstance(resource, DomainResource):
+            return None
+
+        return ReferenceParser.get_patient_reference(resource)

@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends
 
 from app.container import get_synchronizer
 from app.models.update_scheme import UpdateScheme
-from app.services.synchronizer import Synchronizer
+from app.services.synchronization.synchronizer import Synchronizer
 
 router = APIRouter(prefix="/synchronize", tags=["Synchronizer"])
 

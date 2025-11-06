@@ -6,17 +6,19 @@ from fhir.resources.R4B.bundle import Bundle
 from fhir.resources.R4B.imagingstudy import ImagingStudy
 from fhir.resources.R4B.patient import Patient
 
+from app.data import BSN_SYSTEM
 from app.models.metadata.params import MetadataResourceParams
 from app.models.pseudonym import Pseudonym
 from app.models.referrals import CreateReferralDTO, Referral, ReferralQueryDTO
 from app.models.update_scheme import BsnUpdateScheme
 from app.services.api.fhir import FhirHttpService
-from app.services.domain_map_service import DomainsMapService
-from app.services.metadata import BSN_SYSTEM, MetadataService
+from app.services.metadata import MetadataService
 from app.services.nvi import NviService
 from app.services.pseudonym import PseudonymService
-from app.services.registration import RegistrationService
-from app.services.synchronizer import Synchronizer
+from app.services.registration.bundle import BundleRegistartionService
+from app.services.registration.referrals import ReferralRegistrationService
+from app.services.synchronization.domain_map import DomainsMapService
+from app.services.synchronization.synchronizer import Synchronizer
 
 
 @pytest.fixture
@@ -69,8 +71,8 @@ def metadata_service(mock_url: str) -> MetadataService:
 @pytest.fixture
 def registration_service(
     nvi_service: NviService, pseudonym_service: PseudonymService, mock_ura_number: str
-) -> RegistrationService:
-    return RegistrationService(
+) -> ReferralRegistrationService:
+    return ReferralRegistrationService(
         nvi_service=nvi_service,
         pseudonym_service=pseudonym_service,
         ura_number=mock_ura_number,
@@ -78,10 +80,17 @@ def registration_service(
 
 
 @pytest.fixture
+def bundle_registration_service(
+    registration_service: ReferralRegistrationService,
+) -> BundleRegistartionService:
+    return BundleRegistartionService(referrals_service=registration_service)
+
+
+@pytest.fixture
 def synchronizer(
     domains_map_service: DomainsMapService,
     metadata_service: MetadataService,
-    registration_service: RegistrationService,
+    registration_service: ReferralRegistrationService,
 ) -> Synchronizer:
     return Synchronizer(
         registration_service=registration_service,

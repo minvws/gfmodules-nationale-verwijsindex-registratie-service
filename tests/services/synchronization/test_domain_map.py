@@ -5,7 +5,7 @@ from typing import List
 import pytest
 
 from app.models.domains_map import DomainMapEntry
-from app.services.domain_map_service import DomainsMapService
+from app.services.synchronization.domain_map import DomainsMapService
 
 
 def test_get_domains_should_return_a_list(domains_map_service: DomainsMapService, data_domains: List[str]) -> None:

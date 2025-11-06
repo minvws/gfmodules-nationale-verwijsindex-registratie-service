@@ -7,13 +7,13 @@ from app.models.domains_map import DomainMapEntry
 from app.models.pseudonym import Pseudonym
 from app.models.referrals import Referral
 from app.models.update_scheme import BsnUpdateScheme, UpdateScheme
-from app.services.synchronizer import Synchronizer
+from app.services.synchronization.synchronizer import Synchronizer
 
 PATCHED_METADATA_API = "app.services.metadata.MetadataService"
 PATCHED_NVI_API = "app.services.nvi.NviService"
 PATCHED_PSEUDONYM_API = "app.services.pseudonym.PseudonymService"
-PATCHED_SYNCHRONIZE = "app.services.synchronizer.Synchronizer.synchronize"
-PATCHED_SYNCHRONIZE_HEALTH = "app.services.synchronizer.Synchronizer._healthcheck_apis"
+PATCHED_SYNCHRONIZE = "app.services.synchronization.synchronizer.Synchronizer.synchronize"
+PATCHED_SYNCHRONIZE_HEALTH = "app.services.synchronization.synchronizer.Synchronizer._healthcheck_apis"
 
 
 @pytest.fixture
