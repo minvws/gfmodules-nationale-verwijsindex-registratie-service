@@ -2,8 +2,8 @@ from fhir.resources.R4B.careplan import CarePlan
 from fhir.resources.R4B.identifier import Identifier
 from fhir.resources.R4B.reference import Reference
 
-from app.data import BSN
 from app.exceptions.service_exceptions import InvalidResourceException
+from app.models.bsn import BSN
 
 
 class CarePlanExtractor:

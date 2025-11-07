@@ -5,12 +5,12 @@ from fhir.resources.R4B.domainresource import DomainResource
 from fhir.resources.R4B.patient import Patient
 
 from app.data import (
-    BSN,
     OutcomeResponseCode,
     OutcomeResponseSeverity,
     OutcomeResponseStatusCode,
 )
 from app.exceptions.fhir_exception import FHIRException
+from app.models.bsn import BSN
 from app.services.fhir.bunde_entry_response import (
     KnownBundleRegistrationOutcome,
     create_known_response,

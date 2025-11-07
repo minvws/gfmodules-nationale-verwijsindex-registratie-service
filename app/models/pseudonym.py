@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from app.data import BSN
+from app.models.bsn import BSN
 
 
 class Pseudonym(BaseModel):
