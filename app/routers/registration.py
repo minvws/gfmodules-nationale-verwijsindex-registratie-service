@@ -9,8 +9,8 @@ from starlette.responses import JSONResponse, Response
 from app.container import (
     get_bundle_registration_service,
 )
-from app.data import BSN
 from app.exceptions.service_exceptions import InvalidResourceException
+from app.models.bsn import BSN
 from app.services.cp_extractor import CarePlanExtractor
 from app.services.registration.bundle import BundleRegistartionService
 

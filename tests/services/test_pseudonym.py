@@ -3,7 +3,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 from requests.exceptions import ConnectionError, Timeout
 
-from app.data import BSN
+from app.models.bsn import BSN
 from app.models.pseudonym import PseudonymCreateDto
 from app.services.pseudonym import PseudonymError, PseudonymService
 

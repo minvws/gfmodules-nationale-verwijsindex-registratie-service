@@ -1,6 +1,6 @@
 import logging
 
-from app.data import BSN
+from app.models.bsn import BSN
 from app.models.pseudonym import PseudonymCreateDto
 from app.models.referrals import CreateReferralDTO, Referral, ReferralQueryDTO
 from app.services.nvi import NviService
