@@ -1,5 +1,6 @@
 from datetime import datetime
 from typing import Any, Dict, List
+from unittest.mock import MagicMock
 
 import pytest
 from fhir.resources.R4B.bundle import Bundle
