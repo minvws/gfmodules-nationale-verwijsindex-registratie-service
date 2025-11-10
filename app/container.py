@@ -2,8 +2,12 @@ import inject
 
 from app.config import get_config
 from app.models.ura_number import UraNumber
+from app.services.authorization_check_service import AuthorizationCheckService
 from app.services.metadata import MetadataService
 from app.services.nvi import NviService
+from app.services.OtvService.factory import create_otv_service
+from app.services.OtvService.get_otv_ura import get_otv_ura
+from app.services.OtvService.interface import OtvService
 from app.services.pseudonym import PseudonymService
 from app.services.registration.bundle import BundleRegistartionService
 from app.services.registration.referrals import ReferralRegistrationService
@@ -53,6 +57,17 @@ def container_config(binder: inject.Binder) -> None:
         ura_number=ura_number.value,
     )
 
+    otv_service = create_otv_service(config.otv_stub_api)
+    binder.bind(OtvService, otv_service)
+
+    authorization_check_service = AuthorizationCheckService(
+        metadata_service=metadata_service,
+        otv_service=otv_service,
+        pseudonym_service=pseudonym_service,
+        otv_ura=get_otv_ura(config.otv_stub_certificate),
+    )
+    binder.bind(AuthorizationCheckService, authorization_check_service)
+
     bundle_registration_service = BundleRegistartionService(referrals_service=referral_registration_service)
     binder.bind(BundleRegistartionService, bundle_registration_service)
 
@@ -70,6 +85,16 @@ def container_config(binder: inject.Binder) -> None:
         delay=config.scheduler.scheduled_delay,
     )
     binder.bind(Scheduler, scheduler)
+
+
+def get_authorization_check_service() -> AuthorizationCheckService:
+    return inject.instance(AuthorizationCheckService)
+
+
+def get_otv_service() -> OtvService:
+    instance = inject.instance(OtvService)
+    assert isinstance(instance, OtvService)
+    return instance
 
 
 def get_pseudonym_service() -> PseudonymService:

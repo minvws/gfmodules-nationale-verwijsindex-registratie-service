@@ -30,7 +30,7 @@ def test_register_should_succeed(
     actual = pseudonym_service.submit(mock_dto)
     mock_post.assert_called_once_with(
         method="POST",
-        sub_route="/register",
+        sub_route="register",
         data={"provider_id": mock_dto.provider_id, "bsn_hash": mock_dto.bsn.hash()},
     )
 
