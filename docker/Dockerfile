@@ -64,7 +64,7 @@ RUN if [ "$standalone" = "true" ] ; then \
 
 USER ${APP_USER}
 
-EXPOSE 8515:8515
+EXPOSE 8515
 WORKDIR ${PROJECT_DIR}
 
 ENV PYTHONPATH=${PROJECT_DIR}

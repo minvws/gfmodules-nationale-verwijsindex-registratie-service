@@ -1,10 +1,16 @@
 from typing import List, Tuple
 
+from fhir.resources.R4B.patient import Patient
+
 from app.data import BSN_SYSTEM
 from app.models.metadata.params import MetadataResourceParams
 from app.services.api.fhir import FhirHttpService
 from app.services.parsers.bundle import BundleParser
 from app.services.parsers.patient import PatientParser
+
+
+class MetadataError(Exception):
+    pass
 
 
 class MetadataService:
@@ -26,6 +32,16 @@ class MetadataService:
 
     def server_healthy(self) -> bool:
         return self.http_service.server_healthy()
+
+    def get_patient(self, patient_id: str) -> Patient:
+        try:
+            response = self.http_service.do_request(
+                method="GET",
+                sub_route=f"Patient/{patient_id}",
+            )
+            return Patient.model_validate(response.json())
+        except Exception as e:
+            raise MetadataError from e
 
     def get_update_scheme(self, resource_type: str, last_updated: str | None = None) -> Tuple[List[str], str | None]:
         params = MetadataResourceParams(

@@ -16,6 +16,7 @@ from app.exceptions.fhir_exception import (
 from app.routers.cache import router as cache_router
 from app.routers.default import router as default_router
 from app.routers.health import router as health_router
+from app.routers.permission_check import router as permission_check_router
 from app.routers.registration import router as registration_router
 from app.routers.scheduler import router as scheduler_router
 from app.routers.synchronize import router as synchronization_router
@@ -89,6 +90,7 @@ def setup_fastapi() -> FastAPI:
         synchronization_router,
         cache_router,
         scheduler_router,
+        permission_check_router,
     ]
     for router in routers:
         fastapi.include_router(router)
