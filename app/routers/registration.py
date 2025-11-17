@@ -1,17 +1,14 @@
 import logging
-from typing import Any, Dict, Tuple
+from typing import Any, Dict
 
 from fastapi import APIRouter, Body, Depends
 from fhir.resources.R4B.bundle import Bundle
-from fhir.resources.R4B.careplan import CarePlan
 from starlette.responses import JSONResponse, Response
 
 from app.container import (
     get_bundle_registration_service,
 )
 from app.exceptions.service_exceptions import InvalidResourceException
-from app.models.bsn import BSN
-from app.services.cp_extractor import CarePlanExtractor
 from app.services.registration.bundle import BundleRegistartionService
 
 logger = logging.getLogger(__name__)
@@ -19,17 +16,6 @@ router = APIRouter(
     prefix="/registration",
     tags=["Registration Service"],
 )
-
-
-def validate_careplan(resource: Dict[str, Any]) -> Tuple[str, BSN]:
-    if not resource:
-        raise InvalidResourceException("Resource is not a valid CarePlan")
-    careplan = CarePlan(**resource)
-
-    extractor = CarePlanExtractor(careplan)
-    bsn = extractor.get_subject_bsn()
-
-    return "CarePlan", bsn
 
 
 @router.post("", description="Register a referral through a FHIR CarePlan resource")
