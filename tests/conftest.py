@@ -1,5 +1,6 @@
 from datetime import datetime
 from typing import Any, Dict, List
+from unittest.mock import MagicMock
 
 import pytest
 from fhir.resources.R4B.bundle import Bundle
@@ -11,14 +12,59 @@ from app.models.metadata.params import MetadataResourceParams
 from app.models.pseudonym import Pseudonym
 from app.models.referrals import CreateReferralDTO, Referral, ReferralQueryDTO
 from app.models.update_scheme import BsnUpdateScheme
+from app.models.ura_number import UraNumber
 from app.services.api.fhir import FhirHttpService
+from app.services.api.http_service import HttpService
+from app.services.authorization_check_service import AuthorizationCheckService
 from app.services.metadata import MetadataService
 from app.services.nvi import NviService
+from app.services.OtvService.interface import OtvService
+from app.services.OtvService.otv_stub_service import OtvStubService
 from app.services.pseudonym import PseudonymService
 from app.services.registration.bundle import BundleRegistartionService
 from app.services.registration.referrals import ReferralRegistrationService
 from app.services.synchronization.domain_map import DomainsMapService
 from app.services.synchronization.synchronizer import Synchronizer
+from tests.services.api_services.test_api_service import MockHttpService
+
+
+@pytest.fixture
+def http_service(mock_url: str) -> HttpService:
+    return MockHttpService(
+        endpoint=mock_url,
+        timeout=1,
+        mtls_cert=None,
+        mtls_key=None,
+        mtls_ca=None,
+    )
+
+
+@pytest.fixture
+def mock_otv_stub_endpoint() -> str:
+    return "https://example.com/otv-stub"
+
+
+@pytest.fixture
+def otv_service(mock_otv_stub_endpoint: str) -> OtvService:
+    return OtvStubService(
+        endpoint=mock_otv_stub_endpoint,
+        timeout=1,
+        mtls_cert="path/to/cert.pem",
+        mtls_key=None,
+        mtls_ca=None,
+    )
+
+
+@pytest.fixture
+def auth_check_service(
+    mock_ura_number: str,
+) -> AuthorizationCheckService:
+    return AuthorizationCheckService(
+        metadata_service=MagicMock(spec=MetadataService),
+        otv_service=MagicMock(spec=OtvService),
+        pseudonym_service=MagicMock(spec=PseudonymService),
+        otv_ura=UraNumber(mock_ura_number),
+    )
 
 
 @pytest.fixture

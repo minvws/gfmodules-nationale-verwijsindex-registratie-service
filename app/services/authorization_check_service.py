@@ -45,18 +45,9 @@ class AuthorizationCheckService:
 
         # Fetch patient from LMR
         patient = self._fetch_patient_from_lmr(lmr_patient_id)
-        try:
-            bsns = PatientParser.map_identifiers_to_bsn(patient.identifier or [])
-            if not bsns:
-                logger.error("No BSN found for patient")
-                raise ValueError("No BSN found for patient")
-            if len(bsns) > 1:
-                logger.error("Multiple BSNs found for patient")
-                raise ValueError("Multiple BSNs found for patient")
-            bsn = BSN(bsns[0])
-        except Exception as e:
-            logger.error(f"Failed to extract BSN from patient: {e}")
-            raise PermissionCheckError("Failed to extract BSN from patient") from e
+
+        # Extract BSN from Patient
+        bsn = self._extract_bsn_from_patient(patient)
 
         # Create OTV reversible pseudonym
         req = self._pseudonym_service.make_reversible_request_dto(
@@ -73,6 +64,20 @@ class AuthorizationCheckService:
             )
         )
         return permission
+
+    def _extract_bsn_from_patient(self, patient: Patient) -> BSN:
+        try:
+            bsns = PatientParser.map_identifiers_to_bsn(patient.identifier or [])
+            if not bsns:
+                logger.error("No BSN found for patient")
+                raise ValueError("No BSN found for patient")
+            if len(bsns) > 1:
+                logger.error("Multiple BSNs found for patient")
+                raise ValueError("Multiple BSNs found for patient")
+            return BSN(bsns[0])
+        except Exception as e:
+            logger.error(f"Failed to extract BSN from patient: {e}")
+            raise PermissionCheckError("Failed to extract BSN from patient") from e
 
     def _decrypt_lmr_id(self, encrypted_lmr_id: str) -> str:
         """

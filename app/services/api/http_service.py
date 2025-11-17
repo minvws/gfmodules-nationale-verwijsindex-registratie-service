@@ -38,7 +38,7 @@ class HttpService(ABC):
     def do_request(
         self,
         method: Literal["GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"],
-        sub_route: str,
+        sub_route: str = "",
         data: dict[str, Any] | None = None,
         params: dict[str, Any] | None = None,
         headers: dict[str, Any] | None = None,
@@ -48,7 +48,7 @@ class HttpService(ABC):
             verify = self._mtls_ca if self._mtls_ca else True
             response = request(
                 method=method,
-                url=f"{self._endpoint}/{sub_route}",
+                url=f"{self._endpoint}/{sub_route}" if sub_route else self._endpoint,
                 params=params,
                 headers=headers,
                 json=data,
