@@ -28,6 +28,9 @@ class Synchronizer:
         self._domain_map_service = domains_map_service
         self._last_run: str | None = None
 
+    def get_allowed_domains(self) -> List[str]:
+        return self._domain_map_service.get_domains()
+
     def _healthcheck_apis(self) -> Dict[str, bool]:
         logger.info("Checking health of APIs")
         return {
