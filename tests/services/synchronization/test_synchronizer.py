@@ -83,6 +83,17 @@ def test_healthcheck_apis_should_succeed(
     mock_metadata_call.assert_called_once()
 
 
+def test_get_allowed_domains(
+    synchronizer: Synchronizer,
+    data_domains: list[str],
+) -> None:
+    expected = data_domains
+
+    actual = synchronizer.get_allowed_domains()
+
+    assert expected == actual
+
+
 @patch(f"{PATCHED_METADATA_API}.get_update_scheme")
 @patch(f"{PATCHED_PSEUDONYM_API}.submit")
 @patch(f"{PATCHED_NVI_API}.submit")
