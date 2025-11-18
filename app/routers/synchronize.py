@@ -1,6 +1,7 @@
 from typing import Dict, List
 
 from fastapi import APIRouter, Depends, HTTPException
+from urllib.parse import quote
 
 from app.container import get_synchronizer
 from app.models.update_scheme import UpdateScheme
@@ -23,6 +24,6 @@ def synchronize_domain(
             raise HTTPException(
                 status_code=400, detail=f"Invalid data_domain. Must be one of: {', '.join(allowed_domains)}"
             )
-        return service.synchronize_domain(data_domain)
+        return service.synchronize_domain(quote(data_domain))
     else:
         return service.synchronize_all_domains()
