@@ -86,7 +86,7 @@ class PseudonymService:
         return ReversiblePseudonymRequest(
             personal_id=f"NL:BSN:{bsn.value}",
             recipient_organization="ura:" + recipient_organization_ura.value,
-            recipient_scope="otv",
+            recipient_scope="online-toestemmingsvoorziening-stub",
             pseudonym_type="reversible",
         )
 
