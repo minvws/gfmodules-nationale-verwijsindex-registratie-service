@@ -80,6 +80,10 @@ class ConfigOtvStubApi(BaseModel):
         return self
 
 
+class ConfigLmr(BaseModel):
+    encryption_key: str
+
+
 class ConfigOtvStubUra(BaseModel):
     otv_stub_certificate_path: str | None = Field(default=None)
     otv_stub_ura_override: str | None = Field(default=None)
@@ -115,6 +119,7 @@ class Config(BaseModel):
     referral_api: ConfigReferralApi
     otv_stub_api: ConfigOtvStubApi
     otv_stub_certificate: ConfigOtvStubUra
+    lmr: ConfigLmr
 
 
 def read_ini_file(path: str) -> Any:
