@@ -7,7 +7,7 @@ from starlette.requests import Request
 from starlette.responses import JSONResponse
 
 from app.config import get_config
-from app.container import get_scheduler, setup_container
+from app.container import get_prs_registration_service, get_scheduler, setup_container
 from app.exceptions.fhir_exception import (
     OperationOutcome,
     OperationOutcomeDetail,
@@ -58,6 +58,8 @@ def application_init() -> None:
     config = get_config()
     setup_container()
     setup_logging()
+    register_service = get_prs_registration_service()
+    register_service.register_nvi_rs_at_prs()
     if config.scheduler.automatic_background_update:
         scheduler = get_scheduler()
         scheduler.start()

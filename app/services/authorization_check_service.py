@@ -52,7 +52,7 @@ class AuthorizationCheckService:
         # Create OTV reversible pseudonym
         req = self._pseudonym_service.make_reversible_request_dto(
             bsn=bsn,
-            recipient_organization_ura=permission_request.client_ura_number,
+            recipient_organization_ura=self._otv_ura_number,
         )
         reversible_pseudonym = self._pseudonym_service.request_reversible(req)
 

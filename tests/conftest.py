@@ -7,6 +7,7 @@ from fhir.resources.R4B.bundle import Bundle
 from fhir.resources.R4B.imagingstudy import ImagingStudy
 from fhir.resources.R4B.patient import Patient
 
+from app.config import ConfigPseudonymApi
 from app.data import BSN_SYSTEM
 from app.models.metadata.params import MetadataResourceParams
 from app.models.pseudonym import Pseudonym
@@ -23,6 +24,7 @@ from app.services.OtvService.otv_stub_service import OtvStubService
 from app.services.pseudonym import PseudonymService
 from app.services.registration.bundle import BundleRegistartionService
 from app.services.registration.referrals import ReferralRegistrationService
+from app.services.registration_service import PrsRegistrationService
 from app.services.synchronization.domain_map import DomainsMapService
 from app.services.synchronization.synchronizer import Synchronizer
 from tests.services.api_services.test_api_service import MockHttpService
@@ -36,6 +38,34 @@ def http_service(mock_url: str) -> HttpService:
         mtls_cert=None,
         mtls_key=None,
         mtls_ca=None,
+    )
+
+
+@pytest.fixture
+def config_pseudonym_api() -> ConfigPseudonymApi:
+    return ConfigPseudonymApi(
+        endpoint="https://example.com",
+        timeout=5,
+        mtls_cert="/path/to/cert.pem",
+        mtls_key="/path/to/key.pem",
+        mtls_ca="/path/to/ca.pem",
+        mock=False,
+    )
+
+
+@pytest.fixture
+def ura_number() -> UraNumber:
+    return UraNumber("12345678")
+
+
+@pytest.fixture()
+def prs_registration_service(
+    config_pseudonym_api: ConfigPseudonymApi,
+    ura_number: UraNumber,
+) -> PrsRegistrationService:
+    return PrsRegistrationService(
+        conf=config_pseudonym_api,
+        ura_number=ura_number,
     )
 
 

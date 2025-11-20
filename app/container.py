@@ -11,6 +11,7 @@ from app.services.OtvService.interface import OtvService
 from app.services.pseudonym import PseudonymService
 from app.services.registration.bundle import BundleRegistartionService
 from app.services.registration.referrals import ReferralRegistrationService
+from app.services.registration_service import PrsRegistrationService
 from app.services.synchronization.domain_map import DomainsMapService
 from app.services.synchronization.scheduler import Scheduler
 from app.services.synchronization.synchronizer import Synchronizer
@@ -73,6 +74,9 @@ def container_config(binder: inject.Binder) -> None:
 
     domain_map_service = DomainsMapService(data_domains=config.app.data_domains)
 
+    prs_registration_service = PrsRegistrationService(conf=config.pseudonym_api, ura_number=ura_number)
+    binder.bind(PrsRegistrationService, prs_registration_service)
+
     synchronizer = Synchronizer(
         registration_service=referral_registration_service,
         metadata_api=metadata_service,
@@ -90,6 +94,8 @@ def container_config(binder: inject.Binder) -> None:
 def get_authorization_check_service() -> AuthorizationCheckService:
     return inject.instance(AuthorizationCheckService)
 
+def get_prs_registration_service() -> PrsRegistrationService:
+    return inject.instance(PrsRegistrationService)
 
 def get_otv_service() -> OtvService:
     instance = inject.instance(OtvService)
