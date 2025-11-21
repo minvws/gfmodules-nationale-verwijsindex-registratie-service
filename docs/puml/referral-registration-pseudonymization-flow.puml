@@ -1,0 +1,21 @@
+@startuml
+actor "Referral Manager" as RM
+participant "PRS" as PRS
+participant "NVI" as NVI
+
+' --- One-time setup ---
+RM -> PRS : Register organization\n+ register certificate
+PRS --> RM : Registration confirmed
+
+== Per referral registration ==
+
+RM -> RM : Encrypt internal patient identifier
+RM -> RM : Blind BSN (create blinded input + factor)
+
+RM -> PRS : Request OPRF-JWE (blinded BSN)
+PRS --> RM : Return OPRF-JWE
+
+RM -> NVI : Create referral request
+NVI --> RM : Referral created response
+
+@enduml

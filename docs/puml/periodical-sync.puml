@@ -1,0 +1,21 @@
+@startuml
+actor User
+participant "Scheduler" as Scheduler
+participant "Referral Manager" as RM
+participant "FHIR Store" as FHIR
+participant "NVI" as NVI
+
+User -> Scheduler : Start/Stop periodic synchronization
+Scheduler -> RM : Trigger scheduled synchronization
+RM -> FHIR : Pull referrals from FHIR store
+FHIR --> RM : Return referrals (FHIR JSON)
+RM -> RM : Process & parse referrals
+note right of RM
+    Creating pseudonyms for patients
+    (details omitted for simplicity)
+end note
+RM -> NVI : Register referrals in NVI
+NVI --> RM : Registration response
+RM --> Scheduler : Complete scheduled run
+
+@enduml

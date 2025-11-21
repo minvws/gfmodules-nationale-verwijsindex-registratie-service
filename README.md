@@ -26,42 +26,49 @@ risk and that the authors assume no liability for any consequences of its use.
 The application is a FastAPI application, so you can use the [FastAPI documentation](https://fastapi.tiangolo.com/) to see how to use the application.
 In order for the application to run properly, a few components needs to be setup:
 
-### Nationale Verwijs Index:
-The `Registratie service`  connects to the [NVI](https://github.com/minvws/gfmodules-national-referral-index) to register the referrals. Depending on the environment of the 'Registratie service' it needs to connect to either a hosted (eq. production or test) NVI or a local NVI.
-The connection to the NVI MUST be established with an [UZI Server Certificate](https://www.uziregister.nl/softwareleveranciers/testmiddelen-en-testomgeving) and see section [Testset met servercertifficaat aanvragen](https://www.uziregister.nl/softwareleveranciers/documenten/publicaties/2019/07/12/testset-met-servercertificaat). 
-On bootstrap, the app will look for the URA number associated with the certificate, then it will start. An Example of the full 
-setup with mock certificates script can be found in [gfmodules-coordination-repo](https://github.com/minvws/gfmodules-coordination), 
-where a [generate certificates](https://github.com/minvws/gfmodules-coordination/blob/main/tools/generate_certs.sh) will allocate certificates accordingly. 
+### Nationale Verwijs Index
 
+The NVI referral manager connects to the [NVI](https://github.com/minvws/gfmodules-national-referral-index) to register the referrals. Depending on the environment of the 'Registratie service' it needs to connect to either a hosted (eq. production or test) NVI or a local NVI.
 
-You can find related configuration properties for NVI in the [app.conf.example file](https://github.com/minvws/gfmodules-nationale-verwijsindex-registratie-service-private/blob/c7aa0d10aa92e62420b6f558e95ce3b5287bb538/app.conf.example#L29).
+The connection to the NVI **MUST** be established with an UZI Server Certificate. See section [Connecting with an UZI Server Certificate](#connecting-with-an-uzi-server-certificate) on how to obtain such a certificate.
 
+On bootstrap, the app will look for the URA number associated with the certificate, then it will start. An Example of the full
+setup with mock certificates script can be found in [gfmodules-coordination-repo](https://github.com/minvws/gfmodules-coordination),
+where a certificates generation [script](https://github.com/minvws/gfmodules-coordination/blob/main/tools/generate_certs.sh) will allocate certificates accordingly.
 
-The application also pulls data periodically from the FHIR store and registers it in the NVI. This action can 
-be triggered via an HTTP POST request to `base_url/synchronize` and/or a scheduled background job. Parameters to control this feature can 
-be found in [app.conf.example file](https://github.com/minvws/gfmodules-nationale-verwijsindex-registratie-service-private/blob/c7aa0d10aa92e62420b6f558e95ce3b5287bb538/app.conf.example#L7)
+You can find related configuration properties for NVI in the [app.conf.example file](app.conf.example) in the `[referral_api]` section.
 
-It is important to note that the URA number in the certificate needs to match the FHIR Store which the application 
-is pulling data from and register in the NVI.
+> [!IMPORTANT]
+> It is important to note that the URA number in the certificate needs to match the FHIR Store which the application
+> is pulling data from and register in the NVI.
 
-### Pseudonym Register Stub Service:
-The application also requires a [PRS-stub](https://github.com/minvws/gfmodules-pseudonym-stub) in order for it to work. Where the app can exchange 
-pseudonym based on data provided. You can find related configuration properties in the [app.conf.example file](https://github.com/minvws/gfmodules-nationale-verwijsindex-registratie-service-private/blob/c7aa0d10aa92e62420b6f558e95ce3b5287bb538/app.conf.example#L21)
+### Pseudoniemendienst
 
-### FHIR Store: 
+The NVI referral manager application requires a [pseudonymization service](https://github.com/minvws/gfmodules-pseudoniemendienst) in order for it to work. The PRS is used to create safe and secure pseudonyms to communicate with the NVI and OTV-stub.
+You can find related configuration properties in the [app.conf.example file](app.conf.example) in the `[pseudonym_api]` section.
+
+The connection to the PRS **MUST** be established with an UZI Server Certificate. See section [Connecting with an UZI Server Certificate](#connecting-with-an-uzi-server-certificate) on how to obtain such a certificate.
+
+### OTV-stub
+
+The NVI referral manager application also uses an [OTV-stub](https://github.com/minvws/gfmodules-online-toestemmingsvoorziening-portaal-stub) in order for it to work. The OTV-stub is used to check consent of sharing patients data through a registered referral. You can find related configuration properties in the [app.conf.example file](app.conf.example) in the `[otv_stub_api]` section.
+
+The OTV-stub does not require mutual TLS authentication, but in order to create OTV-specific pseudonyms the URA number of the OTV needs to be known. For this either an UZI server certificate or an hardcoded URA needs to be present. See the `[otv_stub_certificate]` section in the [app.conf.example file](app.conf.example) for more information.
+
+### FHIR Store
 
 In order to make use of the polling feature, a connection to a FHIR store like [HAPI](https://hapi.fhir.org/) for example needs
-to be established. You can find the related configuration properties in the [app.conf.example file](https://github.com/minvws/gfmodules-nationale-verwijsindex-registratie-service-private/blob/c7aa0d10aa92e62420b6f558e95ce3b5287bb538/app.conf.example#L11)
+to be established. You can find the related configuration properties in the [app.conf.example file](app.conf.example) in the `[metadata_api]` section.
 
-### Configuration
+### Application configuration
 
-The application uses `app.conf` for configuration. For local development, you can copy the example configuration:
+The application uses a config file for storing configuration. For local development, you can copy the example configuration:
 
 ```bash
 cp app.conf.example app.conf
 ```
 
-The example configuration includes working defaults for local development with the expected service endpoints and test values.
+This copies the example configuration to `app.conf`, the default location specified by the `FASTAPI_CONFIG_PATH` environment variable in `docker-compose.yml`. The example configuration includes working defaults for local development with the expected service endpoints and test values.
 
 ### Running the Application
 
@@ -138,79 +145,35 @@ docker run -ti --rm -p 8515:8515 \
   gfmodules-nvi-referral-manager
 ```
 
-## API Endpoints
+## Interface and Specifications definitions
 
-### Registration Endpoint
+See [Interface and Specifications](docs/interface-definitions/README.md)
 
-- **POST** `/registration`
-  - Registers a new referral based on a FHIR CarePlan resource.
-  - **Request body:** JSON (FHIR CarePlan)
-  - **Response:** `201 Created` on success
+## Scheduled referral registration
 
-### Health Endpoint
+The application can be configured to periodically pull referrals from the FHIR store and register them in the NVI.
+This feature can be enabled by setting the values under `[scheduler]` in the config file, specifically `automatic_background_update` to `true`.
 
-- **GET** `/health`
-  - Returns health status of the service, and checks if the relevant APIs are reachable.
-    - **Response:** JSON with health status per component.
+When enabled, the application will run a background job at intervals specified by the `scheduled_delay` setting.
 
-### Synchronize Endpoint
+See the [interface-definitions](#interface-and-specifications-definitions) for more information on the API endpoints available to start or stop synchronization manually.
 
-- **POST** `/synchronize`
-  - Triggers synchronization of all domains or for a specified domain.
-  - **Response:** `200 OK` on success.
+## Connecting with an UZI Server Certificate
 
-### Scheduler Endpoint
+Some services that the application connects to, such as the NVI and PRS, require mutual TLS authentication using [UZI Server Certificates](https://www.uziregister.nl/softwareleveranciers/testmiddelen-en-testomgeving). To establish a secure connection, you must obtain an UZI Server Certificate from the UZI Register.
 
-- **POST** `/scheduler/start`
-  - Triggers the scheduler to run.
-  - **Response:** `200 OK` on success.
+To request a test set with UZI server certificates see section [Testset met servercertificaat](https://www.uziregister.nl/documenten/2019/07/12/testset-met-servercertificaat).
 
-- **POST** `/scheduler/stop`
-  - Triggers the scheduler to stop.
-  - **Response:** `200 OK` on success.
+## Supported data domains
 
-- **GET** `/scheduler/runners-history`
-  - Returns the runners history of the scheduler.
-  - **Response:** JSON with status information.
+The NVI referral manager is built to be able to register referrals from a large number of data domains. Currently the resources types listed in the [ReferenceParser](https://github.com/minvws/gfmodules-nationale-verwijsindex-registratie-service-private/blob/main/app/services/parsers/reference.py#L35) are supported. These domains are `FHIR` resource types holding a `Patient` reference that can be registered in the NVI.
 
----
+By default, the application supports synchronization on the following data domains:
 
-## Example request for registration
+- `ImagingStudy`
+- `MedicationStatement`
 
-```bash
-curl -X 'POST' \
-  'http://localhost:8515/registration' \
-  -H 'accept: application/json' \
-  -H 'Content-Type: application/json' \
-  -d '{
-        "resourceType": "CarePlan",
-        "id": "default-31",
-        "status": "completed",
-        "intent": "plan",
-        "title": "Random CarePlan",
-        "description": "random description",
-        "subject": {
-          "reference": "Patient/default-1",
-          "display": "Mohammed Koster",
-          "type": "Patient",
-          "identifier": 
-            {
-              "system": "http://fhir.nl/fhir/NamingSystem/bsn",
-              "value": "468467543"
-            }
-        },
-        "careTeam": [
-          {
-            "reference": "CareTeam/default-29",
-            "display": "Care Team 1"
-          },
-          {
-            "reference": "CareTeam/default-28",
-            "display": "Care Team 2"
-          }
-        ]
-      }'
-```
+The supported data domains can however be modified by changing the `data_domains` setting in the `[app]` section in the [configuration file](app.conf.example)
 
 ## Contribution
 

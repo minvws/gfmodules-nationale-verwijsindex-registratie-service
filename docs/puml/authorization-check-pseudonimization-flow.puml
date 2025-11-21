@@ -1,0 +1,12 @@
+@startuml
+actor "Referral Manager" as RM
+participant "PRS" as PRS
+participant "OTV" as OTV
+
+RM -> PRS : Request reversible pseudonym\n(for OTV and BSN)
+PRS --> RM : Reversible pseudonym
+
+RM -> OTV : Check authorization\n(reversible pseudonym + org ID)
+OTV --> RM : Authorization status
+
+@enduml

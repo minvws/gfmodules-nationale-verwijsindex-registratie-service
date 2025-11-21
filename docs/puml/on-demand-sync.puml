@@ -1,0 +1,19 @@
+@startuml
+actor User
+participant "Referral Manager" as RM
+participant "FHIR Store" as FHIR
+participant "NVI" as NVI
+
+User -> RM : Trigger on-demand sync (resource types)
+RM -> FHIR : Pull requested resources
+FHIR --> RM : Return resources (FHIR JSON)
+RM -> RM : Process & parse resources
+note right of RM
+    Creating pseudonyms for patients
+    (details omitted for simplicity)
+end note
+RM -> NVI : Register referrals in NVI
+NVI --> RM : Registration response
+RM --> User : Synchronization completed
+
+@enduml

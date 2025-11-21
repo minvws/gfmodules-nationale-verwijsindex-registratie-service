@@ -1,0 +1,24 @@
+@startuml
+actor User
+participant "Referral Manager" as RM
+participant "FHIR Store" as FHIR
+participant "PRS" as PRS
+participant "OTV" as OTV
+
+User -> RM : Check referral sharing permission
+
+RM -> RM : Decrypt LMR ID
+RM -> FHIR : Fetch Patient by LMR ID
+FHIR --> RM : Patient resource
+
+RM -> RM : Extract BSN
+
+RM -> PRS : Request reversible pseudonym (BSN)
+PRS --> RM : Reversible pseudonym
+
+RM -> OTV : Check permission (reversible pseudonym)
+OTV --> RM : Permission granted? (true/false)
+
+RM --> User : Return authorization result
+
+@enduml
