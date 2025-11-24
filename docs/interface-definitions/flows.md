@@ -1,8 +1,8 @@
-# Flows
+# Use cases and flows
 
-The NVI referral manager flows can be divided into two main categories: authorization checks and referral registrations. Both processes involve pseudonymization to ensure patient privacy. The flows are described in below.
+The NVI referral manager use cases can be divided into two main categories: authorization check and referral registrations. The flows are described below.
 
-The pseudonymization creation is omitted in the diagrams for simplicity but can be found in detail in the [Pseudonymization flow](./pseudonymization-flows.md) documentation.
+Both processes involve pseudonymization to ensure patient privacy. This is, however, omitted in the diagrams for simplicity but can be found in detail in the [Pseudonymization flow](./pseudonymization-flows.md) documentation.
 
 1. [**Authorization Check**](#authorization-check)
 2. [**Registration**](#registration)

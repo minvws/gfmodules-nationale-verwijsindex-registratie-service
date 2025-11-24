@@ -46,7 +46,7 @@
         <g class="message" data-participant-1="User" data-participant-2="RM">
             <polygon fill="#181818" points="210.1982,108.4297,220.1982,112.4297,210.1982,116.4297,214.1982,112.4297" style="stroke:#181818;stroke-width:1;"/>
             <line style="stroke:#181818;stroke-width:1;" x1="23.9551" x2="216.1982" y1="112.4297" y2="112.4297"/>
-            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="174.2432" x="30.9551" y="107.3638">Send FHIR resource (JSON)</text>
+            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="174.2432" x="30.9551" y="107.3638">Send FHIR Bundle (JSON)</text>
         </g>
         <g class="message" data-participant-1="RM" data-participant-2="RM">
             <line style="stroke:#181818;stroke-width:1;" x1="222.1982" x2="264.1982" y1="141.5625" y2="141.5625"/>

@@ -3,7 +3,7 @@ actor User
 participant "Referral Manager" as RM
 participant "NVI" as NVI
 
-User -> RM : Send FHIR resource (JSON)
+User -> RM : Send FHIR Bundle (JSON)
 RM -> RM : Parse FHIR resource
 
 note right of RM
