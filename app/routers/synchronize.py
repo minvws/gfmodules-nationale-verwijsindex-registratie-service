@@ -13,6 +13,7 @@ router = APIRouter(prefix="/synchronize", tags=["Synchronizer"])
 @router.post(
     "",
     response_model=None,
+    summary="Synchronize Data Domain",
     description="Synchronize a specific data domain or all domains",
 )
 def synchronize_domain(

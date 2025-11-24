@@ -18,7 +18,7 @@ router = APIRouter(
 )
 
 
-@router.post("", description="Register a referral through a FHIR bundle")
+@router.post("", summary="Create Referral Registration", description="Register a referral through a FHIR bundle.")
 def create(
     request: Dict[str, Any] | None = Body(...),
     bundle_registration_service: BundleRegistartionService = Depends(get_bundle_registration_service),
