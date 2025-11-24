@@ -11,9 +11,9 @@ packages = [{ include = "app" }]
 [tool.poetry.dependencies]
 python = "^3.11"
 uvicorn = "^0.38"
-fastapi = "^0.121.1"
+fastapi = "^0.121.3"
 mypy = "^1.18.2"
-pydantic-settings = "^2.11.0"
+pydantic-settings = "^2.12.0"
 inject = "^5.3.0"
 requests = "^2.32.5"
 fhir-resources = "^8.1"
@@ -22,11 +22,11 @@ puzi = { git = "https://github.com/minvws/puzi-python" }
 [tool.poetry.group.dev.dependencies]
 types-requests = "^2.32.4"
 faker = "^37.12.0"
-pytest = "^9.0.0"
+pytest = "^9.0.1"
 pytest-cov = "^7.0.0"
 pytest-mock = "^3.15.1"
 httpx = "^0.28.1"
-ruff = "0.14.4"
+ruff = "0.14.6"
 codespell = "^2.4.1"
 pip-audit = "^2.9.0"
 
