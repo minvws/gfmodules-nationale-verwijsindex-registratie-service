@@ -8,16 +8,16 @@ The NVI-RS use cases can be divided into two main categories: authorization chec
 
 Both processes involve pseudonymization to ensure patient privacy. This is, however, omitted in the diagrams for simplicity but can be found in detail in the [Pseudonymization flow](./pseudonymization-flows.md) documentation.
 
-1. [**Authorization Check**](#authorization-check)
-2. [**Registration**](#registration)
+- [**Registration**](#registration)
+- [**Authorization Check**](#authorization-check)
 
 ### Registration
 
 There are three different types of ways the NVI-RS can register referrals in the NVI:
 
-1. [**Send data registration**](#send-data-registration)
-2. [**On-demand synchronization**](#on-demand-synchronization)
-3. [**Periodical synchronization**](#periodical-synchronization)
+- [**Send data registration**](#send-data-registration)
+- [**On-demand synchronization**](#on-demand-synchronization)
+- [**Periodical synchronization**](#periodical-synchronization)
 
 #### Send data registration
 
