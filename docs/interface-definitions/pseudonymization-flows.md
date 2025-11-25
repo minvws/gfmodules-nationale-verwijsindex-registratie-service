@@ -2,8 +2,8 @@
 
 Pseudonymization is used for two main processes in the NVI-RS: referral registration and authorization checks. Their pseudonymization flows are described below.
 
-1. [Referral Registration](#referral-registration)
-2. [Authorization Check](#authorization-check)
+- [Referral Registration](#referral-registration)
+- [Authorization Check](#authorization-check)
 
 ## Referral Registration
 
