@@ -176,7 +176,7 @@ docker pull ghcr.io/minvws/gfmodules-nationale-verwijsindex-registratie-service:
 
 ## Contribution
 
-As stated in the disclaimer this project and all associated code serve solely as documentation and
+As stated in the [disclaimer](#disclaimer) this project and all associated code serve solely as documentation and
 demonstration purposes to illustrate potential system communication patterns and architectures.
 
 For that reason we will only accept contributions that fit this goal. We do appreciate any effort from the
