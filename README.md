@@ -3,7 +3,7 @@
 This app is the Nationale Verwijsindex Registratie Service (NVI-RS) and is part of the 'Generieke Functies, lokalisatie en addressering' project of the Ministry of Health, Welfare and Sport of the Dutch government. The purpose of this application is to pull and push referrals read from FHIR stores to the Nationale Verwijs Index (NVI), which stores referrals in the register that associates a Health Provider with pseudonym and data domain.
 
 > [!CAUTION]
-> **Disclaimer**
+> ## Disclaimer
 > This project and all associated code serve solely as **documentation and demonstration purposes**
 > to illustrate potential system communication patterns and architectures.
 >
