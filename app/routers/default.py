@@ -1,6 +1,7 @@
 import json
 import logging
 from pathlib import Path
+from textwrap import dedent
 
 from fastapi import APIRouter, Response, status
 
@@ -24,7 +25,8 @@ LOGO = r"""
 @router.get(
     "/",
     summary="API Home",
-    description="""Display the NVI Registration Service welcome page with ASCII logo and version information.
+    description=dedent("""
+    Display the NVI Registration Service welcome page with ASCII logo and version information.
     
     This endpoint serves as the root entry point for the API, providing:
     - Service identification via ASCII art logo
@@ -32,7 +34,7 @@ LOGO = r"""
     - Git commit reference for deployment tracking
     
     Returns plain text for easy terminal/browser viewing.
-    """,
+    """),
     response_class=Response,
     status_code=status.HTTP_200_OK,
     responses={
@@ -40,12 +42,21 @@ LOGO = r"""
             "description": "API home page with logo and version info",
             "content": {
                 "text/plain": {
-                    "example": """NVI-Registration\n\nVersion: 1.0.0\nCommit: abc123def456"""
+                    "examples": {
+                        "with_version": {
+                            "summary": "With version info",
+                            "value": "NVI-Registration\n\nVersion: 1.0.0\nCommit: abc123def456",
+                        },
+                        "no_version": {
+                            "summary": "No version info",
+                            "value": "NVI-Registration\n\nNo version information found",
+                        },
+                    }
                 }
-            }
+            },
         }
     },
-    tags=["Info"]
+    tags=["Info"],
 )
 def index() -> Response:
     content = LOGO
@@ -64,7 +75,8 @@ def index() -> Response:
 @router.get(
     "/version.json",
     summary="Get Version Info",
-    description="""Retrieve detailed version and build information in JSON format.
+    description=dedent("""
+    Retrieve detailed version and build information in JSON format.
     
     Returns structured version information including:
     - Semantic version number
@@ -76,7 +88,7 @@ def index() -> Response:
     - Automated deployment verification
     - Version tracking in monitoring systems
     - Programmatic version checks
-    """,
+    """),
     response_class=Response,
     responses={
         200: {
@@ -86,23 +98,23 @@ def index() -> Response:
                     "example": {
                         "version": "1.0.0",
                         "git_ref": "abc123def456",
-                        "build_date": "2025-11-25T10:00:00Z"
                     }
                 }
-            }
+            },
         },
         404: {
-            "description": "Version information file not found"
-        }
+            "description": "Version information file not found",
+            "content": {"text/plain": {"example": "Version info could not be loaded."}},
+        },
     },
-    tags=["Info"]
+    tags=["Info"],
 )
 def version_json() -> Response:
     try:
         with open(Path(__file__).parent.parent.parent / "version.json", "r") as file:
             content = file.read()
-    except (FileNotFoundError, json.JSONDecodeError) as e:
+    except FileNotFoundError as e:
         logger.info("Version info could not be loaded: %s" % e)
-        return Response(status_code=404, )
+        return Response(status_code=404, content="Version info could not be loaded.", media_type="text/plain")
 
-    return Response(content)
+    return Response(content, media_type="application/json")

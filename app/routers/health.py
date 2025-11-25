@@ -1,5 +1,6 @@
 import logging
-from typing import Any
+from textwrap import dedent
+from typing import Any, Dict
 
 from fastapi import APIRouter, Depends, status
 
@@ -20,9 +21,10 @@ def ok_or_error(value: bool) -> str:
 @router.get(
     "/health",
     summary="Health Check",
-    description="""Comprehensive health check for all dependent API services and components.
+    description=dedent("""
+    Comprehensive health check for all dependent API services and components.
     
-    This endpoint performs health checks on all critical services required for the
+    This endpoint performs health checks on all services required for the
     NVI Registration Service to function properly:
     
     **Checked Components:**
@@ -42,8 +44,8 @@ def ok_or_error(value: bool) -> str:
     - container liveness/readiness probes
     - Manual service verification
     - Troubleshooting connectivity issues
-    """,
-    response_model=dict[str, Any],
+    """),
+    response_model=Dict[str, Any],
     status_code=status.HTTP_200_OK,
     responses={
         200: {
@@ -59,9 +61,9 @@ def ok_or_error(value: bool) -> str:
                                     "pseudonym_service": "ok",
                                     "referral_service": "ok",
                                     "metadata_api": "ok",
-                                    "otv_stub_service": "ok"
-                                }
-                            }
+                                    "otv_stub_service": "ok",
+                                },
+                            },
                         },
                         "degraded": {
                             "summary": "Some services unhealthy",
@@ -71,26 +73,24 @@ def ok_or_error(value: bool) -> str:
                                     "pseudonym_service": "ok",
                                     "referral_service": "error",
                                     "metadata_api": "ok",
-                                    "otv_stub_service": "ok"
-                                }
-                            }
-                        }
+                                    "otv_stub_service": "ok",
+                                },
+                            },
+                        },
                     }
                 }
-            }
+            },
         },
-        500: {
-            "description": "Unexpected error during health check execution"
-        }
+        500: {"description": "Unexpected error during health check execution"},
     },
-    tags=["Health"]
+    tags=["Health"],
 )
 def health(
     pseudonym_service: PseudonymService = Depends(container.get_pseudonym_service),
     referral_service: NviService = Depends(container.get_nvi_service),
     metadata_service: MetadataService = Depends(container.get_metadata_service),
     otv_stub_service: OtvStubService = Depends(container.get_otv_service),
-) -> dict[str, Any]:
+) -> Dict[str, Any]:
     components = {
         "pseudonym_service": ok_or_error(pseudonym_service.server_healthy()),
         "referral_service": ok_or_error(referral_service.server_healthy()),
