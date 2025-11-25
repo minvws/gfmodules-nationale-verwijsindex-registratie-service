@@ -21,7 +21,7 @@ LOGO = r"""
 """
 
 
-@router.get("/")
+@router.get("/", summary="API Home", description="Displays the API logo and version information.")
 def index() -> Response:
     content = LOGO
 
@@ -36,7 +36,7 @@ def index() -> Response:
     return Response(content)
 
 
-@router.get("/version.json")
+@router.get("/version.json", summary="Get Version Info", description="Retrieve the API version information.")
 def version_json() -> Response:
     try:
         with open(Path(__file__).parent.parent.parent / "version.json", "r") as file:

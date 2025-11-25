@@ -1,0 +1,126 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" data-diagram-type="SEQUENCE" height="499px" preserveAspectRatio="none" style="width:615px;height:499px;background:#FFFFFF;" version="1.1" viewBox="0 0 615 499" width="615px" zoomAndPan="magnify">
+    <defs/>
+    <g>
+        <g>
+            <title>User</title>
+            <rect fill="#000000" fill-opacity="0.00000" height="337.3281" width="8" x="19.9551" y="81.2969"/>
+            <line style="stroke:#181818;stroke-width:0.5;stroke-dasharray:5,5;" x1="23" x2="23" y1="81.2969" y2="418.625"/>
+        </g>
+        <g>
+            <title>Referral Manager</title>
+            <rect fill="#000000" fill-opacity="0.00000" height="337.3281" width="8" x="264.1743" y="81.2969"/>
+            <line style="stroke:#181818;stroke-width:0.5;stroke-dasharray:5,5;" x1="267.3345" x2="267.3345" y1="81.2969" y2="418.625"/>
+        </g>
+        <g>
+            <title>FHIR Store</title>
+            <rect fill="#000000" fill-opacity="0.00000" height="337.3281" width="8" x="443.7935" y="81.2969"/>
+            <line style="stroke:#181818;stroke-width:0.5;stroke-dasharray:5,5;" x1="447.6948" x2="447.6948" y1="81.2969" y2="418.625"/>
+        </g>
+        <g>
+            <title>PRS</title>
+            <rect fill="#000000" fill-opacity="0.00000" height="337.3281" width="8" x="531.6895" y="81.2969"/>
+            <line style="stroke:#181818;stroke-width:0.5;stroke-dasharray:5,5;" x1="535.1611" x2="535.1611" y1="81.2969" y2="418.625"/>
+        </g>
+        <g>
+            <title>OTV</title>
+            <rect fill="#000000" fill-opacity="0.00000" height="337.3281" width="8" x="583.792" y="81.2969"/>
+            <line style="stroke:#181818;stroke-width:0.5;stroke-dasharray:5,5;" x1="587.2178" x2="587.2178" y1="81.2969" y2="418.625"/>
+        </g>
+        <g class="participant participant-head" data-participant="User">
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="31.9102" x="5" y="77.9951">User</text>
+            <ellipse cx="23.9551" cy="13.5" fill="#E2E2F0" rx="8" ry="8" style="stroke:#181818;stroke-width:0.5;"/>
+            <path d="M23.9551,21.5 L23.9551,48.5 M10.9551,29.5 L36.9551,29.5 M23.9551,48.5 L10.9551,63.5 M23.9551,48.5 L36.9551,63.5" fill="none" style="stroke:#181818;stroke-width:0.5;"/>
+        </g>
+        <g class="participant participant-tail" data-participant="User">
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="31.9102" x="5" y="430.6201">User</text>
+            <ellipse cx="23.9551" cy="442.4219" fill="#E2E2F0" rx="8" ry="8" style="stroke:#181818;stroke-width:0.5;"/>
+            <path d="M23.9551,450.4219 L23.9551,477.4219 M10.9551,458.4219 L36.9551,458.4219 M23.9551,477.4219 L10.9551,492.4219 M23.9551,477.4219 L36.9551,492.4219" fill="none" style="stroke:#181818;stroke-width:0.5;"/>
+        </g>
+        <g class="participant participant-head" data-participant="RM">
+            <rect fill="#E2E2F0" height="30.2969" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="135.6797" x="200.3345" y="50"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="121.6797" x="207.3345" y="69.9951">Referral Manager</text>
+        </g>
+        <g class="participant participant-tail" data-participant="RM">
+            <rect fill="#E2E2F0" height="30.2969" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="135.6797" x="200.3345" y="417.625"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="121.6797" x="207.3345" y="437.6201">Referral Manager</text>
+        </g>
+        <g class="participant participant-head" data-participant="FHIR">
+            <rect fill="#E2E2F0" height="30.2969" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="88.1973" x="403.6948" y="50"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="74.1973" x="410.6948" y="69.9951">FHIR Store</text>
+        </g>
+        <g class="participant participant-tail" data-participant="FHIR">
+            <rect fill="#E2E2F0" height="30.2969" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="88.1973" x="403.6948" y="417.625"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="74.1973" x="410.6948" y="437.6201">FHIR Store</text>
+        </g>
+        <g class="participant participant-head" data-participant="PRS">
+            <rect fill="#E2E2F0" height="30.2969" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="41.0566" x="515.1611" y="50"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="27.0566" x="522.1611" y="69.9951">PRS</text>
+        </g>
+        <g class="participant participant-tail" data-participant="PRS">
+            <rect fill="#E2E2F0" height="30.2969" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="41.0566" x="515.1611" y="417.625"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="27.0566" x="522.1611" y="437.6201">PRS</text>
+        </g>
+        <g class="participant participant-head" data-participant="OTV">
+            <rect fill="#E2E2F0" height="30.2969" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="43.1484" x="566.2178" y="50"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="29.1484" x="573.2178" y="69.9951">OTV</text>
+        </g>
+        <g class="participant participant-tail" data-participant="OTV">
+            <rect fill="#E2E2F0" height="30.2969" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="43.1484" x="566.2178" y="417.625"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="29.1484" x="573.2178" y="437.6201">OTV</text>
+        </g>
+        <g class="message" data-participant-1="User" data-participant-2="RM">
+            <polygon fill="#181818" points="256.1743,108.4297,266.1743,112.4297,256.1743,116.4297,260.1743,112.4297" style="stroke:#181818;stroke-width:1;"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="23.9551" x2="262.1743" y1="112.4297" y2="112.4297"/>
+            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="220.2192" x="30.9551" y="107.3638">Check referral sharing permission</text>
+        </g>
+        <g class="message" data-participant-1="RM" data-participant-2="RM">
+            <line style="stroke:#181818;stroke-width:1;" x1="268.1743" x2="310.1743" y1="141.5625" y2="141.5625"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="310.1743" x2="310.1743" y1="141.5625" y2="154.5625"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="269.1743" x2="310.1743" y1="154.5625" y2="154.5625"/>
+            <polygon fill="#181818" points="279.1743,150.5625,269.1743,154.5625,279.1743,158.5625,275.1743,154.5625" style="stroke:#181818;stroke-width:1;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="101.1436" x="275.1743" y="136.4966">Decrypt LMR ID</text>
+        </g>
+        <g class="message" data-participant-1="RM" data-participant-2="FHIR">
+            <polygon fill="#181818" points="435.7935,179.6953,445.7935,183.6953,435.7935,187.6953,439.7935,183.6953" style="stroke:#181818;stroke-width:1;"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="268.1743" x2="441.7935" y1="183.6953" y2="183.6953"/>
+            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="155.6191" x="275.1743" y="178.6294">Fetch Patient by LMR ID</text>
+        </g>
+        <g class="message" data-participant-1="FHIR" data-participant-2="RM">
+            <polygon fill="#181818" points="279.1743,208.8281,269.1743,212.8281,279.1743,216.8281,275.1743,212.8281" style="stroke:#181818;stroke-width:1;"/>
+            <line style="stroke:#181818;stroke-width:1;stroke-dasharray:2,2;" x1="273.1743" x2="446.7935" y1="212.8281" y2="212.8281"/>
+            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="106.7803" x="285.1743" y="207.7622">Patient resource</text>
+        </g>
+        <g class="message" data-participant-1="RM" data-participant-2="RM">
+            <line style="stroke:#181818;stroke-width:1;" x1="268.1743" x2="310.1743" y1="241.9609" y2="241.9609"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="310.1743" x2="310.1743" y1="241.9609" y2="254.9609"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="269.1743" x2="310.1743" y1="254.9609" y2="254.9609"/>
+            <polygon fill="#181818" points="279.1743,250.9609,269.1743,254.9609,279.1743,258.9609,275.1743,254.9609" style="stroke:#181818;stroke-width:1;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="77.5874" x="275.1743" y="236.895">Extract BSN</text>
+        </g>
+        <g class="message" data-participant-1="RM" data-participant-2="PRS">
+            <polygon fill="#181818" points="523.6895,280.0938,533.6895,284.0938,523.6895,288.0938,527.6895,284.0938" style="stroke:#181818;stroke-width:1;"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="268.1743" x2="529.6895" y1="284.0938" y2="284.0938"/>
+            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="243.5151" x="275.1743" y="279.0278">Request reversible pseudonym (BSN)</text>
+        </g>
+        <g class="message" data-participant-1="PRS" data-participant-2="RM">
+            <polygon fill="#181818" points="279.1743,309.2266,269.1743,313.2266,279.1743,317.2266,275.1743,313.2266" style="stroke:#181818;stroke-width:1;"/>
+            <line style="stroke:#181818;stroke-width:1;stroke-dasharray:2,2;" x1="273.1743" x2="534.6895" y1="313.2266" y2="313.2266"/>
+            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="148.5098" x="285.1743" y="308.1606">Reversible pseudonym</text>
+        </g>
+        <g class="message" data-participant-1="RM" data-participant-2="OTV">
+            <polygon fill="#181818" points="575.792,338.3594,585.792,342.3594,575.792,346.3594,579.792,342.3594" style="stroke:#181818;stroke-width:1;"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="268.1743" x2="581.792" y1="342.3594" y2="342.3594"/>
+            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="274.4409" x="275.1743" y="337.2935">Check permission (reversible pseudonym)</text>
+        </g>
+        <g class="message" data-participant-1="OTV" data-participant-2="RM">
+            <polygon fill="#181818" points="279.1743,367.4922,269.1743,371.4922,279.1743,375.4922,275.1743,371.4922" style="stroke:#181818;stroke-width:1;"/>
+            <line style="stroke:#181818;stroke-width:1;stroke-dasharray:2,2;" x1="273.1743" x2="586.792" y1="371.4922" y2="371.4922"/>
+            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="209.2505" x="285.1743" y="366.4263">Permission granted? (true/false)</text>
+        </g>
+        <g class="message" data-participant-1="RM" data-participant-2="User">
+            <polygon fill="#181818" points="34.9551,396.625,24.9551,400.625,34.9551,404.625,30.9551,400.625" style="stroke:#181818;stroke-width:1;"/>
+            <line style="stroke:#181818;stroke-width:1;stroke-dasharray:2,2;" x1="28.9551" x2="267.1743" y1="400.625" y2="400.625"/>
+            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="175.4238" x="40.9551" y="395.5591">Return authorization result</text>
+        </g></g>
+</svg>

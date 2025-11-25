@@ -10,7 +10,7 @@ router = APIRouter(
 )
 
 
-@router.post("", description="Permission check endpoint")
+@router.post("", summary="Permission Check", description="Checks if Patient has given permission to share referral with an organization.")
 def check_permission(
     payload: PermissionRequestModel,
     auth_service: AuthorizationCheckService = Depends(get_authorization_check_service),

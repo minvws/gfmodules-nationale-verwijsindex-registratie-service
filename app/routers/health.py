@@ -17,7 +17,7 @@ def ok_or_error(value: bool) -> str:
     return "ok" if value else "error"
 
 
-@router.get("/health", description="Health check for the API services")
+@router.get("/health", summary="Health Check", description="Health check for the API services")
 def health(
     pseudonym_service: PseudonymService = Depends(container.get_pseudonym_service),
     referral_service: NviService = Depends(container.get_nvi_service),

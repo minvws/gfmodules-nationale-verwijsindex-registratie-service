@@ -1,0 +1,119 @@
+<svg xmlns="http://www.w3.org/2000/svg"
+    xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" data-diagram-type="SEQUENCE" height="478px" preserveAspectRatio="none" style="width:836px;height:478px;background:#FFFFFF;" version="1.1" viewBox="0 0 836 478" width="836px" zoomAndPan="magnify">
+    <defs/>
+    <g>
+        <g>
+            <title>User</title>
+            <rect fill="#000000" fill-opacity="0.00000" height="316.3281" width="8" x="19.9551" y="81.2969"/>
+            <line style="stroke:#181818;stroke-width:0.5;stroke-dasharray:5,5;" x1="23" x2="23" y1="81.2969" y2="397.625"/>
+        </g>
+        <g>
+            <title>Scheduler</title>
+            <rect fill="#000000" fill-opacity="0.00000" height="316.3281" width="8" x="273.0166" y="81.2969"/>
+            <line style="stroke:#181818;stroke-width:0.5;stroke-dasharray:5,5;" x1="276.9722" x2="276.9722" y1="81.2969" y2="397.625"/>
+        </g>
+        <g>
+            <title>Referral Manager</title>
+            <rect fill="#000000" fill-opacity="0.00000" height="316.3281" width="8" x="521.4697" y="81.2969"/>
+            <line style="stroke:#181818;stroke-width:0.5;stroke-dasharray:5,5;" x1="524.6299" x2="524.6299" y1="81.2969" y2="397.625"/>
+        </g>
+        <g>
+            <title>FHIR Store</title>
+            <rect fill="#000000" fill-opacity="0.00000" height="316.3281" width="8" x="734.084" y="81.2969"/>
+            <line style="stroke:#181818;stroke-width:0.5;stroke-dasharray:5,5;" x1="737.9854" x2="737.9854" y1="81.2969" y2="397.625"/>
+        </g>
+        <g>
+            <title>NVI</title>
+            <rect fill="#000000" fill-opacity="0.00000" height="316.3281" width="8" x="807.272" y="81.2969"/>
+            <line style="stroke:#181818;stroke-width:0.5;stroke-dasharray:5,5;" x1="811.1826" x2="811.1826" y1="81.2969" y2="397.625"/>
+        </g>
+        <g class="participant participant-head" data-participant="User">
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="31.9102" x="5" y="77.9951">User</text>
+            <ellipse cx="23.9551" cy="13.5" fill="#E2E2F0" rx="8" ry="8" style="stroke:#181818;stroke-width:0.5;"/>
+            <path d="M23.9551,21.5 L23.9551,48.5 M10.9551,29.5 L36.9551,29.5 M23.9551,48.5 L10.9551,63.5 M23.9551,48.5 L36.9551,63.5" fill="none" style="stroke:#181818;stroke-width:0.5;"/>
+        </g>
+        <g class="participant participant-tail" data-participant="User">
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="31.9102" x="5" y="409.6201">User</text>
+            <ellipse cx="23.9551" cy="421.4219" fill="#E2E2F0" rx="8" ry="8" style="stroke:#181818;stroke-width:0.5;"/>
+            <path d="M23.9551,429.4219 L23.9551,456.4219 M10.9551,437.4219 L36.9551,437.4219 M23.9551,456.4219 L10.9551,471.4219 M23.9551,456.4219 L36.9551,471.4219" fill="none" style="stroke:#181818;stroke-width:0.5;"/>
+        </g>
+        <g class="participant participant-head" data-participant="Scheduler">
+            <rect fill="#E2E2F0" height="30.2969" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="84.0889" x="234.9722" y="50"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="70.0889" x="241.9722" y="69.9951">Scheduler</text>
+        </g>
+        <g class="participant participant-tail" data-participant="Scheduler">
+            <rect fill="#E2E2F0" height="30.2969" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="84.0889" x="234.9722" y="396.625"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="70.0889" x="241.9722" y="416.6201">Scheduler</text>
+        </g>
+        <g class="participant participant-head" data-participant="RM">
+            <rect fill="#E2E2F0" height="30.2969" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="135.6797" x="457.6299" y="50"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="121.6797" x="464.6299" y="69.9951">Referral Manager</text>
+        </g>
+        <g class="participant participant-tail" data-participant="RM">
+            <rect fill="#E2E2F0" height="30.2969" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="135.6797" x="457.6299" y="396.625"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="121.6797" x="464.6299" y="416.6201">Referral Manager</text>
+        </g>
+        <g class="participant participant-head" data-participant="FHIR">
+            <rect fill="#E2E2F0" height="30.2969" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="88.1973" x="693.9854" y="50"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="74.1973" x="700.9854" y="69.9951">FHIR Store</text>
+        </g>
+        <g class="participant participant-tail" data-participant="FHIR">
+            <rect fill="#E2E2F0" height="30.2969" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="88.1973" x="693.9854" y="396.625"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="74.1973" x="700.9854" y="416.6201">FHIR Store</text>
+        </g>
+        <g class="participant participant-head" data-participant="NVI">
+            <rect fill="#E2E2F0" height="30.2969" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="38.1787" x="792.1826" y="50"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="24.1787" x="799.1826" y="69.9951">NVI</text>
+        </g>
+        <g class="participant participant-tail" data-participant="NVI">
+            <rect fill="#E2E2F0" height="30.2969" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="38.1787" x="792.1826" y="396.625"/>
+            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="24.1787" x="799.1826" y="416.6201">NVI</text>
+        </g>
+        <g class="message" data-participant-1="User" data-participant-2="Scheduler">
+            <polygon fill="#181818" points="265.0166,108.4297,275.0166,112.4297,265.0166,116.4297,269.0166,112.4297" style="stroke:#181818;stroke-width:1;"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="23.9551" x2="271.0166" y1="112.4297" y2="112.4297"/>
+            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="229.0615" x="30.9551" y="107.3638">Start/Stop periodic synchronization</text>
+        </g>
+        <g class="message" data-participant-1="Scheduler" data-participant-2="RM">
+            <polygon fill="#181818" points="513.4697,137.5625,523.4697,141.5625,513.4697,145.5625,517.4697,141.5625" style="stroke:#181818;stroke-width:1;"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="277.0166" x2="519.4697" y1="141.5625" y2="141.5625"/>
+            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="224.4531" x="284.0166" y="136.4966">Trigger scheduled synchronization</text>
+        </g>
+        <g class="message" data-participant-1="RM" data-participant-2="FHIR">
+            <polygon fill="#181818" points="726.084,166.6953,736.084,170.6953,726.084,174.6953,730.084,170.6953" style="stroke:#181818;stroke-width:1;"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="525.4697" x2="732.084" y1="170.6953" y2="170.6953"/>
+            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="188.6143" x="532.4697" y="165.6294">Pull referrals from FHIR store</text>
+        </g>
+        <g class="message" data-participant-1="FHIR" data-participant-2="RM">
+            <polygon fill="#181818" points="536.4697,195.8281,526.4697,199.8281,536.4697,203.8281,532.4697,199.8281" style="stroke:#181818;stroke-width:1;"/>
+            <line style="stroke:#181818;stroke-width:1;stroke-dasharray:2,2;" x1="530.4697" x2="737.084" y1="199.8281" y2="199.8281"/>
+            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="183.6123" x="542.4697" y="194.7622">Return referrals (FHIR JSON)</text>
+        </g>
+        <g class="message" data-participant-1="RM" data-participant-2="RM">
+            <line style="stroke:#181818;stroke-width:1;" x1="525.4697" x2="567.4697" y1="228.9609" y2="228.9609"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="567.4697" x2="567.4697" y1="228.9609" y2="241.9609"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="526.4697" x2="567.4697" y1="241.9609" y2="241.9609"/>
+            <polygon fill="#181818" points="536.4697,237.9609,526.4697,241.9609,536.4697,245.9609,532.4697,241.9609" style="stroke:#181818;stroke-width:1;"/>
+            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="163.6553" x="532.4697" y="223.895">Process &amp; parse referrals</text>
+        </g>
+        <path d="M530,254.9609 L530,294.9609 L772,294.9609 L772,264.9609 L762,254.9609 L530,254.9609" fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/>
+        <path d="M762,254.9609 L762,264.9609 L772,264.9609 L762,254.9609" fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/>
+        <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="221.73" x="536" y="272.0278">Creating pseudonyms for patients</text>
+        <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="196.4727" x="536" y="287.1606">(details omitted for simplicity)</text>
+        <g class="message" data-participant-1="RM" data-participant-2="NVI">
+            <polygon fill="#181818" points="799.272,317.3594,809.272,321.3594,799.272,325.3594,803.272,321.3594" style="stroke:#181818;stroke-width:1;"/>
+            <line style="stroke:#181818;stroke-width:1;" x1="525.4697" x2="805.272" y1="321.3594" y2="321.3594"/>
+            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="155.7651" x="532.4697" y="316.2935">Register referrals in NVI</text>
+        </g>
+        <g class="message" data-participant-1="NVI" data-participant-2="RM">
+            <polygon fill="#181818" points="536.4697,346.4922,526.4697,350.4922,536.4697,354.4922,532.4697,350.4922" style="stroke:#181818;stroke-width:1;"/>
+            <line style="stroke:#181818;stroke-width:1;stroke-dasharray:2,2;" x1="530.4697" x2="810.272" y1="350.4922" y2="350.4922"/>
+            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="142.4414" x="542.4697" y="345.4263">Registration response</text>
+        </g>
+        <g class="message" data-participant-1="RM" data-participant-2="Scheduler">
+            <polygon fill="#181818" points="288.0166,375.625,278.0166,379.625,288.0166,383.625,284.0166,379.625" style="stroke:#181818;stroke-width:1;"/>
+            <line style="stroke:#181818;stroke-width:1;stroke-dasharray:2,2;" x1="282.0166" x2="524.4697" y1="379.625" y2="379.625"/>
+            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="159.25" x="294.0166" y="374.5591">Complete scheduled run</text>
+        </g>
+    </g>
+</svg>
