@@ -4,7 +4,7 @@ participant "Referral Manager" as RM
 participant "NVI" as NVI
 
 User -> RM : Send FHIR Bundle (JSON)
-RM -> RM : Parse FHIR resource
+RM -> RM : Parse FHIR resources
 
 note right of RM
     Creating pseudonym for patient

@@ -53,7 +53,7 @@
             <line style="stroke:#181818;stroke-width:1;" x1="264.1982" x2="264.1982" y1="141.5625" y2="154.5625"/>
             <line style="stroke:#181818;stroke-width:1;" x1="223.1982" x2="264.1982" y1="154.5625" y2="154.5625"/>
             <polygon fill="#181818" points="233.1982,150.5625,223.1982,154.5625,233.1982,158.5625,229.1982,154.5625" style="stroke:#181818;stroke-width:1;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="131.1045" x="229.1982" y="136.4966">Parse FHIR resource</text>
+            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="131.1045" x="229.1982" y="136.4966">Parse FHIR resources</text>
         </g>
         <path d="M227,167.5625 L227,207.5625 L456,207.5625 L456,177.5625 L446,167.5625 L227,167.5625" fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/>
         <path d="M446,167.5625 L446,177.5625 L456,177.5625 L446,167.5625" fill="#FEFFDD" style="stroke:#181818;stroke-width:0.5;"/>
