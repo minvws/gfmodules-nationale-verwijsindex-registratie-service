@@ -79,12 +79,15 @@ def setup_logging() -> None:
 def setup_fastapi() -> FastAPI:
     config = get_config()
 
-    fastapi = (
-        FastAPI(docs_url=config.uvicorn.docs_url, redoc_url=config.uvicorn.redoc_url)
-        if config.uvicorn.swagger_enabled
-        else FastAPI(docs_url=None, redoc_url=None)
-    )
-
+    if config.uvicorn.swagger_enabled:
+        fastapi = FastAPI(
+            docs_url=config.uvicorn.docs_url,
+            redoc_url=config.uvicorn.redoc_url,
+            title="Nationale Verwijsindex Registratie Service API",
+            description="API for the NVI-RS\n\nProvides endpoints for patient registration, data synchronization and permission checks",
+        )
+    else:
+        fastapi = FastAPI(docs_url=None, redoc_url=None)
     routers = [
         default_router,
         health_router,
