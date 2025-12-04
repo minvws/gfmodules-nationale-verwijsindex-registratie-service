@@ -30,6 +30,10 @@ timeout=10
 # mtls_key=secrets/ssl/pseudonym_api.key
 # mtls_ca=secrets/ssl/pseudonym_api_ca.cert
 
+[lmr]
+# Symmetric(AES) encryption key (32 bytes base64 encoded)
+encryption_key=
+
 [referral_api]
 # For local development, use the local NVI service
 endpoint=http://localhost:8501

@@ -18,6 +18,7 @@ inject = "^5.3.0"
 requests = "^2.32.5"
 fhir-resources = "^8.1"
 puzi = { git = "https://github.com/minvws/puzi-python" }
+cryptography = "^46.0.3"
 
 [tool.poetry.group.dev.dependencies]
 types-requests = "^2.32.4"
