@@ -9,7 +9,7 @@ from app.services.OtvService.factory import create_otv_service
 from app.services.OtvService.get_otv_ura import get_otv_ura
 from app.services.OtvService.interface import OtvService
 from app.services.pseudonym import PseudonymService
-from app.services.registration.bundle import BundleRegistartionService
+from app.services.registration.bundle import BundleRegistrationService
 from app.services.registration.referrals import ReferralRegistrationService
 from app.services.registration_service import PrsRegistrationService
 from app.services.synchronization.domain_map import DomainsMapService
@@ -69,8 +69,8 @@ def container_config(binder: inject.Binder) -> None:
     )
     binder.bind(AuthorizationCheckService, authorization_check_service)
 
-    bundle_registration_service = BundleRegistartionService(referrals_service=referral_registration_service)
-    binder.bind(BundleRegistartionService, bundle_registration_service)
+    bundle_registration_service = BundleRegistrationService(referrals_service=referral_registration_service)
+    binder.bind(BundleRegistrationService, bundle_registration_service)
 
     domain_map_service = DomainsMapService(data_domains=config.app.data_domains)
 
@@ -115,8 +115,8 @@ def get_metadata_service() -> MetadataService:
     return inject.instance(MetadataService)
 
 
-def get_bundle_registration_service() -> BundleRegistartionService:
-    return inject.instance(BundleRegistartionService)
+def get_bundle_registration_service() -> BundleRegistrationService:
+    return inject.instance(BundleRegistrationService)
 
 
 def get_synchronizer() -> Synchronizer:

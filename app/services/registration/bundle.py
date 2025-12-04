@@ -22,7 +22,7 @@ from app.services.parsers.reference import ReferenceParser
 from app.services.registration.referrals import ReferralRegistrationService
 
 
-class BundleRegistartionService:
+class BundleRegistrationService:
     """
     Service that handles manual registration from FHIR Bundle.
     """

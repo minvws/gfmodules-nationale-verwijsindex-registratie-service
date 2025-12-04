@@ -16,13 +16,13 @@ from app.services.fhir.bunde_entry_response import (
     KnownBundleRegistrationOutcome,
     create_known_response,
 )
-from app.services.registration.bundle import BundleRegistartionService
+from app.services.registration.bundle import BundleRegistrationService
 
 PATCHED_MODULE = "app.services.registration.bundle.ReferralRegistrationService.register"
 
 
 def test_make_map_should_succeed(
-    bundle_registration_service: BundleRegistartionService,
+    bundle_registration_service: BundleRegistrationService,
 ) -> None:
     patient = Patient(id="patient-1")
     imaging_study = ImagingStudy.model_construct(
@@ -40,7 +40,7 @@ def test_make_map_should_succeed(
 
 
 def test_make_map_should_raise_exception_when_bundle_has_no_entries(
-    bundle_registration_service: BundleRegistartionService,
+    bundle_registration_service: BundleRegistrationService,
 ) -> None:
     bundle = Bundle(type="transaction")
     with pytest.raises(FHIRException):
@@ -50,7 +50,7 @@ def test_make_map_should_raise_exception_when_bundle_has_no_entries(
 @patch(PATCHED_MODULE)
 def test_register_should_succeed(
     referral_response: MagicMock,
-    bundle_registration_service: BundleRegistartionService,
+    bundle_registration_service: BundleRegistrationService,
     mock_referral: Referral,
     regular_bundle: Bundle,
 ) -> None:
@@ -72,7 +72,7 @@ def test_register_should_succeed(
 @patch(PATCHED_MODULE)
 def test_register_should_return_a_duplicate_warning_response_when_referral_exist(
     referral_response: MagicMock,
-    bundle_registration_service: BundleRegistartionService,
+    bundle_registration_service: BundleRegistrationService,
     regular_bundle: Bundle,
 ) -> None:
     referral_response.return_value = None
@@ -89,7 +89,7 @@ def test_register_should_return_a_duplicate_warning_response_when_referral_exist
 
 
 def test_register_should_return_error_response_when_patient_has_invalid_bsn(
-    bundle_registration_service: BundleRegistartionService,
+    bundle_registration_service: BundleRegistrationService,
 ) -> None:
     identifier = Identifier(system=BSN_SYSTEM, value="some-broken-bsn")
     patient = Patient.model_construct(id="patient-1", identifier=[identifier])
@@ -111,7 +111,7 @@ def test_register_should_return_error_response_when_patient_has_invalid_bsn(
 
 
 def test_register_without_bsn_should_return_error_response(
-    bundle_registration_service: BundleRegistartionService,
+    bundle_registration_service: BundleRegistrationService,
     bundle_without_bsn_system: Bundle,
 ) -> None:
     expected = Bundle(
@@ -132,7 +132,7 @@ def test_register_without_bsn_should_return_error_response(
 
 
 def test_register_without_identifier_in_patient_should_return_error_response(
-    bundle_registration_service: BundleRegistartionService,
+    bundle_registration_service: BundleRegistrationService,
 ) -> None:
     patient = Patient.model_construct(id="patient-1")
     imaging_study = ImagingStudy.model_construct(
@@ -161,7 +161,7 @@ def test_register_without_identifier_in_patient_should_return_error_response(
 
 def test_register_without_patient_should_return_error_response(
     bundle_without_patient: Bundle,
-    bundle_registration_service: BundleRegistartionService,
+    bundle_registration_service: BundleRegistrationService,
 ) -> None:
     expected = Bundle(
         type="transaction-response",
@@ -181,7 +181,7 @@ def test_register_without_patient_should_return_error_response(
 
 
 def test_register_without_relative_reference_to_not_patient_should_return_error_response(
-    bundle_registration_service: BundleRegistartionService,
+    bundle_registration_service: BundleRegistrationService,
 ) -> None:
     imaging_study = ImagingStudy.model_construct(
         id="imaging-study-1",
@@ -206,7 +206,7 @@ def test_register_without_relative_reference_to_not_patient_should_return_error_
 
 
 def test_register_with_contained_references_should_return_error_response(
-    bundle_registration_service: BundleRegistartionService,
+    bundle_registration_service: BundleRegistrationService,
 ) -> None:
     imaging_study = ImagingStudy.model_construct(id="imaging-study-1", subject=Reference(reference="#patient-1"))
     bundle = Bundle(type="transaction", entry=[BundleEntry(resource=imaging_study)])
@@ -228,7 +228,7 @@ def test_register_with_contained_references_should_return_error_response(
 
 
 def test_registter_without_reference_to_patient_should_return_error_response(
-    bundle_registration_service: BundleRegistartionService,
+    bundle_registration_service: BundleRegistrationService,
 ) -> None:
     imaging_study = ImagingStudy.model_construct(id="imaging-study-1", subject=None)
     bundle = Bundle(type="transaction", entry=[BundleEntry(resource=imaging_study)])

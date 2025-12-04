@@ -22,7 +22,7 @@ from app.services.nvi import NviService
 from app.services.OtvService.interface import OtvService
 from app.services.OtvService.otv_stub_service import OtvStubService
 from app.services.pseudonym import PseudonymService
-from app.services.registration.bundle import BundleRegistartionService
+from app.services.registration.bundle import BundleRegistrationService
 from app.services.registration.referrals import ReferralRegistrationService
 from app.services.registration_service import PrsRegistrationService
 from app.services.synchronization.domain_map import DomainsMapService
@@ -158,8 +158,8 @@ def registration_service(
 @pytest.fixture
 def bundle_registration_service(
     registration_service: ReferralRegistrationService,
-) -> BundleRegistartionService:
-    return BundleRegistartionService(referrals_service=registration_service)
+) -> BundleRegistrationService:
+    return BundleRegistrationService(referrals_service=registration_service)
 
 
 @pytest.fixture
