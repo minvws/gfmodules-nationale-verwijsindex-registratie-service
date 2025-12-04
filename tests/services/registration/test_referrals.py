@@ -1,6 +1,7 @@
 from unittest.mock import MagicMock, patch
 
 from app.data import Pseudonym
+from app.models.bsn import BSN
 from app.models.referrals import Referral
 from app.services.registration.referrals import ReferralRegistrationService
 
@@ -18,13 +19,13 @@ def test_register_should_succeed(
     registration_service: ReferralRegistrationService,
     mock_referral: Referral,
     mock_pseudonym: Pseudonym,
-    mock_bsn_number: str,
+    mock_bsn: BSN,
 ) -> None:
     pseudonym_response.return_value = mock_pseudonym
     referral_query_response.return_value = None
     new_referral_response.return_value = mock_referral
 
-    actual = registration_service.register(mock_bsn_number, "ImagingStud")
+    actual = registration_service.register(mock_bsn, "ImagingStudy")
 
     assert mock_referral == actual
 
@@ -37,11 +38,11 @@ def test_regsiter_should_return_None_if_referral_exists(
     registration_service: ReferralRegistrationService,
     mock_referral: Referral,
     mock_pseudonym: Pseudonym,
-    mock_bsn_number: str,
+    mock_bsn: BSN,
 ) -> None:
     pseudonym_response.return_value = mock_pseudonym
     referral_query_response.return_value = mock_referral
 
-    actual = registration_service.register(mock_bsn_number, "ImagingStudy")
+    actual = registration_service.register(mock_bsn, "ImagingStudy")
 
     assert actual is None
