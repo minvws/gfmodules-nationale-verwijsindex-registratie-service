@@ -227,7 +227,7 @@ def test_register_with_contained_references_should_return_error_response(
     assert expected == actual
 
 
-def test_registter_without_reference_to_patient_should_return_error_response(
+def test_register_without_reference_to_patient_should_return_error_response(
     bundle_registration_service: BundleRegistrationService,
 ) -> None:
     imaging_study = ImagingStudy.model_construct(id="imaging-study-1", subject=None)

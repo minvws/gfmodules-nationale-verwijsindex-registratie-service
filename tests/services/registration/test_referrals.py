@@ -32,7 +32,7 @@ def test_register_should_succeed(
 
 @patch(f"{PATCHED_NVI}.get_referrals")
 @patch(PATCHED_PSEUDONYM)
-def test_regsiter_should_return_None_if_referral_exists(
+def test_register_should_return_none_if_referral_exists(
     pseudonym_response: MagicMock,
     referral_query_response: MagicMock,
     registration_service: ReferralRegistrationService,
