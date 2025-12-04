@@ -19,4 +19,4 @@ jobs:
         uses: minvws/action-python-venv-package@v1
         with:
           python_version: ${{ matrix.python_version }}
-          package_file_name: gfmodules-nvi-referral-manager
+          package_file_name: gfmodules-nationale-verwijsindex-registratie-service

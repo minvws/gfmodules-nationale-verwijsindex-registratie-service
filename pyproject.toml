@@ -1,10 +1,10 @@
 [tool.poetry]
-name = "gfmodules-nvi-referral-manager"
+name = "gfmodules-nationale-verwijsindex-registratie-service"
 version = "0.1.0"
 description = ""
 license = "EUPL-1.2"
 authors = ["Ministerie van Volksgezondheid, Welzijn en Sport"]
-repository = "https://github.com/minvws/gfmodules-nvi-referral-manager"
+repository = "https://github.com/minvws/gfmodules-nationale-verwijsindex-registratie-service"
 readme = "README.md"
 packages = [{ include = "app" }]
 

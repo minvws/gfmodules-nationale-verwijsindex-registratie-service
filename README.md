@@ -108,7 +108,7 @@ docker build \
   --build-arg="NEW_UID=1000" \
   --build-arg="NEW_GID=1000" \
   -f docker/Dockerfile \
-  -t gfmodules-nvi-referral-manager \
+  -t gfmodules-nationale-verwijsindex-registratie-service \
   .
 ```
 
@@ -121,7 +121,7 @@ an app.conf mount.
 docker build \
   --build-arg="standalone=true" \
   -f docker/Dockerfile \
-  -t gfmodules-nvi-referral-manager \
+  -t gfmodules-nationale-verwijsindex-registratie-service \
   .
 ```
 
@@ -131,7 +131,7 @@ into the container's /src dir.
 ```bash
 docker run -ti --rm -p 8515:8515 \
   --mount type=bind,source=./app.conf.example,target=/src/app.conf \
-  gfmodules-nvi-referral-manager
+  gfmodules-nationale-verwijsindex-registratie-service
 ```
 
 ## Interface and Specifications definitions
