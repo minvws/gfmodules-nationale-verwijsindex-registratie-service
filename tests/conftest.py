@@ -9,6 +9,7 @@ from fhir.resources.R4B.patient import Patient
 
 from app.config import ConfigPseudonymApi
 from app.data import BSN_SYSTEM
+from app.models.bsn import BSN
 from app.models.metadata.params import MetadataResourceParams
 from app.models.pseudonym import Pseudonym
 from app.models.referrals import CreateReferralDTO, Referral, ReferralQueryDTO
@@ -22,7 +23,7 @@ from app.services.nvi import NviService
 from app.services.OtvService.interface import OtvService
 from app.services.OtvService.otv_stub_service import OtvStubService
 from app.services.pseudonym import PseudonymService
-from app.services.registration.bundle import BundleRegistartionService
+from app.services.registration.bundle import BundleRegistrationService
 from app.services.registration.referrals import ReferralRegistrationService
 from app.services.registration_service import PrsRegistrationService
 from app.services.synchronization.domain_map import DomainsMapService
@@ -158,8 +159,8 @@ def registration_service(
 @pytest.fixture
 def bundle_registration_service(
     registration_service: ReferralRegistrationService,
-) -> BundleRegistartionService:
-    return BundleRegistartionService(referrals_service=registration_service)
+) -> BundleRegistrationService:
+    return BundleRegistrationService(referrals_service=registration_service)
 
 
 @pytest.fixture
@@ -189,6 +190,9 @@ def create_referral_dto(referral_query: ReferralQueryDTO) -> CreateReferralDTO:
 def mock_bsn_number() -> str:
     return "200060429"
 
+@pytest.fixture
+def mock_bsn(mock_bsn_number: str) -> BSN:
+    return BSN(mock_bsn_number)
 
 @pytest.fixture
 def datetime_past() -> str:

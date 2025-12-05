@@ -7,6 +7,7 @@ from app.data import (
     OutcomeResponseStatusCode,
 )
 from app.exceptions.fhir_exception import FHIRException
+from app.models.bsn import BSN
 from app.models.domains_map import DomainMapEntry, DomainsMap
 from app.models.update_scheme import BsnUpdateScheme, UpdateScheme
 from app.services.metadata import MetadataService
@@ -74,7 +75,7 @@ class Synchronizer:
         )
 
         for bsn in updated_bsns:
-            new_referral = self._registration_service.register(bsn, data_domain)
+            new_referral = self._registration_service.register(BSN(bsn), data_domain)
             if new_referral is None:
                 continue
 

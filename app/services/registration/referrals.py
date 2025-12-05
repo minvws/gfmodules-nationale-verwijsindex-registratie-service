@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 class ReferralRegistrationService:
     """
     Service that handles registering referrals in an NVI register by
-    relying on a Pseudoym service.
+    relying on a Pseudonym service.
     """
 
     def __init__(
@@ -25,8 +25,8 @@ class ReferralRegistrationService:
         self.pseudonym_service = pseudonym_service
         self._ura_number = ura_number
 
-    def register(self, bsn: str, data_domain: str) -> Referral | None:
-        pseudonym = self.pseudonym_service.submit(PseudonymCreateDto(bsn=BSN(bsn)))
+    def register(self, bsn: BSN, data_domain: str) -> Referral | None:
+        pseudonym = self.pseudonym_service.submit(PseudonymCreateDto(bsn=bsn))
         referral = self.nvi_service.get_referrals(
             ReferralQueryDTO(
                 pseudonym=pseudonym.pseudonym,

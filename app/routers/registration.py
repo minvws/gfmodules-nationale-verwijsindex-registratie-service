@@ -10,7 +10,7 @@ from app.container import (
     get_bundle_registration_service,
 )
 from app.exceptions.service_exceptions import InvalidResourceException
-from app.services.registration.bundle import BundleRegistartionService
+from app.services.registration.bundle import BundleRegistrationService
 
 logger = logging.getLogger(__name__)
 router = APIRouter(
@@ -24,16 +24,16 @@ router = APIRouter(
     summary="Create Referral Registration",
     description=dedent("""
     Register a referral through a FHIR R4B bundle.
-    
+
     This endpoint processes FHIR R4B Bundle resources containing referral information.
     The bundle should include all necessary resources for registering a patient referral
     in the National Referral Index (NVI).
-    
+
     **Request Requirements:**
     - Must be a valid FHIR R4B Bundle resource
     - Should contain referral-related resources (ImagingStudy, CarePlan, etc.)
     - Should contain the referenced Patient resource(s)
-                       
+
     **Use Cases:**
     - Manually register new patient referrals in the NVI system
     - Specific situations where automated referral registration is not suitable
@@ -130,7 +130,7 @@ def create(
             ],
         },
     ),
-    bundle_registration_service: BundleRegistartionService = Depends(get_bundle_registration_service),
+    bundle_registration_service: BundleRegistrationService = Depends(get_bundle_registration_service),
 ) -> Response:
     if request is None:
         logger.error("Resource is missing in the request")

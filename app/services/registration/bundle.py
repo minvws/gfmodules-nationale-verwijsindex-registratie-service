@@ -22,7 +22,7 @@ from app.services.parsers.reference import ReferenceParser
 from app.services.registration.referrals import ReferralRegistrationService
 
 
-class BundleRegistartionService:
+class BundleRegistrationService:
     """
     Service that handles manual registration from FHIR Bundle.
     """
@@ -129,7 +129,7 @@ class BundleRegistartionService:
         except ValueError:
             return create_known_response(KnownBundleRegistrationOutcome.ERROR, "Invalid BSN number")
 
-        referral = self._referrals_service.register(bsn=str(bsn), data_domain=res.get_resource_type())
+        referral = self._referrals_service.register(bsn=bsn, data_domain=res.get_resource_type())
         if referral is None:
             return create_known_response(KnownBundleRegistrationOutcome.WARNING, "Record already exists")
 
