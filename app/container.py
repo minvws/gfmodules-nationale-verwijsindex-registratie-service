@@ -1,4 +1,5 @@
 import inject
+import base64
 
 from app.config import get_config
 from app.models.ura_number import UraNumber
@@ -16,6 +17,7 @@ from app.services.synchronization.domain_map import DomainsMapService
 from app.services.synchronization.scheduler import Scheduler
 from app.services.synchronization.synchronizer import Synchronizer
 from app.services.ura import UraNumberService
+from app.services.aes_encryption_service import AesEncryptionService
 
 
 def container_config(binder: inject.Binder) -> None:
@@ -52,10 +54,13 @@ def container_config(binder: inject.Binder) -> None:
     )
     binder.bind(MetadataService, metadata_service)
 
+    lmr_encryption_service = AesEncryptionService.from_encoded_key(encoded_key=config.lmr.encryption_key)
+
     referral_registration_service = ReferralRegistrationService(
         nvi_service=nvi_service,
         pseudonym_service=pseudonym_service,
         ura_number=ura_number.value,
+        lmr_encryption_service=lmr_encryption_service,
     )
 
     otv_service = create_otv_service(config.otv_stub_api)

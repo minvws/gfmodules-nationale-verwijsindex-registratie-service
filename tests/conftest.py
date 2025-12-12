@@ -3,6 +3,7 @@ from typing import Any, Dict, List
 from unittest.mock import MagicMock
 
 import pytest
+from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 from fhir.resources.R4B.bundle import Bundle
 from fhir.resources.R4B.imagingstudy import ImagingStudy
 from fhir.resources.R4B.patient import Patient
@@ -15,6 +16,7 @@ from app.models.pseudonym import Pseudonym
 from app.models.referrals import CreateReferralDTO, Referral, ReferralQueryDTO
 from app.models.update_scheme import BsnUpdateScheme
 from app.models.ura_number import UraNumber
+from app.services.aes_encryption_service import AesEncryptionService
 from app.services.api.fhir import FhirHttpService
 from app.services.api.http_service import HttpService
 from app.services.authorization_check_service import AuthorizationCheckService
@@ -146,13 +148,22 @@ def metadata_service(mock_url: str) -> MetadataService:
 
 
 @pytest.fixture
+def lmr_encryption_service() -> AesEncryptionService:
+    return AesEncryptionService(key=AESGCM.generate_key(bit_length=128))
+
+
+@pytest.fixture
 def registration_service(
-    nvi_service: NviService, pseudonym_service: PseudonymService, mock_ura_number: str
+    nvi_service: NviService,
+    pseudonym_service: PseudonymService,
+    lmr_encryption_service: AesEncryptionService,
+    mock_ura_number: str,
 ) -> ReferralRegistrationService:
     return ReferralRegistrationService(
         nvi_service=nvi_service,
         pseudonym_service=pseudonym_service,
         ura_number=mock_ura_number,
+        lmr_encryption_service=lmr_encryption_service,
     )
 
 

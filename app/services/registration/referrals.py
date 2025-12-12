@@ -5,6 +5,7 @@ from app.models.pseudonym import PseudonymCreateDto
 from app.models.referrals import CreateReferralDTO, Referral, ReferralQueryDTO
 from app.services.nvi import NviService
 from app.services.pseudonym import PseudonymService
+from app.services.aes_encryption_service import AesEncryptionService, AesEncryptionError
 
 logger = logging.getLogger(__name__)
 
@@ -20,10 +21,13 @@ class ReferralRegistrationService:
         nvi_service: NviService,
         pseudonym_service: PseudonymService,
         ura_number: str,
+        lmr_encryption_service: AesEncryptionService,
     ) -> None:
         self.nvi_service = nvi_service
         self.pseudonym_service = pseudonym_service
         self._ura_number = ura_number
+        self._lmr_encryption_service = lmr_encryption_service
+
 
     def register(self, bsn: BSN, data_domain: str) -> Referral | None:
         pseudonym = self.pseudonym_service.submit(PseudonymCreateDto(bsn=bsn))
