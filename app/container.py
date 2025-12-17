@@ -1,5 +1,4 @@
 import inject
-import base64
 
 from app.config import get_config
 from app.models.ura_number import UraNumber
@@ -99,8 +98,10 @@ def container_config(binder: inject.Binder) -> None:
 def get_authorization_check_service() -> AuthorizationCheckService:
     return inject.instance(AuthorizationCheckService)
 
+
 def get_prs_registration_service() -> PrsRegistrationService:
     return inject.instance(PrsRegistrationService)
+
 
 def get_otv_service() -> OtvService:
     instance = inject.instance(OtvService)

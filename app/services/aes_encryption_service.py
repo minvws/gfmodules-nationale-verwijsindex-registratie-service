@@ -16,12 +16,14 @@ class AesEncryptionService:
             raise AesEncryptionError("AES key must be bytes")
 
         if len(key) not in (16, 24, 32):
-            raise AesEncryptionError("AES key must be at least 128 bits (16 bytes); recommended lengths are 16, 24, or 32 bytes")
+            raise AesEncryptionError(
+                "AES key must be at least 128 bits (16 bytes); recommended lengths are 16, 24, or 32 bytes"
+            )
 
         self._aesgcm = AESGCM(key)
 
     @staticmethod
-    def from_encoded_key(encoded_key: str) -> 'AesEncryptionService':
+    def from_encoded_key(encoded_key: str) -> "AesEncryptionService":
         key_bytes = base64.urlsafe_b64decode(encoded_key)
         return AesEncryptionService(key=key_bytes)
 

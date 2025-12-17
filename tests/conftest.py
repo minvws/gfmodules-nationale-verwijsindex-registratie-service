@@ -201,9 +201,11 @@ def create_referral_dto(referral_query: ReferralQueryDTO) -> CreateReferralDTO:
 def mock_bsn_number() -> str:
     return "200060429"
 
+
 @pytest.fixture
 def mock_bsn(mock_bsn_number: str) -> BSN:
     return BSN(mock_bsn_number)
+
 
 @pytest.fixture
 def datetime_past() -> str:

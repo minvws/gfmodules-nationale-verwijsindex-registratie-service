@@ -19,11 +19,11 @@ bash: ## Runs a bash prompt inside the container
 	docker compose run --rm app bash
 
 lint: ## Check for linting errors
-	$(RUN_PREFIX) ruff check --select E4,E7,E9,F,I,Q
+	$(RUN_PREFIX) ruff check
 	$(RUN_PREFIX) ruff format --diff
 
 lint-fix: ## Fix linting errors
-	$(RUN_PREFIX) ruff check --select E4,E7,E9,F,I,Q --fix --show-fixes
+	$(RUN_PREFIX) ruff check --fix --show-fixes
 	$(RUN_PREFIX) ruff format
 
 type-check: ## Check for typing errors
