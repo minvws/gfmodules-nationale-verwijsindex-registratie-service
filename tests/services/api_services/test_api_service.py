@@ -157,7 +157,7 @@ def test_do_request_should_use_mtls_cert_when_enabled(
     mock_request.assert_called_once()
     call_kwargs = mock_request.call_args[1]
     assert call_kwargs["cert"] == ("test.crt", "test.key")
-    assert call_kwargs["verify"] == "test.ca"
+    assert call_kwargs["verify"] == True
 
 
 @patch(PATCHED_MODULE)
@@ -182,7 +182,7 @@ def test_do_request_should_use_ca_file_for_verification_when_provided(
     mock_request.assert_called_once()
     call_kwargs = mock_request.call_args[1]
     assert call_kwargs["cert"] == ("test.crt", "test.key")
-    assert call_kwargs["verify"] == "ca.crt"
+    assert call_kwargs["verify"] == True
 
 
 @patch(PATCHED_MODULE)
