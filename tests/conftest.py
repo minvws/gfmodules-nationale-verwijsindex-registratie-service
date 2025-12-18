@@ -12,7 +12,7 @@ from app.config import ConfigPseudonymApi
 from app.data import BSN_SYSTEM
 from app.models.bsn import BSN
 from app.models.metadata.params import MetadataResourceParams
-from app.models.pseudonym import Pseudonym
+from app.models.pseudonym import Pseudonym, OprfPseudonymJWE
 from app.models.referrals import CreateReferralDTO, Referral, ReferralQueryDTO
 from app.models.update_scheme import BsnUpdateScheme
 from app.models.ura_number import UraNumber
@@ -181,6 +181,11 @@ def datetime_now() -> str:
 @pytest.fixture
 def mock_pseudonym() -> Pseudonym:
     return Pseudonym(pseudonym="some_pseudonym")
+
+
+@pytest.fixture
+def mock_pseudonym_jwe() -> OprfPseudonymJWE:
+    return OprfPseudonymJWE(jwe="some_pseudonym")
 
 
 @pytest.fixture

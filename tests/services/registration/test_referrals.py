@@ -1,7 +1,7 @@
 from unittest.mock import MagicMock, patch
 
-from app.data import Pseudonym
 from app.models.bsn import BSN
+from app.models.pseudonym import OprfPseudonymJWE
 from app.models.referrals import Referral
 from app.services.registration.referrals import ReferralRegistrationService
 
@@ -18,10 +18,10 @@ def test_register_should_succeed(
     new_referral_response: MagicMock,
     registration_service: ReferralRegistrationService,
     mock_referral: Referral,
-    mock_pseudonym: Pseudonym,
+    mock_pseudonym_jwe: OprfPseudonymJWE,
     mock_bsn: BSN,
 ) -> None:
-    pseudonym_response.return_value = mock_pseudonym
+    pseudonym_response.return_value = mock_pseudonym_jwe
     referral_query_response.return_value = None
     new_referral_response.return_value = mock_referral
 
@@ -37,10 +37,10 @@ def test_register_should_return_none_if_referral_exists(
     referral_query_response: MagicMock,
     registration_service: ReferralRegistrationService,
     mock_referral: Referral,
-    mock_pseudonym: Pseudonym,
+    mock_pseudonym_jwe: OprfPseudonymJWE,
     mock_bsn: BSN,
 ) -> None:
-    pseudonym_response.return_value = mock_pseudonym
+    pseudonym_response.return_value = mock_pseudonym_jwe
     referral_query_response.return_value = mock_referral
 
     actual = registration_service.register(mock_bsn, "ImagingStudy")
