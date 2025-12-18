@@ -35,6 +35,7 @@ RUN apt update && \
         libssl-dev \
         libsodium-dev \
         build-essential \
+        gettext-base \
     && rm -rf /var/lib/apt/lists/*
 
 RUN pip3 install --upgrade pip && \
