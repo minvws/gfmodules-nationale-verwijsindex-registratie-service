@@ -30,10 +30,6 @@ timeout=10
 # mtls_key=secrets/ssl/pseudonym_api.key
 # mtls_ca=secrets/ssl/pseudonym_api_ca.cert
 
-[lmr]
-# Symmetric(AES) encryption key (32 bytes base64 encoded)
-encryption_key=
-
 [referral_api]
 # For local development, use the local NVI service
 endpoint=http://localhost:8501
@@ -41,23 +37,6 @@ timeout=10
 # mtls_cert=secrets/ssl/referral_api.cert
 # mtls_key=secrets/ssl/referral_api.key
 # mtls_ca=secrets/ssl/referral_api_ca.cert
-
-[otv_stub_api]
-mock=False
-# For local development, use the local OTV stub service
-endpoint=http://localhost:8507
-timeout=10
-# mtls_cert=secrets/ssl/otv_stub_api.cert
-# mtls_key=secrets/ssl/otv_stub_api.key
-# mtls_ca=secrets/ssl/otv_stub_api_ca.cert
-
-[otv_stub_certificate]
-# One of the two options must be provided:
-# Path to certificate from OTV stub
-otv_stub_certificate_path=secrets/ssl/otv_stub.cert
-# Override URA for OTV stub (for local development/testing) makes the certificate optional
-otv_stub_ura_override=753421
-
 
 [uvicorn]
 # If true, the api docs will be enabled

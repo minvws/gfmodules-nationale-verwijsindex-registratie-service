@@ -22,7 +22,6 @@ class ConfigApp(BaseModel):
     loglevel: LogLevel = Field(default=LogLevel.info)
     provider_id: str
     data_domains: List[str] = Field(default=[])
-    otv_stub_certificate_path: str | None = Field(default=None)
 
     @field_validator("data_domains", mode="before")
     @classmethod
@@ -65,36 +64,6 @@ class ConfigReferralApi(BaseModel):
     mtls_ca: str | None = Field(default=None)
 
 
-class ConfigOtvStubApi(BaseModel):
-    mock: bool = Field(default=False)
-    endpoint: str
-    timeout: int = Field(default=30, gt=0)
-    mtls_cert: str | None = Field(default=None)
-    mtls_key: str | None = Field(default=None)
-    mtls_ca: str | None = Field(default=None)
-
-    @model_validator(mode="after")
-    def present_when_not_mocking(self) -> "ConfigOtvStubApi":
-        if not self.mock and self.mtls_cert is None:
-            raise ValueError("mtls_cert must be provided when not in mock mode")
-        return self
-
-
-class ConfigLmr(BaseModel):
-    encryption_key: str
-
-
-class ConfigOtvStubUra(BaseModel):
-    otv_stub_certificate_path: str | None = Field(default=None)
-    otv_stub_ura_override: str | None = Field(default=None)
-
-    @model_validator(mode="after")
-    def validate_certificate_path(self) -> "ConfigOtvStubUra":
-        if self.otv_stub_certificate_path is None and self.otv_stub_ura_override is None:
-            raise ValueError("Either otv_stub_certificate_path or otv_stub_ura_override must be provided")
-        return self
-
-
 class ConfigUvicorn(BaseModel):
     swagger_enabled: bool = Field(default=False)
     docs_url: str = Field(default="/docs")
@@ -117,9 +86,6 @@ class Config(BaseModel):
     uvicorn: ConfigUvicorn
     pseudonym_api: ConfigPseudonymApi
     referral_api: ConfigReferralApi
-    otv_stub_api: ConfigOtvStubApi
-    otv_stub_certificate: ConfigOtvStubUra
-    lmr: ConfigLmr
 
 
 def read_ini_file(path: str) -> Any:

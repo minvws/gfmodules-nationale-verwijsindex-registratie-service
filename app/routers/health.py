@@ -7,7 +7,6 @@ from fastapi import APIRouter, Depends, status
 from app import container
 from app.services.metadata import MetadataService
 from app.services.nvi import NviService
-from app.services.OtvService.otv_stub_service import OtvStubService
 from app.services.pseudonym import PseudonymService
 
 logger = logging.getLogger(__name__)
@@ -23,22 +22,21 @@ def ok_or_error(value: bool) -> str:
     summary="Health Check",
     description=dedent("""
     Comprehensive health check for all dependent API services and components.
-    
+
     This endpoint performs health checks on all services required for the
     NVI Registration Service to function properly:
-    
+
     **Checked Components:**
     - **pseudonym_service**: Pseudonymization/de-pseudonymization service
     - **referral_service**: National Referral Index (NVI) API
     - **metadata_api**: Metadata service for system information
-    - **otv_stub_service**: OTV Permission Service for authorization
-    
+
     **Health Status:**
     - `ok`: Service is reachable and responding correctly
     - `error`: Service is unreachable or returning errors
-    
+
     The overall status is `ok` only if all components are healthy.
-    
+
     **Use Cases:**
     - Monitoring and alerting systems
     - container liveness/readiness probes
@@ -61,7 +59,6 @@ def ok_or_error(value: bool) -> str:
                                     "pseudonym_service": "ok",
                                     "referral_service": "ok",
                                     "metadata_api": "ok",
-                                    "otv_stub_service": "ok",
                                 },
                             },
                         },
@@ -73,7 +70,6 @@ def ok_or_error(value: bool) -> str:
                                     "pseudonym_service": "ok",
                                     "referral_service": "error",
                                     "metadata_api": "ok",
-                                    "otv_stub_service": "ok",
                                 },
                             },
                         },
@@ -89,13 +85,11 @@ def health(
     pseudonym_service: PseudonymService = Depends(container.get_pseudonym_service),
     referral_service: NviService = Depends(container.get_nvi_service),
     metadata_service: MetadataService = Depends(container.get_metadata_service),
-    otv_stub_service: OtvStubService = Depends(container.get_otv_service),
 ) -> Dict[str, Any]:
     components = {
         "pseudonym_service": ok_or_error(pseudonym_service.server_healthy()),
         "referral_service": ok_or_error(referral_service.server_healthy()),
         "metadata_api": ok_or_error(metadata_service.server_healthy()),
-        "otv_stub_service": ok_or_error(otv_stub_service.server_healthy()),
     }
     healthy = ok_or_error(all(value == "ok" for value in components.values()))
 
