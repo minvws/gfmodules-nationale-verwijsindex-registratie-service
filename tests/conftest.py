@@ -1,9 +1,7 @@
 from datetime import datetime
 from typing import Any, Dict, List
-from unittest.mock import MagicMock
 
 import pytest
-from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 from fhir.resources.R4B.bundle import Bundle
 from fhir.resources.R4B.imagingstudy import ImagingStudy
 from fhir.resources.R4B.patient import Patient
@@ -11,9 +9,10 @@ from fhir.resources.R4B.patient import Patient
 from app.config import ConfigPseudonymApi
 from app.data import BSN_SYSTEM
 from app.models.bsn import BSN
+from app.models.data_domain import DataDomain
 from app.models.metadata.params import MetadataResourceParams
 from app.models.pseudonym import Pseudonym, OprfPseudonymJWE
-from app.models.referrals import CreateReferralDTO, Referral, ReferralQueryDTO
+from app.models.referrals import ReferralQuery, CreateReferralRequest, ReferralEntity
 from app.models.update_scheme import BsnUpdateScheme
 from app.models.ura_number import UraNumber
 from app.services.api.fhir import FhirHttpService
@@ -74,17 +73,17 @@ def mock_url() -> str:
 
 
 @pytest.fixture
-def mock_ura_number() -> str:
-    return "12345678"
+def mock_ura_number() -> UraNumber:
+    return UraNumber("12345678")
 
 
 @pytest.fixture
-def data_domains() -> List[str]:
-    return ["ImagingStudy", "MedicationStatement"]
+def data_domains() -> List[DataDomain]:
+    return [DataDomain("ImagingStudy"), DataDomain("MedicationStatement")]
 
 
 @pytest.fixture
-def domains_map_service(data_domains: List[str]) -> DomainsMapService:
+def domains_map_service(data_domains: List[DataDomain]) -> DomainsMapService:
     return DomainsMapService(data_domains)
 
 
@@ -94,9 +93,9 @@ def fhir_http_service(mock_url: str) -> FhirHttpService:
 
 
 @pytest.fixture
-def pseudonym_service(mock_url: str, mock_ura_number: str) -> PseudonymService:
+def pseudonym_service(mock_url: str, mock_ura_number: UraNumber) -> PseudonymService:
     return PseudonymService(
-        provider_id=mock_ura_number,
+        provider_id=mock_ura_number.value,
         endpoint=mock_url,
         timeout=1,
         mtls_cert=None,
@@ -119,7 +118,7 @@ def metadata_service(mock_url: str) -> MetadataService:
 def registration_service(
     nvi_service: NviService,
     pseudonym_service: PseudonymService,
-    mock_ura_number: str,
+    mock_ura_number: UraNumber,
 ) -> ReferralRegistrationService:
     return ReferralRegistrationService(
         nvi_service=nvi_service,
@@ -149,13 +148,13 @@ def synchronizer(
 
 
 @pytest.fixture
-def referral_query() -> ReferralQueryDTO:
-    return ReferralQueryDTO(pseudonym="some_pseudonym", data_domain="some_domain", ura_number="1234566789")
+def referral_query() -> ReferralQuery:
+    return ReferralQuery(oprf_jwe="some_pseudonym", blind_factor="some_blind_fator", data_domain=DataDomain("some_domain"), ura_number=UraNumber("12345678"))
 
 
 @pytest.fixture
-def create_referral_dto(referral_query: ReferralQueryDTO) -> CreateReferralDTO:
-    return CreateReferralDTO(**referral_query.model_dump(), requesting_uzi_number="some_uzi_number")
+def create_referral_dto(referral_query: ReferralQuery) -> CreateReferralRequest:
+    return CreateReferralRequest(**referral_query.model_dump(), requesting_uzi_number="some_uzi_number")
 
 
 @pytest.fixture
@@ -179,26 +178,22 @@ def datetime_now() -> str:
 
 
 @pytest.fixture
-def mock_pseudonym() -> Pseudonym:
-    return Pseudonym(pseudonym="some_pseudonym")
-
-
-@pytest.fixture
 def mock_pseudonym_jwe() -> OprfPseudonymJWE:
     return OprfPseudonymJWE(jwe="some_pseudonym")
 
 
 @pytest.fixture
-def mock_referral(mock_ura_number: str, mock_pseudonym: Pseudonym) -> Referral:
-    return Referral(
-        pseudonym=mock_pseudonym.pseudonym,
-        data_domain="beeldbank",
+def mock_referral(mock_ura_number: UraNumber, mock_pseudonym_jwe: OprfPseudonymJWE) -> ReferralEntity:
+    return ReferralEntity(
         ura_number=mock_ura_number,
+        pseudonym=mock_pseudonym_jwe.jwe,
+        data_domain=DataDomain("beeldbank"),
+        organization_type="some_organization_type",
     )
 
 
 @pytest.fixture
-def bsn_update_scheme(mock_bsn_number: str, mock_referral: Referral) -> BsnUpdateScheme:
+def bsn_update_scheme(mock_bsn_number: str, mock_referral: ReferralEntity) -> BsnUpdateScheme:
     return BsnUpdateScheme(bsn=mock_bsn_number, referral=mock_referral)
 
 

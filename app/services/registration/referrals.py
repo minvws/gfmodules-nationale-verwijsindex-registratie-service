@@ -1,8 +1,10 @@
 import logging
 
 from app.models.bsn import BSN
+from app.models.data_domain import DataDomain
 from app.models.pseudonym import PseudonymRequest, PersonalIdentifier
-from app.models.referrals import CreateReferralDTO, Referral, ReferralQueryDTO
+from app.models.referrals import CreateReferralRequest, ReferralEntity, ReferralQuery
+from app.models.ura_number import UraNumber
 from app.services.nvi import NviService
 from app.services.oprf import OprfService
 from app.services.pseudonym import PseudonymService
@@ -20,14 +22,14 @@ class ReferralRegistrationService:
         self,
         nvi_service: NviService,
         pseudonym_service: PseudonymService,
-        ura_number: str,
+        ura_number: UraNumber,
     ) -> None:
         self.nvi_service = nvi_service
         self.pseudonym_service = pseudonym_service
         self._ura_number = ura_number
 
-    def register(self, bsn: BSN, data_domain: str) -> Referral | None:
-        recipient_organization = "ura:" + self._ura_number
+    def register(self, bsn: BSN, data_domain: DataDomain) -> ReferralEntity | None:
+        recipient_organization = "ura:" + self._ura_number.value
         recipient_scope = "nvi"
         personal_identifier = PersonalIdentifier(land_code="NL", type="BSN", value=str(bsn))
 
@@ -42,8 +44,9 @@ class ReferralRegistrationService:
         )
 
         referral = self.nvi_service.get_referrals(
-            ReferralQueryDTO(
-                pseudonym=pseudonym.jwe,
+            ReferralQuery(
+                oprf_jwe=pseudonym.jwe,
+                blind_factor=blind_factor,
                 data_domain=data_domain,
                 ura_number=self._ura_number,
             )
@@ -53,18 +56,13 @@ class ReferralRegistrationService:
             logger.info(f"referral for {pseudonym.jwe} and data domain {data_domain} already registered")
             return None
 
-        # Encrypt the resource with symmetric key
-        encrypted_lmr_id = self._lmr_encryption_service.encrypt(str(bsn))
-
         new_referral = self.nvi_service.submit(
-            CreateReferralDTO(
-                pseudonym=pseudonym.jwe,
+            CreateReferralRequest(
+                oprf_jwe=pseudonym.jwe,
+                blind_factor=blind_factor,
                 data_domain=data_domain,
-                requesting_uzi_number=self._ura_number,
                 ura_number=self._ura_number,
-                encrypted_lmr_id=encrypted_lmr_id,
-                oprf_blinded_jwe=pseudonym,
-                oprf_blind=blind_factor,
+                requesting_uzi_number="todo-requesting-uzi-number",  # TODO: get from config
             )
         )
 

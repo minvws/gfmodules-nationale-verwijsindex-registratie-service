@@ -51,7 +51,7 @@ def container_config(binder: inject.Binder) -> None:
     referral_registration_service = ReferralRegistrationService(
         nvi_service=nvi_service,
         pseudonym_service=pseudonym_service,
-        ura_number=ura_number.value,
+        ura_number=ura_number,
     )
 
     bundle_registration_service = BundleRegistrationService(referrals_service=referral_registration_service)

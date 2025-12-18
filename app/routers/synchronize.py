@@ -5,6 +5,7 @@ from urllib.parse import quote
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 
 from app.container import get_synchronizer
+from app.models.data_domain import DataDomain
 from app.models.update_scheme import UpdateScheme
 from app.services.synchronization.synchronizer import Synchronizer
 
@@ -17,17 +18,17 @@ router = APIRouter(prefix="/synchronize", tags=["Synchronizer"])
     summary="Synchronize Data Domain",
     description=dedent("""
     Synchronize local referrals with the National Referral Index (NVI) for one or all domains.
-    
+
     This endpoint triggers a single synchronization of referral data into the NVI service.
     It can operate on a specific data domain or synchronize all configured domains.
-    
+
     Automatically pulls data from FHIR-store and creates referrals in the NVI service accordingly.
-    
+
     **Data Domains:**
     Data domains represent different categories or sources of referral data.
     Each domain maintains its own synchronization state and timestamp.
     Data domains must be enabled and pre-configured in the system.
-    
+
     **Use Cases:**
     - Keep NVI referrals up-to-date with latest local data
     - On-demand refresh for specific domains
@@ -98,8 +99,8 @@ def synchronize_domain(
         allowed_domains = service.get_allowed_domains()
         if data_domain not in allowed_domains:
             raise HTTPException(
-                status_code=400, detail=f"Invalid data_domain. Must be one of: {', '.join(allowed_domains)}"
+                status_code=400, detail=f"Invalid data_domain. Must be one of: {', '.join(str(data_domain) for data_domain in allowed_domains)}"
             )
-        return service.synchronize_domain(quote(data_domain))
+        return service.synchronize_domain(DataDomain(quote(data_domain)))
     else:
         return service.synchronize_all_domains()

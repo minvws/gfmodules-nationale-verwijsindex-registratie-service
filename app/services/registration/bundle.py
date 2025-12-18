@@ -11,6 +11,7 @@ from app.data import (
 )
 from app.exceptions.fhir_exception import FHIRException
 from app.models.bsn import BSN
+from app.models.data_domain import DataDomain
 from app.services.fhir.bunde_entry_response import (
     KnownBundleRegistrationOutcome,
     create_known_response,
@@ -129,7 +130,7 @@ class BundleRegistrationService:
         except ValueError:
             return create_known_response(KnownBundleRegistrationOutcome.ERROR, "Invalid BSN number")
 
-        referral = self._referrals_service.register(bsn=bsn, data_domain=res.get_resource_type())
+        referral = self._referrals_service.register(bsn=bsn, data_domain=DataDomain(res.get_resource_type()))
         if referral is None:
             return create_known_response(KnownBundleRegistrationOutcome.WARNING, "Record already exists")
 

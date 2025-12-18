@@ -1,17 +1,30 @@
-from app.models.pseudonym import OprfPseudonymJWE, Pseudonym
+from pydantic import BaseModel
+
+from app.models.data_domain import DataDomain
+from app.models.ura_number import UraNumber
 
 
-class Referral(Pseudonym):
-    data_domain: str
-    ura_number: str
+class ReferralRequest(BaseModel):
+    oprf_jwe: str
+    blind_factor: str
+    data_domain: DataDomain
 
 
-class ReferralQueryDTO(Referral):
-    pass
-
-
-class CreateReferralDTO(Referral):
+class CreateReferralRequest(ReferralRequest):
+    ura_number: UraNumber
     requesting_uzi_number: str
-    encrypted_lmr_id: str
-    oprf_blinded_jwe: OprfPseudonymJWE
-    oprf_blind: str
+
+
+class ReferralQuery(BaseModel):
+    oprf_jwe: str | None = None
+    blind_factor: str | None = None
+    data_domain: DataDomain | None = None
+    ura_number: UraNumber
+
+
+class ReferralEntity(BaseModel):
+    ura_number: UraNumber
+    pseudonym: str
+    data_domain: DataDomain
+    organization_type: str
+

@@ -1,6 +1,6 @@
 import logging
 
-from app.models.referrals import CreateReferralDTO, Referral, ReferralQueryDTO
+from app.models.referrals import ReferralQuery, ReferralEntity, CreateReferralRequest
 from app.services.api.http_service import GfHttpService
 
 logger = logging.getLogger(__name__)
@@ -23,7 +23,7 @@ class NviService:
             mtls_ca=mtls_ca,
         )
 
-    def get_referrals(self, payload: ReferralQueryDTO) -> Referral | None:
+    def get_referrals(self, payload: ReferralQuery) -> ReferralEntity | None:
         try:
             response = self.http_service.do_request(
                 method="POST",
@@ -35,13 +35,13 @@ class NviService:
             return None
 
         data = response.json()
-        referrals = Referral(**data[0])
+        referrals = ReferralEntity(**data[0])
         return referrals
 
-    def submit(self, data: CreateReferralDTO) -> Referral:
+    def submit(self, data: CreateReferralRequest) -> ReferralEntity:
         response = self.http_service.do_request(method="POST", sub_route="registrations", data=data.model_dump())
         logging.info(f"Updating NVI with new referrals: {data}")
-        new_referral = Referral(**response.json())
+        new_referral = ReferralEntity(**response.json())
         return new_referral
 
     def server_healthy(self) -> bool:
