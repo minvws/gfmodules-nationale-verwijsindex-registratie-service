@@ -6,14 +6,11 @@ from app.config import (
     Config,
     ConfigApp,
     ConfigMetadataApi,
-    ConfigOtvStubApi,
-    ConfigOtvStubUra,
     ConfigPseudonymApi,
     ConfigReferralApi,
     ConfigScheduler,
     ConfigUvicorn,
     LogLevel,
-    ConfigLmr,
 )
 
 
@@ -43,17 +40,4 @@ def get_test_config() -> Config:
             mtls_ca=None,
         ),
         scheduler=ConfigScheduler(scheduled_delay=5),
-        otv_stub_api=ConfigOtvStubApi(
-            mock=True,
-            endpoint="http://example.com",
-            timeout=30,
-            mtls_cert=None,
-            mtls_key=None,
-            mtls_ca=None,
-        ),
-        otv_stub_certificate=ConfigOtvStubUra(
-            otv_stub_certificate_path=None,
-            otv_stub_ura_override="12345678",
-        ),
-        lmr=ConfigLmr(encryption_key=base64.urlsafe_b64encode(AESGCM.generate_key(bit_length=128)).decode()),
     )

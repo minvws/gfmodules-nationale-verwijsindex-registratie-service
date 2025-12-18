@@ -1,96 +1,149 @@
-<svg xmlns="http://www.w3.org/2000/svg"
-    xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css" data-diagram-type="SEQUENCE" height="499px" preserveAspectRatio="none" style="width:430px;height:499px;background:#FFFFFF;" version="1.1" viewBox="0 0 430 499" width="430px" zoomAndPan="magnify">
-    <defs/>
-    <g>
-        <g>
-            <title>Referral Manager</title>
-            <rect fill="#000000" fill-opacity="0.00000" height="337.3281" width="8" x="64.8398" y="81.2969"/>
-            <line style="stroke:#181818;stroke-width:0.5;stroke-dasharray:5,5;" x1="68" x2="68" y1="81.2969" y2="418.625"/>
-        </g>
-        <g>
-            <title>PRS</title>
-            <rect fill="#000000" fill-opacity="0.00000" height="337.3281" width="8" x="345.4922" y="81.2969"/>
-            <line style="stroke:#181818;stroke-width:0.5;stroke-dasharray:5,5;" x1="348.9639" x2="348.9639" y1="81.2969" y2="418.625"/>
-        </g>
-        <g>
-            <title>NVI</title>
-            <rect fill="#000000" fill-opacity="0.00000" height="337.3281" width="8" x="395.1099" y="81.2969"/>
-            <line style="stroke:#181818;stroke-width:0.5;stroke-dasharray:5,5;" x1="399.0205" x2="399.0205" y1="81.2969" y2="418.625"/>
-        </g>
-        <g class="participant participant-head" data-participant="RM">
-            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="121.6797" x="5" y="77.9951">Referral Manager</text>
-            <ellipse cx="68.8398" cy="13.5" fill="#E2E2F0" rx="8" ry="8" style="stroke:#181818;stroke-width:0.5;"/>
-            <path d="M68.8398,21.5 L68.8398,48.5 M55.8398,29.5 L81.8398,29.5 M68.8398,48.5 L55.8398,63.5 M68.8398,48.5 L81.8398,63.5" fill="none" style="stroke:#181818;stroke-width:0.5;"/>
-        </g>
-        <g class="participant participant-tail" data-participant="RM">
-            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="121.6797" x="5" y="430.6201">Referral Manager</text>
-            <ellipse cx="68.8398" cy="442.4219" fill="#E2E2F0" rx="8" ry="8" style="stroke:#181818;stroke-width:0.5;"/>
-            <path d="M68.8398,450.4219 L68.8398,477.4219 M55.8398,458.4219 L81.8398,458.4219 M68.8398,477.4219 L55.8398,492.4219 M68.8398,477.4219 L81.8398,492.4219" fill="none" style="stroke:#181818;stroke-width:0.5;"/>
-        </g>
-        <g class="participant participant-head" data-participant="PRS">
-            <rect fill="#E2E2F0" height="30.2969" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="41.0566" x="328.9639" y="50"/>
-            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="27.0566" x="335.9639" y="69.9951">PRS</text>
-        </g>
-        <g class="participant participant-tail" data-participant="PRS">
-            <rect fill="#E2E2F0" height="30.2969" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="41.0566" x="328.9639" y="417.625"/>
-            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="27.0566" x="335.9639" y="437.6201">PRS</text>
-        </g>
-        <g class="participant participant-head" data-participant="NVI">
-            <rect fill="#E2E2F0" height="30.2969" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="38.1787" x="380.0205" y="50"/>
-            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="24.1787" x="387.0205" y="69.9951">NVI</text>
-        </g>
-        <g class="participant participant-tail" data-participant="NVI">
-            <rect fill="#E2E2F0" height="30.2969" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="38.1787" x="380.0205" y="417.625"/>
-            <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="24.1787" x="387.0205" y="437.6201">NVI</text>
-        </g>
-        <g class="message" data-participant-1="RM" data-participant-2="PRS">
-            <polygon fill="#181818" points="337.4922,123.5625,347.4922,127.5625,337.4922,131.5625,341.4922,127.5625" style="stroke:#181818;stroke-width:1;"/>
-            <line style="stroke:#181818;stroke-width:1;" x1="68.8398" x2="343.4922" y1="127.5625" y2="127.5625"/>
-            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="139.2993" x="75.8398" y="107.3638">Register organization</text>
-            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="135.1733" x="75.8398" y="122.4966">+ register certificate</text>
-        </g>
-        <g class="message" data-participant-1="PRS" data-participant-2="RM">
-            <polygon fill="#181818" points="79.8398,152.6953,69.8398,156.6953,79.8398,160.6953,75.8398,156.6953" style="stroke:#181818;stroke-width:1;"/>
-            <line style="stroke:#181818;stroke-width:1;stroke-dasharray:2,2;" x1="73.8398" x2="348.4922" y1="156.6953" y2="156.6953"/>
-            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="148.897" x="85.8398" y="151.6294">Registration confirmed</text>
-        </g>
-        <rect fill="#EEEEEE" height="3" style="stroke:#EEEEEE;stroke-width:1;" width="423.1992" x="0" y="185.2617"/>
-        <line style="stroke:#000000;stroke-width:1;" x1="0" x2="423.1992" y1="185.2617" y2="185.2617"/>
-        <line style="stroke:#000000;stroke-width:1;" x1="0" x2="423.1992" y1="188.2617" y2="188.2617"/>
-        <rect fill="#EEEEEE" height="23.1328" style="stroke:#000000;stroke-width:2;" width="195.0669" x="114.0662" y="174.6953"/>
-        <text fill="#000000" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacing" textLength="176.541" x="120.0662" y="190.7622">Per referral registration</text>
-        <g class="message" data-participant-1="RM" data-participant-2="RM">
-            <line style="stroke:#181818;stroke-width:1;" x1="68.8398" x2="110.8398" y1="228.9609" y2="228.9609"/>
-            <line style="stroke:#181818;stroke-width:1;" x1="110.8398" x2="110.8398" y1="228.9609" y2="241.9609"/>
-            <line style="stroke:#181818;stroke-width:1;" x1="69.8398" x2="110.8398" y1="241.9609" y2="241.9609"/>
-            <polygon fill="#181818" points="79.8398,237.9609,69.8398,241.9609,79.8398,245.9609,75.8398,241.9609" style="stroke:#181818;stroke-width:1;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="217.0962" x="75.8398" y="223.895">Encrypt internal patient identifier</text>
-        </g>
-        <g class="message" data-participant-1="RM" data-participant-2="RM">
-            <line style="stroke:#181818;stroke-width:1;" x1="68.8398" x2="110.8398" y1="271.0938" y2="271.0938"/>
-            <line style="stroke:#181818;stroke-width:1;" x1="110.8398" x2="110.8398" y1="271.0938" y2="284.0938"/>
-            <line style="stroke:#181818;stroke-width:1;" x1="69.8398" x2="110.8398" y1="284.0938" y2="284.0938"/>
-            <polygon fill="#181818" points="79.8398,280.0938,69.8398,284.0938,79.8398,288.0938,75.8398,284.0938" style="stroke:#181818;stroke-width:1;"/>
-            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="266.6523" x="75.8398" y="266.0278">Blind BSN (create blinded input + factor)</text>
-        </g>
-        <g class="message" data-participant-1="RM" data-participant-2="PRS">
-            <polygon fill="#181818" points="337.4922,309.2266,347.4922,313.2266,337.4922,317.2266,341.4922,313.2266" style="stroke:#181818;stroke-width:1;"/>
-            <line style="stroke:#181818;stroke-width:1;" x1="68.8398" x2="343.4922" y1="313.2266" y2="313.2266"/>
-            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="215.2173" x="75.8398" y="308.1606">Request OPRF-JWE (blinded BSN)</text>
-        </g>
-        <g class="message" data-participant-1="PRS" data-participant-2="RM">
-            <polygon fill="#181818" points="79.8398,338.3594,69.8398,342.3594,79.8398,346.3594,75.8398,342.3594" style="stroke:#181818;stroke-width:1;"/>
-            <line style="stroke:#181818;stroke-width:1;stroke-dasharray:2,2;" x1="73.8398" x2="348.4922" y1="342.3594" y2="342.3594"/>
-            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="112.2583" x="85.8398" y="337.2935">Return OPRF-JWE</text>
-        </g>
-        <g class="message" data-participant-1="RM" data-participant-2="NVI">
-            <polygon fill="#181818" points="387.1099,367.4922,397.1099,371.4922,387.1099,375.4922,391.1099,371.4922" style="stroke:#181818;stroke-width:1;"/>
-            <line style="stroke:#181818;stroke-width:1;" x1="68.8398" x2="393.1099" y1="371.4922" y2="371.4922"/>
-            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="149.6333" x="75.8398" y="366.4263">Create referral request</text>
-        </g>
-        <g class="message" data-participant-1="NVI" data-participant-2="RM">
-            <polygon fill="#181818" points="79.8398,396.625,69.8398,400.625,79.8398,404.625,75.8398,400.625" style="stroke:#181818;stroke-width:1;"/>
-            <line style="stroke:#181818;stroke-width:1;stroke-dasharray:2,2;" x1="73.8398" x2="398.1099" y1="400.625" y2="400.625"/>
-            <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="169.2729" x="85.8398" y="395.5591">Referral created response</text>
-        </g></g>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" contentStyleType="text/css"
+     data-diagram-type="SEQUENCE" height="457px" preserveAspectRatio="none"
+     style="width:430px;height:457px;background:#FFFFFF;" version="1.1" viewBox="0 0 430 457" width="430px"
+     zoomAndPan="magnify">
+  <defs/>
+  <g>
+    <g class="participant-lifeline" data-entity-uid="part1" data-qualified-name="RM" id="part1-lifeline">
+      <g>
+        <title>Referral Manager</title>
+        <rect fill="#000000" fill-opacity="0.00000" height="295.1953" width="8" x="64.8398" y="81.2969"/>
+        <line style="stroke:#181818;stroke-width:0.5;stroke-dasharray:5,5;" x1="68" x2="68" y1="81.2969" y2="376.4922"/>
+      </g>
+    </g>
+    <g class="participant-lifeline" data-entity-uid="part2" data-qualified-name="PRS" id="part2-lifeline">
+      <g>
+        <title>PRS</title>
+        <rect fill="#000000" fill-opacity="0.00000" height="295.1953" width="8" x="345.4922" y="81.2969"/>
+        <line style="stroke:#181818;stroke-width:0.5;stroke-dasharray:5,5;" x1="348.9639" x2="348.9639" y1="81.2969"
+              y2="376.4922"/>
+      </g>
+    </g>
+    <g class="participant-lifeline" data-entity-uid="part3" data-qualified-name="NVI" id="part3-lifeline">
+      <g>
+        <title>NVI</title>
+        <rect fill="#000000" fill-opacity="0.00000" height="295.1953" width="8" x="395.1099" y="81.2969"/>
+        <line style="stroke:#181818;stroke-width:0.5;stroke-dasharray:5,5;" x1="399.0205" x2="399.0205" y1="81.2969"
+              y2="376.4922"/>
+      </g>
+    </g>
+    <g class="participant participant-head" data-entity-uid="part1" data-qualified-name="RM" id="part1-head">
+      <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="121.6797" x="5"
+            y="77.9951">Referral Manager
+      </text>
+      <ellipse cx="68.8398" cy="13.5" fill="#E2E2F0" rx="8" ry="8" style="stroke:#181818;stroke-width:0.5;"/>
+      <path
+        d="M68.8398,21.5 L68.8398,48.5 M55.8398,29.5 L81.8398,29.5 M68.8398,48.5 L55.8398,63.5 M68.8398,48.5 L81.8398,63.5"
+        fill="none" style="stroke:#181818;stroke-width:0.5;"/>
+    </g>
+    <g class="participant participant-tail" data-entity-uid="part1" data-qualified-name="RM" id="part1-tail">
+      <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="121.6797" x="5"
+            y="388.4873">Referral Manager
+      </text>
+      <ellipse cx="68.8398" cy="400.2891" fill="#E2E2F0" rx="8" ry="8" style="stroke:#181818;stroke-width:0.5;"/>
+      <path
+        d="M68.8398,408.2891 L68.8398,435.2891 M55.8398,416.2891 L81.8398,416.2891 M68.8398,435.2891 L55.8398,450.2891 M68.8398,435.2891 L81.8398,450.2891"
+        fill="none" style="stroke:#181818;stroke-width:0.5;"/>
+    </g>
+    <g class="participant participant-head" data-entity-uid="part2" data-qualified-name="PRS" id="part2-head">
+      <rect fill="#E2E2F0" height="30.2969" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="41.0566"
+            x="328.9639" y="50"/>
+      <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="27.0566"
+            x="335.9639" y="69.9951">PRS
+      </text>
+    </g>
+    <g class="participant participant-tail" data-entity-uid="part2" data-qualified-name="PRS" id="part2-tail">
+      <rect fill="#E2E2F0" height="30.2969" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="41.0566"
+            x="328.9639" y="375.4922"/>
+      <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="27.0566"
+            x="335.9639" y="395.4873">PRS
+      </text>
+    </g>
+    <g class="participant participant-head" data-entity-uid="part3" data-qualified-name="NVI" id="part3-head">
+      <rect fill="#E2E2F0" height="30.2969" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="38.1787"
+            x="380.0205" y="50"/>
+      <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="24.1787"
+            x="387.0205" y="69.9951">NVI
+      </text>
+    </g>
+    <g class="participant participant-tail" data-entity-uid="part3" data-qualified-name="NVI" id="part3-tail">
+      <rect fill="#E2E2F0" height="30.2969" rx="2.5" ry="2.5" style="stroke:#181818;stroke-width:0.5;" width="38.1787"
+            x="380.0205" y="375.4922"/>
+      <text fill="#000000" font-family="sans-serif" font-size="14" lengthAdjust="spacing" textLength="24.1787"
+            x="387.0205" y="395.4873">NVI
+      </text>
+    </g>
+    <g class="message" data-entity-1="part1" data-entity-2="part2" id="msg1">
+      <polygon fill="#181818" points="337.4922,123.5625,347.4922,127.5625,337.4922,131.5625,341.4922,127.5625"
+               style="stroke:#181818;stroke-width:1;"/>
+      <line style="stroke:#181818;stroke-width:1;" x1="68.8398" x2="343.4922" y1="127.5625" y2="127.5625"/>
+      <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="139.2993"
+            x="75.8398" y="107.3638">Register organization
+      </text>
+      <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="135.1733"
+            x="75.8398" y="122.4966">+ register certificate
+      </text>
+    </g>
+    <g class="message" data-entity-1="part2" data-entity-2="part1" id="msg2">
+      <polygon fill="#181818" points="79.8398,152.6953,69.8398,156.6953,79.8398,160.6953,75.8398,156.6953"
+               style="stroke:#181818;stroke-width:1;"/>
+      <line style="stroke:#181818;stroke-width:1;stroke-dasharray:2,2;" x1="73.8398" x2="348.4922" y1="156.6953"
+            y2="156.6953"/>
+      <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="148.897"
+            x="85.8398" y="151.6294">Registration confirmed
+      </text>
+    </g>
+    <rect fill="#EEEEEE" height="3" style="stroke:#EEEEEE;stroke-width:1;" width="423.1992" x="0" y="185.2617"/>
+    <line style="stroke:#000000;stroke-width:1;" x1="0" x2="423.1992" y1="185.2617" y2="185.2617"/>
+    <line style="stroke:#000000;stroke-width:1;" x1="0" x2="423.1992" y1="188.2617" y2="188.2617"/>
+    <rect fill="#EEEEEE" height="23.1328" style="stroke:#000000;stroke-width:2;" width="195.0669" x="114.0662"
+          y="174.6953"/>
+    <text fill="#000000" font-family="sans-serif" font-size="13" font-weight="bold" lengthAdjust="spacing"
+          textLength="176.541" x="120.0662" y="190.7622">Per referral registration
+    </text>
+    <g class="message" data-entity-1="part1" data-entity-2="part1" id="msg3">
+      <line style="stroke:#181818;stroke-width:1;" x1="68.8398" x2="110.8398" y1="228.9609" y2="228.9609"/>
+      <line style="stroke:#181818;stroke-width:1;" x1="110.8398" x2="110.8398" y1="228.9609" y2="241.9609"/>
+      <line style="stroke:#181818;stroke-width:1;" x1="69.8398" x2="110.8398" y1="241.9609" y2="241.9609"/>
+      <polygon fill="#181818" points="79.8398,237.9609,69.8398,241.9609,79.8398,245.9609,75.8398,241.9609"
+               style="stroke:#181818;stroke-width:1;"/>
+      <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="266.6523"
+            x="75.8398" y="223.895">Blind BSN (create blinded input + factor)
+      </text>
+    </g>
+    <g class="message" data-entity-1="part1" data-entity-2="part2" id="msg4">
+      <polygon fill="#181818" points="337.4922,267.0938,347.4922,271.0938,337.4922,275.0938,341.4922,271.0938"
+               style="stroke:#181818;stroke-width:1;"/>
+      <line style="stroke:#181818;stroke-width:1;" x1="68.8398" x2="343.4922" y1="271.0938" y2="271.0938"/>
+      <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="215.2173"
+            x="75.8398" y="266.0278">Request OPRF-JWE (blinded BSN)
+      </text>
+    </g>
+    <g class="message" data-entity-1="part2" data-entity-2="part1" id="msg5">
+      <polygon fill="#181818" points="79.8398,296.2266,69.8398,300.2266,79.8398,304.2266,75.8398,300.2266"
+               style="stroke:#181818;stroke-width:1;"/>
+      <line style="stroke:#181818;stroke-width:1;stroke-dasharray:2,2;" x1="73.8398" x2="348.4922" y1="300.2266"
+            y2="300.2266"/>
+      <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="112.2583"
+            x="85.8398" y="295.1606">Return OPRF-JWE
+      </text>
+    </g>
+    <g class="message" data-entity-1="part1" data-entity-2="part3" id="msg6">
+      <polygon fill="#181818" points="387.1099,325.3594,397.1099,329.3594,387.1099,333.3594,391.1099,329.3594"
+               style="stroke:#181818;stroke-width:1;"/>
+      <line style="stroke:#181818;stroke-width:1;" x1="68.8398" x2="393.1099" y1="329.3594" y2="329.3594"/>
+      <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="149.6333"
+            x="75.8398" y="324.2935">Create referral request
+      </text>
+    </g>
+    <g class="message" data-entity-1="part3" data-entity-2="part1" id="msg7">
+      <polygon fill="#181818" points="79.8398,354.4922,69.8398,358.4922,79.8398,362.4922,75.8398,358.4922"
+               style="stroke:#181818;stroke-width:1;"/>
+      <line style="stroke:#181818;stroke-width:1;stroke-dasharray:2,2;" x1="73.8398" x2="398.1099" y1="358.4922"
+            y2="358.4922"/>
+      <text fill="#000000" font-family="sans-serif" font-size="13" lengthAdjust="spacing" textLength="169.2729"
+            x="85.8398" y="353.4263">Referral created response
+      </text>
+    </g><!--SRC=[NP31QiCm44Jl-eh1boG4_K31FQIqa88Jeq1xwKMLrqQGh9sLVEdNLtBYukOasDatCrhhOYye3BKaOi-eBDkEf80DC9KQh4Jl_60vegZDQPgdzxzm-DXFGdgLMa5hZIEJZlv221J78O-KgQ2VCumd6EfyY2JefRFiVspqFN_n5Z8BZb90wvsDf3AZ4viSPbGc0gxdrik56gNA4dNYPFw9BFVAKjtp9u_TsNE3tUc0jHDA4VZE4shWUHWZjcXjFin6FRI-ZXGYZhLvq- -VhrZFMBBQFDQCe_3VwcoKJfJ4brleekjahBAwSBYhjufDsWf3pu5-0G00]-->
+  </g>
 </svg>

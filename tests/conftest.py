@@ -16,14 +16,10 @@ from app.models.pseudonym import Pseudonym
 from app.models.referrals import CreateReferralDTO, Referral, ReferralQueryDTO
 from app.models.update_scheme import BsnUpdateScheme
 from app.models.ura_number import UraNumber
-from app.services.aes_encryption_service import AesEncryptionService
 from app.services.api.fhir import FhirHttpService
 from app.services.api.http_service import HttpService
-from app.services.authorization_check_service import AuthorizationCheckService
 from app.services.metadata import MetadataService
 from app.services.nvi import NviService
-from app.services.OtvService.interface import OtvService
-from app.services.OtvService.otv_stub_service import OtvStubService
 from app.services.pseudonym import PseudonymService
 from app.services.registration.bundle import BundleRegistrationService
 from app.services.registration.referrals import ReferralRegistrationService
@@ -69,34 +65,6 @@ def prs_registration_service(
     return PrsRegistrationService(
         conf=config_pseudonym_api,
         ura_number=ura_number,
-    )
-
-
-@pytest.fixture
-def mock_otv_stub_endpoint() -> str:
-    return "https://example.com/otv-stub"
-
-
-@pytest.fixture
-def otv_service(mock_otv_stub_endpoint: str) -> OtvService:
-    return OtvStubService(
-        endpoint=mock_otv_stub_endpoint,
-        timeout=1,
-        mtls_cert="path/to/cert.pem",
-        mtls_key=None,
-        mtls_ca=None,
-    )
-
-
-@pytest.fixture
-def auth_check_service(
-    mock_ura_number: str,
-) -> AuthorizationCheckService:
-    return AuthorizationCheckService(
-        metadata_service=MagicMock(spec=MetadataService),
-        otv_service=MagicMock(spec=OtvService),
-        pseudonym_service=MagicMock(spec=PseudonymService),
-        otv_ura=UraNumber(mock_ura_number),
     )
 
 
@@ -148,22 +116,15 @@ def metadata_service(mock_url: str) -> MetadataService:
 
 
 @pytest.fixture
-def lmr_encryption_service() -> AesEncryptionService:
-    return AesEncryptionService(key=AESGCM.generate_key(bit_length=128))
-
-
-@pytest.fixture
 def registration_service(
     nvi_service: NviService,
     pseudonym_service: PseudonymService,
-    lmr_encryption_service: AesEncryptionService,
     mock_ura_number: str,
 ) -> ReferralRegistrationService:
     return ReferralRegistrationService(
         nvi_service=nvi_service,
         pseudonym_service=pseudonym_service,
         ura_number=mock_ura_number,
-        lmr_encryption_service=lmr_encryption_service,
     )
 
 

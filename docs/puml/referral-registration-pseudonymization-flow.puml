@@ -9,7 +9,6 @@ PRS --> RM : Registration confirmed
 
 == Per referral registration ==
 
-RM -> RM : Encrypt internal patient identifier
 RM -> RM : Blind BSN (create blinded input + factor)
 
 RM -> PRS : Request OPRF-JWE (blinded BSN)
