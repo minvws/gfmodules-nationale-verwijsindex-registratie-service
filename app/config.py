@@ -43,7 +43,7 @@ class ConfigMetadataApi(BaseModel):
     timeout: int = Field(default=30, gt=0)
     mtls_cert: str | None = Field(default=None)
     mtls_key: str | None = Field(default=None)
-    mtls_ca: str | None = Field(default=None)
+    verify_ca: str | bool = Field(default=True)
 
 
 class ConfigPseudonymApi(BaseModel):
@@ -52,7 +52,7 @@ class ConfigPseudonymApi(BaseModel):
     timeout: int = Field(default=30, gt=0)
     mtls_cert: str | None = Field(default=None)
     mtls_key: str | None = Field(default=None)
-    mtls_ca: str | None = Field(default=None)
+    verify_ca: str | bool = Field(default=True)
 
 
 class ConfigReferralApi(BaseModel):
@@ -61,7 +61,7 @@ class ConfigReferralApi(BaseModel):
     timeout: int = Field(default=30, gt=0)
     mtls_cert: str | None = Field(default=None)
     mtls_key: str | None = Field(default=None)
-    mtls_ca: str | None = Field(default=None)
+    verify_ca: str | bool = Field(default=True)
 
 
 class ConfigUvicorn(BaseModel):

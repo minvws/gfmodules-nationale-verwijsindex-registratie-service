@@ -36,7 +36,7 @@ def http_service(mock_url: str) -> HttpService:
         timeout=1,
         mtls_cert=None,
         mtls_key=None,
-        mtls_ca=None,
+        verify_ca=True,
     )
 
 
@@ -47,7 +47,7 @@ def config_pseudonym_api() -> ConfigPseudonymApi:
         timeout=5,
         mtls_cert="/path/to/cert.pem",
         mtls_key="/path/to/key.pem",
-        mtls_ca="/path/to/ca.pem",
+        verify_ca="/path/to/ca.pem",
         mock=False,
     )
 
@@ -90,7 +90,7 @@ def domains_map_service(data_domains: List[str]) -> DomainsMapService:
 
 @pytest.fixture
 def fhir_http_service(mock_url: str) -> FhirHttpService:
-    return FhirHttpService(endpoint=mock_url, timeout=1, mtls_ca=None, mtls_cert=None, mtls_key=None)
+    return FhirHttpService(endpoint=mock_url, timeout=1, verify_ca=True, mtls_cert=None, mtls_key=None)
 
 
 @pytest.fixture
@@ -101,18 +101,18 @@ def pseudonym_service(mock_url: str, mock_ura_number: str) -> PseudonymService:
         timeout=1,
         mtls_cert=None,
         mtls_key=None,
-        mtls_ca=None,
+        verify_ca=True,
     )
 
 
 @pytest.fixture
 def nvi_service(mock_url: str) -> NviService:
-    return NviService(endpoint=mock_url, timeout=1, mtls_cert=None, mtls_key=None, mtls_ca=None)
+    return NviService(endpoint=mock_url, timeout=1, mtls_cert=None, mtls_key=None, verify_ca=True)
 
 
 @pytest.fixture
 def metadata_service(mock_url: str) -> MetadataService:
-    return MetadataService(endpoint=mock_url, timeout=1, mtls_cert=None, mtls_key=None, mtls_ca=None)
+    return MetadataService(endpoint=mock_url, timeout=1, mtls_cert=None, mtls_key=None, verify_ca=True)
 
 
 @pytest.fixture
