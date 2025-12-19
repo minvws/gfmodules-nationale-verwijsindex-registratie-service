@@ -1,9 +1,7 @@
 from datetime import datetime
 from typing import Any, Dict, List
-from unittest.mock import MagicMock
 
 import pytest
-from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 from fhir.resources.R4B.bundle import Bundle
 from fhir.resources.R4B.imagingstudy import ImagingStudy
 from fhir.resources.R4B.patient import Patient
@@ -125,6 +123,7 @@ def registration_service(
         nvi_service=nvi_service,
         pseudonym_service=pseudonym_service,
         ura_number=mock_ura_number,
+        default_organization_type="hospital",
     )
 
 
@@ -155,7 +154,9 @@ def referral_query() -> ReferralQueryDTO:
 
 @pytest.fixture
 def create_referral_dto(referral_query: ReferralQueryDTO) -> CreateReferralDTO:
-    return CreateReferralDTO(**referral_query.model_dump(), requesting_uzi_number="some_uzi_number")
+    return CreateReferralDTO(
+        **referral_query.model_dump(), requesting_uzi_number="some_uzi_number", organization_type="hospital"
+    )
 
 
 @pytest.fixture

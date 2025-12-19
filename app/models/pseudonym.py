@@ -10,4 +10,3 @@ class Pseudonym(BaseModel):
 class PseudonymCreateDto(BaseModel):
     bsn: BSN
     provider_id: str | None = None
-

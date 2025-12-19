@@ -5,6 +5,8 @@ loglevel=debug
 provider_id=4af95a5f-3663-4832-b080-8ba1548e78f5
 # List of FHIR Resource types that the application is going to register patients from
 data_domains = ImagingStudy, MedicationStatement
+# Default type of this registering organization
+default_organization_type = hospital
 
 [scheduler]
 # the amount of seconds the update will run in the background

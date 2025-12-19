@@ -20,10 +20,12 @@ class ReferralRegistrationService:
         nvi_service: NviService,
         pseudonym_service: PseudonymService,
         ura_number: str,
+        default_organization_type: str,
     ) -> None:
         self.nvi_service = nvi_service
         self.pseudonym_service = pseudonym_service
         self._ura_number = ura_number
+        self._default_organization_type = default_organization_type
 
     def register(self, bsn: BSN, data_domain: str) -> Referral | None:
         pseudonym = self.pseudonym_service.submit(PseudonymCreateDto(bsn=bsn))
@@ -45,6 +47,7 @@ class ReferralRegistrationService:
                 data_domain=data_domain,
                 requesting_uzi_number=self._ura_number,
                 ura_number=self._ura_number,
+                organization_type=self._default_organization_type,
             )
         )
 

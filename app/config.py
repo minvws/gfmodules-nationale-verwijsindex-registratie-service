@@ -3,7 +3,7 @@ import os
 from enum import Enum
 from typing import Any, List
 
-from pydantic import BaseModel, Field, field_validator, model_validator
+from pydantic import BaseModel, Field, field_validator
 
 _PATH = "app.conf"
 _CONFIG = None
@@ -22,6 +22,7 @@ class ConfigApp(BaseModel):
     loglevel: LogLevel = Field(default=LogLevel.info)
     provider_id: str
     data_domains: List[str] = Field(default=[])
+    default_organization_type: str = Field(default="hospital")
 
     @field_validator("data_domains", mode="before")
     @classmethod
