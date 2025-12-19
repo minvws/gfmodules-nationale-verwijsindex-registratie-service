@@ -15,13 +15,13 @@ class HttpService(ABC):
         timeout: int,
         mtls_cert: str | None,
         mtls_key: str | None,
-        mtls_ca: str | None,
+        verify_ca: str | bool,
     ):
         self._endpoint = endpoint
         self._timeout = timeout
         self._mtls_cert = mtls_cert
         self._mtls_key = mtls_key
-        self._mtls_ca = mtls_ca
+        self._verify_ca = verify_ca
 
     @abstractmethod
     def server_healthy(self) -> bool: ...

@@ -12,9 +12,9 @@ class FhirHttpService(HttpService):
         timeout: int,
         mtls_cert: str | None,
         mtls_key: str | None,
-        mtls_ca: str | None,
+        verify_ca: str | bool,
     ):
-        super().__init__(endpoint, timeout, mtls_cert, mtls_key, mtls_ca)
+        super().__init__(endpoint, timeout, mtls_cert, mtls_key, verify_ca)
 
     def server_healthy(self) -> bool:
         return self._server_healthy("metadata")

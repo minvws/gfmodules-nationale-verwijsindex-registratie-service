@@ -20,7 +20,7 @@ endpoint=http://localhost:9500/fhir
 timeout=10
 # mtls_cert=secrets/ssl/metadata_api.cert
 # mtls_key=secrets/ssl/metadata_api.key
-# mtls_ca=secrets/ssl/metadata_api_ca.cert
+# verify_ca=secrets/ssl/metadata_api_ca.cert
 
 [pseudonym_api]
 # For local development, use the pseudonym stub service
@@ -28,7 +28,7 @@ endpoint=http://localhost:8504
 timeout=10
 # mtls_cert=secrets/ssl/pseudonym_api.cert
 # mtls_key=secrets/ssl/pseudonym_api.key
-# mtls_ca=secrets/ssl/pseudonym_api_ca.cert
+# verify_ca=secrets/ssl/pseudonym_api_ca.cert
 
 [referral_api]
 # For local development, use the local NVI service
@@ -36,7 +36,7 @@ endpoint=http://localhost:8501
 timeout=10
 # mtls_cert=secrets/ssl/referral_api.cert
 # mtls_key=secrets/ssl/referral_api.key
-# mtls_ca=secrets/ssl/referral_api_ca.cert
+# verify_ca=secrets/ssl/referral_api_ca.cert
 
 [uvicorn]
 # If true, the api docs will be enabled

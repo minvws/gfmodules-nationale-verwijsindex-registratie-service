@@ -37,7 +37,7 @@ def get_test_config() -> Config:
             timeout=30,
             mtls_cert=None,
             mtls_key=None,
-            mtls_ca=None,
+            verify_ca=True,
         ),
         scheduler=ConfigScheduler(scheduled_delay=5),
     )
