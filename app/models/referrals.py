@@ -13,3 +13,4 @@ class ReferralQueryDTO(Referral):
 
 class CreateReferralDTO(Referral):
     requesting_uzi_number: str
+    organization_type: str
