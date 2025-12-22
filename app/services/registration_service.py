@@ -48,7 +48,7 @@ class PrsRegistrationService:
                 },
                 timeout=self.conf.timeout,
                 cert=(self.conf.mtls_cert, self.conf.mtls_key),  # type: ignore
-                verify=self.conf.mtls_ca,
+                verify=self.conf.verify_ca,
             )
             if request.status_code == 409:
                 logger.info("Organization already registered at PRS")
@@ -70,7 +70,7 @@ class PrsRegistrationService:
                 },
                 timeout=self.conf.timeout,
                 cert=(self.conf.mtls_cert, self.conf.mtls_key),  # type: ignore
-                verify=self.conf.mtls_ca,
+                verify=self.conf.verify_ca,
             )
             if request.status_code == 409:
                 logger.info("Certificate already registered at PRS")

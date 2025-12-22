@@ -14,9 +14,9 @@ class MockHttpService(HttpService):
         timeout: int,
         mtls_cert: str | None,
         mtls_key: str | None,
-        mtls_ca: str | None,
+        verify_ca: str | bool,
     ):
-        super().__init__(endpoint, timeout, mtls_cert, mtls_key, mtls_ca)
+        super().__init__(endpoint, timeout, mtls_cert, mtls_key, verify_ca)
 
     def server_healthy(self) -> bool:
         return True
@@ -145,7 +145,7 @@ def test_do_request_should_use_mtls_cert_when_enabled(
         timeout=10,
         mtls_cert="test.crt",
         mtls_key="test.key",
-        mtls_ca="test.ca",
+        verify_ca="test.ca",
     )
 
     mock_response = MagicMock()
@@ -157,7 +157,7 @@ def test_do_request_should_use_mtls_cert_when_enabled(
     mock_request.assert_called_once()
     call_kwargs = mock_request.call_args[1]
     assert call_kwargs["cert"] == ("test.crt", "test.key")
-    assert call_kwargs["verify"] == True
+    assert call_kwargs["verify"]
 
 
 @patch(PATCHED_MODULE)
@@ -170,7 +170,7 @@ def test_do_request_should_use_ca_file_for_verification_when_provided(
         timeout=10,
         mtls_cert="test.crt",
         mtls_key="test.key",
-        mtls_ca="ca.crt",
+        verify_ca="ca.crt",
     )
 
     mock_response = MagicMock()
@@ -182,7 +182,7 @@ def test_do_request_should_use_ca_file_for_verification_when_provided(
     mock_request.assert_called_once()
     call_kwargs = mock_request.call_args[1]
     assert call_kwargs["cert"] == ("test.crt", "test.key")
-    assert call_kwargs["verify"] == True
+    assert call_kwargs["verify"]
 
 
 @patch(PATCHED_MODULE)
@@ -190,7 +190,7 @@ def test_do_request_should_not_use_cert_when_mtls_disabled(
     mock_request: MagicMock,
     mock_url: str,
 ) -> None:
-    api_service = MockHttpService(endpoint=mock_url, timeout=10, mtls_cert=None, mtls_key=None, mtls_ca=None)
+    api_service = MockHttpService(endpoint=mock_url, timeout=10, mtls_cert=None, mtls_key=None, verify_ca=True)
 
     mock_response = MagicMock()
     mock_response.status_code = 200

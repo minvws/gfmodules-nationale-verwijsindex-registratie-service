@@ -3,7 +3,7 @@ import os
 from enum import Enum
 from typing import Any, List
 
-from pydantic import BaseModel, Field, field_validator, model_validator
+from pydantic import BaseModel, Field, field_validator
 
 from app.models.data_domain import DataDomain
 
@@ -24,6 +24,7 @@ class ConfigApp(BaseModel):
     loglevel: LogLevel = Field(default=LogLevel.info)
     provider_id: str
     data_domains: List[DataDomain] = Field(default=[])
+    default_organization_type: str = Field(default="hospital")
 
     @field_validator("data_domains", mode="before")
     @classmethod
@@ -50,7 +51,7 @@ class ConfigMetadataApi(BaseModel):
     timeout: int = Field(default=30, gt=0)
     mtls_cert: str | None = Field(default=None)
     mtls_key: str | None = Field(default=None)
-    mtls_ca: str | None = Field(default=None)
+    verify_ca: str | bool = Field(default=True)
 
 
 class ConfigPseudonymApi(BaseModel):
@@ -59,7 +60,7 @@ class ConfigPseudonymApi(BaseModel):
     timeout: int = Field(default=30, gt=0)
     mtls_cert: str | None = Field(default=None)
     mtls_key: str | None = Field(default=None)
-    mtls_ca: str | None = Field(default=None)
+    verify_ca: str | bool = Field(default=True)
 
 
 class ConfigReferralApi(BaseModel):
@@ -68,7 +69,7 @@ class ConfigReferralApi(BaseModel):
     timeout: int = Field(default=30, gt=0)
     mtls_cert: str | None = Field(default=None)
     mtls_key: str | None = Field(default=None)
-    mtls_ca: str | None = Field(default=None)
+    verify_ca: str | bool = Field(default=True)
 
 
 class ConfigUvicorn(BaseModel):

@@ -25,7 +25,7 @@ def container_config(binder: inject.Binder) -> None:
         timeout=config.pseudonym_api.timeout,
         mtls_cert=config.pseudonym_api.mtls_cert,
         mtls_key=config.pseudonym_api.mtls_key,
-        mtls_ca=config.pseudonym_api.mtls_ca,
+        verify_ca=config.pseudonym_api.verify_ca,
         provider_id=config.app.provider_id,
     )
     binder.bind(PseudonymService, pseudonym_service)
@@ -35,7 +35,7 @@ def container_config(binder: inject.Binder) -> None:
         timeout=config.referral_api.timeout,
         mtls_cert=config.referral_api.mtls_cert,
         mtls_key=config.referral_api.mtls_key,
-        mtls_ca=config.referral_api.mtls_ca,
+        verify_ca=config.referral_api.verify_ca,
     )
     binder.bind(NviService, nvi_service)
 
@@ -44,7 +44,7 @@ def container_config(binder: inject.Binder) -> None:
         timeout=config.metadata_api.timeout,
         mtls_cert=config.metadata_api.mtls_cert,
         mtls_key=config.metadata_api.mtls_key,
-        mtls_ca=config.metadata_api.mtls_ca,
+        verify_ca=config.metadata_api.verify_ca,
     )
     binder.bind(MetadataService, metadata_service)
 
@@ -52,6 +52,7 @@ def container_config(binder: inject.Binder) -> None:
         nvi_service=nvi_service,
         pseudonym_service=pseudonym_service,
         ura_number=ura_number,
+        default_organization_type=config.app.default_organization_type,
     )
 
     bundle_registration_service = BundleRegistrationService(referrals_service=referral_registration_service)

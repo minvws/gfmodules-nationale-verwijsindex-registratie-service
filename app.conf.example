@@ -5,6 +5,8 @@ loglevel=debug
 provider_id=4af95a5f-3663-4832-b080-8ba1548e78f5
 # List of FHIR Resource types that the application is going to register patients from
 data_domains = ImagingStudy, MedicationStatement
+# Default type of this registering organization
+default_organization_type = hospital
 
 [scheduler]
 # the amount of seconds the update will run in the background
@@ -20,7 +22,7 @@ endpoint=http://localhost:9500/fhir
 timeout=10
 # mtls_cert=secrets/ssl/metadata_api.cert
 # mtls_key=secrets/ssl/metadata_api.key
-# mtls_ca=secrets/ssl/metadata_api_ca.cert
+# verify_ca=secrets/ssl/metadata_api_ca.cert
 
 [pseudonym_api]
 # For local development, use the pseudonym stub service
@@ -28,7 +30,7 @@ endpoint=http://localhost:8504
 timeout=10
 # mtls_cert=secrets/ssl/pseudonym_api.cert
 # mtls_key=secrets/ssl/pseudonym_api.key
-# mtls_ca=secrets/ssl/pseudonym_api_ca.cert
+# verify_ca=secrets/ssl/pseudonym_api_ca.cert
 
 [referral_api]
 # For local development, use the local NVI service
@@ -36,7 +38,7 @@ endpoint=http://localhost:8501
 timeout=10
 # mtls_cert=secrets/ssl/referral_api.cert
 # mtls_key=secrets/ssl/referral_api.key
-# mtls_ca=secrets/ssl/referral_api_ca.cert
+# verify_ca=secrets/ssl/referral_api_ca.cert
 
 [uvicorn]
 # If true, the api docs will be enabled

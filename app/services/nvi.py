@@ -13,14 +13,14 @@ class NviService:
         timeout: int,
         mtls_cert: str | None,
         mtls_key: str | None,
-        mtls_ca: str | None,
+        verify_ca: str | bool,
     ):
         self.http_service = GfHttpService(
             endpoint=endpoint,
             timeout=timeout,
             mtls_cert=mtls_cert,
             mtls_key=mtls_key,
-            mtls_ca=mtls_ca,
+            verify_ca=verify_ca,
         )
 
     def get_referrals(self, payload: ReferralQuery) -> ReferralEntity | None:

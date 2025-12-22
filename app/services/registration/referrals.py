@@ -23,10 +23,12 @@ class ReferralRegistrationService:
         nvi_service: NviService,
         pseudonym_service: PseudonymService,
         ura_number: UraNumber,
+        default_organization_type: str,
     ) -> None:
         self.nvi_service = nvi_service
         self.pseudonym_service = pseudonym_service
         self._ura_number = ura_number
+        self._default_organization_type = default_organization_type
 
     def register(self, bsn: BSN, data_domain: DataDomain) -> ReferralEntity | None:
         recipient_organization = "ura:" + self._ura_number.value
@@ -62,7 +64,8 @@ class ReferralRegistrationService:
                 blind_factor=blind_factor,
                 data_domain=data_domain,
                 ura_number=self._ura_number,
-                requesting_uzi_number="todo-requesting-uzi-number",  # TODO: get from config
+                requesting_uzi_number=str(self._ura_number),
+                organization_type=self._default_organization_type,
             )
         )
 

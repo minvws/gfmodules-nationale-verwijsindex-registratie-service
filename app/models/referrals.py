@@ -13,7 +13,7 @@ class ReferralRequest(BaseModel):
 class CreateReferralRequest(ReferralRequest):
     ura_number: UraNumber
     requesting_uzi_number: str
-
+    organization_type: str
 
 class ReferralQuery(BaseModel):
     oprf_jwe: str | None = None
@@ -27,4 +27,3 @@ class ReferralEntity(BaseModel):
     pseudonym: str
     data_domain: DataDomain
     organization_type: str
-

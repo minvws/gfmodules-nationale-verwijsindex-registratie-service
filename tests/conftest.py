@@ -35,7 +35,7 @@ def http_service(mock_url: str) -> HttpService:
         timeout=1,
         mtls_cert=None,
         mtls_key=None,
-        mtls_ca=None,
+        verify_ca=True,
     )
 
 
@@ -46,7 +46,7 @@ def config_pseudonym_api() -> ConfigPseudonymApi:
         timeout=5,
         mtls_cert="/path/to/cert.pem",
         mtls_key="/path/to/key.pem",
-        mtls_ca="/path/to/ca.pem",
+        verify_ca="/path/to/ca.pem",
         mock=False,
     )
 
@@ -89,7 +89,7 @@ def domains_map_service(data_domains: List[DataDomain]) -> DomainsMapService:
 
 @pytest.fixture
 def fhir_http_service(mock_url: str) -> FhirHttpService:
-    return FhirHttpService(endpoint=mock_url, timeout=1, mtls_ca=None, mtls_cert=None, mtls_key=None)
+    return FhirHttpService(endpoint=mock_url, timeout=1, verify_ca=True, mtls_cert=None, mtls_key=None)
 
 
 @pytest.fixture
@@ -100,18 +100,18 @@ def pseudonym_service(mock_url: str, mock_ura_number: UraNumber) -> PseudonymSer
         timeout=1,
         mtls_cert=None,
         mtls_key=None,
-        mtls_ca=None,
+        verify_ca=True,
     )
 
 
 @pytest.fixture
 def nvi_service(mock_url: str) -> NviService:
-    return NviService(endpoint=mock_url, timeout=1, mtls_cert=None, mtls_key=None, mtls_ca=None)
+    return NviService(endpoint=mock_url, timeout=1, mtls_cert=None, mtls_key=None, verify_ca=True)
 
 
 @pytest.fixture
 def metadata_service(mock_url: str) -> MetadataService:
-    return MetadataService(endpoint=mock_url, timeout=1, mtls_cert=None, mtls_key=None, mtls_ca=None)
+    return MetadataService(endpoint=mock_url, timeout=1, mtls_cert=None, mtls_key=None, verify_ca=True)
 
 
 @pytest.fixture
@@ -124,6 +124,7 @@ def registration_service(
         nvi_service=nvi_service,
         pseudonym_service=pseudonym_service,
         ura_number=mock_ura_number,
+        default_organization_type="hospital",
     )
 
 
@@ -154,7 +155,7 @@ def referral_query() -> ReferralQuery:
 
 @pytest.fixture
 def create_referral_dto(referral_query: ReferralQuery) -> CreateReferralRequest:
-    return CreateReferralRequest(**referral_query.model_dump(), requesting_uzi_number="some_uzi_number")
+    return CreateReferralRequest(**referral_query.model_dump(), requesting_uzi_number="some_uzi_number", organization_type="some_organization_type")
 
 
 @pytest.fixture
