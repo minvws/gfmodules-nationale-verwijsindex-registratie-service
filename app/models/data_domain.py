@@ -4,6 +4,8 @@ from typing import Any
 
 @dataclass
 class DataDomain:
+    value: str
+
     def __init__(self, value: Any) -> None:
         self.value = str(value)
 

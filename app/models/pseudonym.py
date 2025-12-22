@@ -2,10 +2,6 @@ from pydantic import BaseModel, ConfigDict, Field
 from pydantic.alias_generators import to_camel
 
 
-class Pseudonym(BaseModel):
-    pseudonym: str
-
-
 class PseudonymRequest(BaseModel):
     encrypted_personal_id: str
     recipient_organization: str
@@ -16,6 +12,7 @@ class PseudonymRequest(BaseModel):
         populate_by_name=True,
         from_attributes=True,
     )
+
 
 class OprfPseudonymJWE(BaseModel):
     jwe: str = Field(min_length=1)

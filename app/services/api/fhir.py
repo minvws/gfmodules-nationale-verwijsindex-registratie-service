@@ -21,5 +21,6 @@ class FhirHttpService(HttpService):
 
     def search(self, resource_type: str, params: Dict[str, Any] | None = None) -> Bundle:
         response = self.do_request(method="GET", sub_route=f"{resource_type}/_search", params=params)
+        response.raise_for_status()
 
         return Bundle.model_validate(response.json())

@@ -10,18 +10,20 @@ from app.models.pseudonym import PersonalIdentifier
 
 class OprfService:
     @staticmethod
-    def create_blinded_input(personal_identifier: PersonalIdentifier, recipient_organization: str, recipient_scope: str) -> Tuple[str, str]:
+    def create_blinded_input(
+        personal_identifier: PersonalIdentifier, recipient_organization: str, recipient_scope: str
+    ) -> Tuple[str, str]:
         """
-        Creates a blinded input from an PersonalIdentifier for OPRF operations.
+        Creates a blinded input from an PersonalIdentifier, recipient_organization and recipient_scope for OPRF operations.
 
         Returns:
             Tuple of (blind_factor, blinded_input) both base64 encoded
         """
         # Create hashed bsn that is dedicated for the given receiver
-        info = f"{recipient_organization}|{recipient_scope}|v1".encode()
+        info = f"{recipient_organization}|{recipient_scope}|v1".encode("utf-8")
         hkdf = HKDF(algorithm=hashes.SHA256(), length=32, salt=None, info=info)
-        pid = personal_identifier.model_dump_json()
-        pseudonym = hkdf.derive(pid.encode())
+        pid = personal_identifier.model_dump_json(by_alias=True)
+        pseudonym = hkdf.derive(pid.encode("utf-8"))
 
         # Create blinded input. This will mask the BSN so we can send it directly to the PRS
         blind_factor, blinded_input = pyoprf.blind(pseudonym)

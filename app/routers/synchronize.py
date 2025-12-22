@@ -99,7 +99,8 @@ def synchronize_domain(
         allowed_domains = service.get_allowed_domains()
         if data_domain not in allowed_domains:
             raise HTTPException(
-                status_code=400, detail=f"Invalid data_domain. Must be one of: {', '.join(str(data_domain) for data_domain in allowed_domains)}"
+                status_code=400,
+                detail=f"Invalid data_domain. Must be one of: {', '.join(str(data_domain) for data_domain in allowed_domains)}",
             )
         return service.synchronize_domain(DataDomain(quote(data_domain)))
     else:

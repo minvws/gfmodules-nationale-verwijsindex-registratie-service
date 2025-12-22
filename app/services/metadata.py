@@ -40,11 +40,14 @@ class MetadataService:
                 method="GET",
                 sub_route=f"Patient/{patient_id}",
             )
+            response.raise_for_status()
             return Patient.model_validate(response.json())
         except Exception as e:
             raise MetadataError from e
 
-    def get_update_scheme(self, resource_type: DataDomain, last_updated: str | None = None) -> Tuple[List[str], str | None]:
+    def get_update_scheme(
+        self, resource_type: DataDomain, last_updated: str | None = None
+    ) -> Tuple[List[str], str | None]:
         params = MetadataResourceParams(
             _lastUpdated=f"ge{last_updated}" if last_updated else None,
             _include=f"{resource_type}:subject",

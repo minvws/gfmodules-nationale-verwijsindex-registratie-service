@@ -34,14 +34,15 @@ class PseudonymService:
         """
         Request OPRF blinded JWE from the pseudonym service.
         """
-        logger.info(f"Request OPRF JWE for organisation {data.recipient_organization} with scope {data.recipient_scope}")
+        logger.info(
+            f"Request OPRF JWE for organisation {data.recipient_organization} with scope {data.recipient_scope}"
+        )
 
         try:
             response = self.http_service.do_request(
-                method="POST",
-                sub_route="oprf/eval",
-                data=data.model_dump()
+                method="POST", sub_route="oprf/eval", data=data.model_dump(by_alias=True)
             )
+            response.raise_for_status()
         except Exception as e:
             logger.error(f"Failed to request OPRF pseudonym: {e}")
             raise PseudonymError("Failed to request OPRF pseudonym") from e

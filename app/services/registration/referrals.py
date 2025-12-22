@@ -24,30 +24,34 @@ class ReferralRegistrationService:
         pseudonym_service: PseudonymService,
         ura_number: UraNumber,
         default_organization_type: str,
+        nvi_ura_number: UraNumber,
     ) -> None:
         self.nvi_service = nvi_service
         self.pseudonym_service = pseudonym_service
         self._ura_number = ura_number
         self._default_organization_type = default_organization_type
+        self._nvi_ura_number = nvi_ura_number
 
     def register(self, bsn: BSN, data_domain: DataDomain) -> ReferralEntity | None:
-        recipient_organization = "ura:" + self._ura_number.value
-        recipient_scope = "nvi"
+        recipient_organization = "ura:" + self._nvi_ura_number.value
+        recipient_scope = "nationale-verwijsindex"
         personal_identifier = PersonalIdentifier(land_code="NL", type="BSN", value=str(bsn))
 
-        blind_factor, blinded_input = OprfService.create_blinded_input(personal_identifier, recipient_organization, recipient_scope)
+        blind_factor, blinded_input = OprfService.create_blinded_input(
+            personal_identifier, recipient_organization, recipient_scope
+        )
 
         pseudonym = self.pseudonym_service.submit(
             PseudonymRequest(
                 encrypted_personal_id=blinded_input,
-                recipient_organization=recipient_organization,  # Should this not be the URA of the NVI? Or is name recipientOrganization a bit wrong?
+                recipient_organization=recipient_organization,
                 recipient_scope=recipient_scope,
             )
         )
 
         referral = self.nvi_service.get_referrals(
             ReferralQuery(
-                oprf_jwe=pseudonym.jwe,
+                oprf_jwe=pseudonym,
                 blind_factor=blind_factor,
                 data_domain=data_domain,
                 ura_number=self._ura_number,
@@ -60,7 +64,7 @@ class ReferralRegistrationService:
 
         new_referral = self.nvi_service.submit(
             CreateReferralRequest(
-                oprf_jwe=pseudonym.jwe,
+                oprf_jwe=pseudonym,
                 blind_factor=blind_factor,
                 data_domain=data_domain,
                 ura_number=self._ura_number,

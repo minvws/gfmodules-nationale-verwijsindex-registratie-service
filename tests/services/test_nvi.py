@@ -20,14 +20,22 @@ def test_get_referrals_should_succeed(
 
     expected_referral = ReferralEntity(
         ura_number=referral_query.ura_number,
-        pseudonym=referral_query.oprf_jwe,
+        pseudonym=referral_query.oprf_jwe.jwe,
         data_domain=referral_query.data_domain,
         organization_type="some_type",
     )
 
     mock_response = MagicMock()
     mock_response.status_code = 200
-    mock_response.json.return_value = [expected_referral.model_dump()]
+    # Mock the raw API response format (flat values, not nested Pydantic models)
+    mock_response.json.return_value = [
+        {
+            "ura_number": str(referral_query.ura_number),
+            "pseudonym": referral_query.oprf_jwe.jwe,
+            "data_domain": str(referral_query.data_domain),
+            "organization_type": "some_type",
+        }
+    ]
     mock_post.return_value = mock_response
 
     actual = nvi_service.get_referrals(referral_query)
@@ -35,7 +43,7 @@ def test_get_referrals_should_succeed(
     mock_post.assert_called_once_with(
         method="POST",
         sub_route="registrations/query",
-        data=referral_query.model_dump(),
+        data=referral_query.model_dump(mode="json"),
     )
     assert actual == expected_referral
 
@@ -53,7 +61,7 @@ def test_get_referrals_should_return_none_if_not_found(
     mock_post.assert_called_once_with(
         method="POST",
         sub_route="registrations/query",
-        data=referral_query.model_dump(),
+        data=referral_query.model_dump(mode="json"),
     )
     assert actual is None
 

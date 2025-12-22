@@ -7,6 +7,8 @@ provider_id=4af95a5f-3663-4832-b080-8ba1548e78f5
 data_domains = ImagingStudy, MedicationStatement
 # Default type of this registering organization
 default_organization_type = hospital
+# Path to the NVI certificate for creating OPRF requests
+nvi_certificate_path=/secrets/nvi.crt
 
 [scheduler]
 # the amount of seconds the update will run in the background

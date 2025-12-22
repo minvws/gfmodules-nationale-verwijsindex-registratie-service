@@ -7,7 +7,6 @@ from app.services.nvi import NviService
 from app.services.pseudonym import PseudonymService
 from app.services.registration.bundle import BundleRegistrationService
 from app.services.registration.referrals import ReferralRegistrationService
-from app.services.registration_service import PrsRegistrationService
 from app.services.synchronization.domain_map import DomainsMapService
 from app.services.synchronization.scheduler import Scheduler
 from app.services.synchronization.synchronizer import Synchronizer
@@ -17,7 +16,7 @@ from app.services.ura import UraNumberService
 def container_config(binder: inject.Binder) -> None:
     config = get_config()
 
-    ura_number = UraNumberService.get_ura_number(config)
+    ura_number = UraNumberService.get_ura_number_from_config(config)
     binder.bind(UraNumber, ura_number)
 
     pseudonym_service = PseudonymService(
@@ -48,20 +47,19 @@ def container_config(binder: inject.Binder) -> None:
     )
     binder.bind(MetadataService, metadata_service)
 
+    nvi_ura = UraNumberService.get_ura_number(config.app.nvi_certificate_path)
     referral_registration_service = ReferralRegistrationService(
         nvi_service=nvi_service,
         pseudonym_service=pseudonym_service,
         ura_number=ura_number,
         default_organization_type=config.app.default_organization_type,
+        nvi_ura_number=nvi_ura,
     )
 
     bundle_registration_service = BundleRegistrationService(referrals_service=referral_registration_service)
     binder.bind(BundleRegistrationService, bundle_registration_service)
 
     domain_map_service = DomainsMapService(data_domains=config.app.data_domains)
-
-    prs_registration_service = PrsRegistrationService(conf=config.pseudonym_api, ura_number=ura_number)
-    binder.bind(PrsRegistrationService, prs_registration_service)
 
     synchronizer = Synchronizer(
         registration_service=referral_registration_service,
@@ -75,10 +73,6 @@ def container_config(binder: inject.Binder) -> None:
         delay=config.scheduler.scheduled_delay,
     )
     binder.bind(Scheduler, scheduler)
-
-
-def get_prs_registration_service() -> PrsRegistrationService:
-    return inject.instance(PrsRegistrationService)
 
 
 def get_pseudonym_service() -> PseudonymService:

@@ -45,7 +45,6 @@ class HttpService(ABC):
     ) -> Response:
         try:
             cert = (self._mtls_cert, self._mtls_key) if self._mtls_cert and self._mtls_key else None
-            verify = True
             response = request(
                 method=method,
                 url=f"{self._endpoint}/{sub_route}" if sub_route else self._endpoint,
@@ -54,10 +53,8 @@ class HttpService(ABC):
                 json=data,
                 timeout=self._timeout,
                 cert=cert,
-                verify=verify,
+                verify=self._verify_ca,
             )
-            response.raise_for_status()
-
             return response
         except (ConnectionError, Timeout) as e:
             logger.error(f"Request failed: {e}")

@@ -25,6 +25,7 @@ class ConfigApp(BaseModel):
     provider_id: str
     data_domains: List[DataDomain] = Field(default=[])
     default_organization_type: str = Field(default="hospital")
+    nvi_certificate_path: str
 
     @field_validator("data_domains", mode="before")
     @classmethod

@@ -6,7 +6,7 @@ from requests.exceptions import ConnectionError
 
 from app.models.data_domain import DataDomain
 from app.models.domains_map import DomainMapEntry
-from app.models.pseudonym import Pseudonym, OprfPseudonymJWE
+from app.models.pseudonym import OprfPseudonymJWE
 from app.models.referrals import ReferralEntity
 from app.models.update_scheme import BsnUpdateScheme, UpdateScheme
 from app.models.ura_number import UraNumber

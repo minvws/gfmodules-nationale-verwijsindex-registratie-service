@@ -37,9 +37,9 @@ def test_register_should_succeed(
         method="POST",
         sub_route="oprf/eval",
         data={
-            "encrypted_personal_id": mock_dto.encrypted_personal_id,
-            "recipient_organization": mock_dto.recipient_organization,
-            "recipient_scope": mock_dto.recipient_scope,
+            "encryptedPersonalId": mock_dto.encrypted_personal_id,
+            "recipientOrganization": mock_dto.recipient_organization,
+            "recipientScope": mock_dto.recipient_scope,
         },
     )
 
