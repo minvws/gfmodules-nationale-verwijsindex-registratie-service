@@ -41,9 +41,9 @@ def test_get_referrals_should_succeed(
     actual = nvi_service.get_referrals(referral_query)
 
     mock_post.assert_called_once_with(
-        method="POST",
-        sub_route="registrations/query",
-        data=referral_query.model_dump(mode="json"),
+        method="GET",
+        sub_route="NVIDataReference",
+        params=referral_query.model_dump(mode="json", by_alias=True),
     )
     assert actual == expected_referral
 
@@ -59,9 +59,9 @@ def test_get_referrals_should_return_none_if_not_found(
     actual = nvi_service.get_referrals(referral_query)
 
     mock_post.assert_called_once_with(
-        method="POST",
-        sub_route="registrations/query",
-        data=referral_query.model_dump(mode="json"),
+        method="GET",
+        sub_route="NVIDataReference",
+        params=referral_query.model_dump(mode="json", by_alias=True),
     )
     assert actual is None
 
