@@ -73,6 +73,13 @@ class ConfigReferralApi(BaseModel):
     verify_ca: str | bool = Field(default=True)
 
 
+class ConfigFhirSystems(BaseModel):
+    pseudonym_system: str
+    source_system: str
+    organization_type_system: str
+    care_context_system: str
+
+
 class ConfigUvicorn(BaseModel):
     swagger_enabled: bool = Field(default=False)
     docs_url: str = Field(default="/docs")
@@ -95,6 +102,7 @@ class Config(BaseModel):
     uvicorn: ConfigUvicorn
     pseudonym_api: ConfigPseudonymApi
     referral_api: ConfigReferralApi
+    nvi_fhir_systems: ConfigFhirSystems
 
 
 def read_ini_file(path: str) -> Any:

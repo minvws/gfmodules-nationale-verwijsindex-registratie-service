@@ -1,6 +1,7 @@
 from app.config import (
     Config,
     ConfigApp,
+    ConfigFhirSystems,
     ConfigMetadataApi,
     ConfigPseudonymApi,
     ConfigReferralApi,
@@ -36,4 +37,10 @@ def get_test_config() -> Config:
             verify_ca=True,
         ),
         scheduler=ConfigScheduler(scheduled_delay=5),
+        nvi_fhir_systems=ConfigFhirSystems(
+            pseudonym_system="pseudonym-system",
+            source_system="urn:oid:ura-number",
+            organization_type_system="org-type-system",
+            care_context_system="care-context-system",
+        ),
     )
