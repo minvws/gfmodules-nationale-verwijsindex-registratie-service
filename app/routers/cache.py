@@ -3,6 +3,7 @@ from textwrap import dedent
 from fastapi import APIRouter, Depends, Query
 
 from app.container import get_synchronizer
+from app.models.data_domain import DataDomain
 from app.models.domains_map import DomainsMap
 from app.services.synchronization.synchronizer import Synchronizer
 
@@ -14,9 +15,9 @@ router = APIRouter(prefix="/cache", tags=["Cache Management"])
     summary="Clear Cache",
     description=dedent("""
     Clear the cache for a specific data domain or all domains.
-    
+
     This endpoint allows you to clear cached data either for a specific domain or globally.
-    
+
     **Use Cases:**
     - Clear specific domain cache after data updates
     - Force cache refresh for troubleshooting
@@ -62,4 +63,4 @@ def clear_cache(
     ),
     service: Synchronizer = Depends(get_synchronizer),
 ) -> DomainsMap:
-    return service.clear_cache(data_domain)
+    return service.clear_cache(DataDomain(data_domain))

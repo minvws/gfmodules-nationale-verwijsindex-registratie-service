@@ -9,9 +9,10 @@ from fhir.resources.R4B.patient import Patient
 from app.config import ConfigPseudonymApi
 from app.data import BSN_SYSTEM
 from app.models.bsn import BSN
+from app.models.data_domain import DataDomain
 from app.models.metadata.params import MetadataResourceParams
-from app.models.pseudonym import Pseudonym
-from app.models.referrals import CreateReferralDTO, Referral, ReferralQueryDTO
+from app.models.pseudonym import OprfPseudonymJWE
+from app.models.referrals import ReferralQuery, CreateReferralRequest, ReferralEntity
 from app.models.update_scheme import BsnUpdateScheme
 from app.models.ura_number import UraNumber
 from app.services.api.fhir import FhirHttpService
@@ -21,7 +22,6 @@ from app.services.nvi import NviService
 from app.services.pseudonym import PseudonymService
 from app.services.registration.bundle import BundleRegistrationService
 from app.services.registration.referrals import ReferralRegistrationService
-from app.services.registration_service import PrsRegistrationService
 from app.services.synchronization.domain_map import DomainsMapService
 from app.services.synchronization.synchronizer import Synchronizer
 from tests.services.api_services.test_api_service import MockHttpService
@@ -51,38 +51,27 @@ def config_pseudonym_api() -> ConfigPseudonymApi:
 
 
 @pytest.fixture
-def ura_number() -> UraNumber:
-    return UraNumber("12345678")
-
-
-@pytest.fixture()
-def prs_registration_service(
-    config_pseudonym_api: ConfigPseudonymApi,
-    ura_number: UraNumber,
-) -> PrsRegistrationService:
-    return PrsRegistrationService(
-        conf=config_pseudonym_api,
-        ura_number=ura_number,
-    )
-
-
-@pytest.fixture
 def mock_url() -> str:
     return "http://example.org/fhir/"
 
 
 @pytest.fixture
-def mock_ura_number() -> str:
-    return "12345678"
+def mock_ura_number() -> UraNumber:
+    return UraNumber("12345678")
 
 
 @pytest.fixture
-def data_domains() -> List[str]:
-    return ["ImagingStudy", "MedicationStatement"]
+def mock_nvi_ura_number() -> UraNumber:
+    return UraNumber("87654321")
 
 
 @pytest.fixture
-def domains_map_service(data_domains: List[str]) -> DomainsMapService:
+def data_domains() -> List[DataDomain]:
+    return [DataDomain("ImagingStudy"), DataDomain("MedicationStatement")]
+
+
+@pytest.fixture
+def domains_map_service(data_domains: List[DataDomain]) -> DomainsMapService:
     return DomainsMapService(data_domains)
 
 
@@ -92,9 +81,9 @@ def fhir_http_service(mock_url: str) -> FhirHttpService:
 
 
 @pytest.fixture
-def pseudonym_service(mock_url: str, mock_ura_number: str) -> PseudonymService:
+def pseudonym_service(mock_url: str, mock_ura_number: UraNumber) -> PseudonymService:
     return PseudonymService(
-        provider_id=mock_ura_number,
+        provider_id=mock_ura_number.value,
         endpoint=mock_url,
         timeout=1,
         mtls_cert=None,
@@ -117,13 +106,15 @@ def metadata_service(mock_url: str) -> MetadataService:
 def registration_service(
     nvi_service: NviService,
     pseudonym_service: PseudonymService,
-    mock_ura_number: str,
+    mock_ura_number: UraNumber,
+    mock_nvi_ura_number: UraNumber,
 ) -> ReferralRegistrationService:
     return ReferralRegistrationService(
         nvi_service=nvi_service,
         pseudonym_service=pseudonym_service,
         ura_number=mock_ura_number,
         default_organization_type="hospital",
+        nvi_ura_number=mock_nvi_ura_number,
     )
 
 
@@ -148,14 +139,26 @@ def synchronizer(
 
 
 @pytest.fixture
-def referral_query() -> ReferralQueryDTO:
-    return ReferralQueryDTO(pseudonym="some_pseudonym", data_domain="some_domain", ura_number="1234566789")
+def mock_oprf_pseudonym_jwe() -> OprfPseudonymJWE:
+    return OprfPseudonymJWE(jwe="some_oprf_pseudonym_jwe")
 
 
 @pytest.fixture
-def create_referral_dto(referral_query: ReferralQueryDTO) -> CreateReferralDTO:
-    return CreateReferralDTO(
-        **referral_query.model_dump(), requesting_uzi_number="some_uzi_number", organization_type="hospital"
+def referral_query(mock_oprf_pseudonym_jwe: OprfPseudonymJWE) -> ReferralQuery:
+    return ReferralQuery(
+        oprf_jwe=mock_oprf_pseudonym_jwe,
+        blind_factor="some_blind_fator",
+        data_domain=DataDomain("some_domain"),
+        ura_number=UraNumber("12345678"),
+    )
+
+
+@pytest.fixture
+def create_referral_dto(referral_query: ReferralQuery) -> CreateReferralRequest:
+    return CreateReferralRequest(
+        **referral_query.model_dump(mode="python"),
+        requesting_uzi_number="some_uzi_number",
+        organization_type="hospital",
     )
 
 
@@ -180,21 +183,22 @@ def datetime_now() -> str:
 
 
 @pytest.fixture
-def mock_pseudonym() -> Pseudonym:
-    return Pseudonym(pseudonym="some_pseudonym")
+def mock_pseudonym_jwe() -> OprfPseudonymJWE:
+    return OprfPseudonymJWE(jwe="some_pseudonym")
 
 
 @pytest.fixture
-def mock_referral(mock_ura_number: str, mock_pseudonym: Pseudonym) -> Referral:
-    return Referral(
-        pseudonym=mock_pseudonym.pseudonym,
-        data_domain="beeldbank",
+def mock_referral(mock_ura_number: UraNumber, mock_pseudonym_jwe: OprfPseudonymJWE) -> ReferralEntity:
+    return ReferralEntity(
         ura_number=mock_ura_number,
+        pseudonym=mock_pseudonym_jwe.jwe,
+        data_domain=DataDomain("beeldbank"),
+        organization_type="some_organization_type",
     )
 
 
 @pytest.fixture
-def bsn_update_scheme(mock_bsn_number: str, mock_referral: Referral) -> BsnUpdateScheme:
+def bsn_update_scheme(mock_bsn_number: str, mock_referral: ReferralEntity) -> BsnUpdateScheme:
     return BsnUpdateScheme(bsn=mock_bsn_number, referral=mock_referral)
 
 

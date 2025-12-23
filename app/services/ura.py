@@ -18,14 +18,17 @@ def get_cert(path: str) -> str | None:
 
 class UraNumberService:
     @staticmethod
-    def get_ura_number(config: Config) -> UraNumber:
+    def get_ura_number_from_config(config: Config) -> UraNumber:
         logger.info("Attempting to extract UraNumber from UziCertificate")
         if not config.referral_api.mtls_cert:
             raise RuntimeError(
                 "Unable to find mTLS Certificate path, please check app.conf for correct values especially 'referral_api' section."
             )
+        return UraNumberService.get_ura_number(config.referral_api.mtls_cert)
 
-        cert_data = get_cert(config.referral_api.mtls_cert)
+    @staticmethod
+    def get_ura_number(path: str) -> UraNumber:
+        cert_data = get_cert(path)
         if cert_data is None:
             raise RuntimeError("Unable to extract certificate data from file, check path or file format.")
 

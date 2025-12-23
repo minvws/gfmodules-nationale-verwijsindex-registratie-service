@@ -22,5 +22,8 @@ class BSN:
     def __repr__(self) -> str:
         return f"BSN({self.value})"
 
+    def __hash__(self) -> int:
+        return hash(self.value)
+
     def hash(self) -> str:
         return hashlib.sha256(self.value.encode()).hexdigest()

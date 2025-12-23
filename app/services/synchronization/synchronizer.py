@@ -8,6 +8,7 @@ from app.data import (
 )
 from app.exceptions.fhir_exception import FHIRException
 from app.models.bsn import BSN
+from app.models.data_domain import DataDomain
 from app.models.domains_map import DomainMapEntry, DomainsMap
 from app.models.update_scheme import BsnUpdateScheme, UpdateScheme
 from app.services.metadata import MetadataService
@@ -29,7 +30,7 @@ class Synchronizer:
         self._domain_map_service = domains_map_service
         self._last_run: str | None = None
 
-    def get_allowed_domains(self) -> List[str]:
+    def get_allowed_domains(self) -> List[DataDomain]:
         return self._domain_map_service.get_domains()
 
     def _healthcheck_apis(self) -> Dict[str, bool]:
@@ -47,17 +48,17 @@ class Synchronizer:
             for k, v in self.synchronize_domain(domain).items()
         }
 
-    def synchronize_domain(self, data_domain: str) -> Dict[str, List[UpdateScheme]]:
+    def synchronize_domain(self, data_domain: DataDomain) -> Dict[str, List[UpdateScheme]]:
         data: Dict[str, List[UpdateScheme]] = {f"{data_domain}": []}
         logger.info(f"Synchronizing: {data_domain}")
 
         entry = self._domain_map_service.get_entry(data_domain)
         update_scheme = self.synchronize(data_domain, entry)
-        data[data_domain].append(update_scheme)
+        data[data_domain.value].append(update_scheme)
 
         return data
 
-    def synchronize(self, data_domain: str, domain_entry: DomainMapEntry) -> UpdateScheme:
+    def synchronize(self, data_domain: DataDomain, domain_entry: DomainMapEntry) -> UpdateScheme:
         for health_status in self._healthcheck_apis().items():
             if not health_status[1]:
                 msg = f"api {health_status[0]} health check failed"
@@ -91,7 +92,7 @@ class Synchronizer:
         logging.info(f"last run {self._last_run}")
         return UpdateScheme(updated_data=bsn_update_scheme, domain_entry=domain_entry)
 
-    def clear_cache(self, data_domain: str | None = None) -> DomainsMap:
+    def clear_cache(self, data_domain: DataDomain | None = None) -> DomainsMap:
         if data_domain is not None:
             return self._domain_map_service.clear_entry_timestamp(data_domain)
 

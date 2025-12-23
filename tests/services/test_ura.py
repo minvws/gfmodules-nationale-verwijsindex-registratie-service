@@ -22,7 +22,7 @@ def test_get_ura_number_should_succeed_from_cert(
     expected = UraNumber("12345678")
     mock_ura_module.return_value = expected
 
-    actual = UraNumberService.get_ura_number(mock_config)
+    actual = UraNumberService.get_ura_number_from_config(mock_config)
 
     assert expected == actual
 
@@ -33,7 +33,7 @@ def test_get_ura_number_should_raise_expection_when_it_cannot_find_cert_path(
 ) -> None:
     mock_config.referral_api.mtls_cert = None
     with pytest.raises(RuntimeError):
-        UraNumberService.get_ura_number(mock_config)
+        UraNumberService.get_ura_number_from_config(mock_config)
 
 
 @patch(PATCHED_CONFIG_MODULE)
@@ -45,7 +45,7 @@ def test_get_ura_number_shoud_raise_expcetion_with_cert_data_cannot_be_extracted
     mock_config.referral_api.mtls_cert = "some-path"
     mock_cert.return_value = None
     with pytest.raises(RuntimeError):
-        UraNumberService.get_ura_number(mock_config)
+        UraNumberService.get_ura_number_from_config(mock_config)
 
 
 @patch(PATCHED_CONFIG_MODULE)
@@ -58,7 +58,7 @@ def test_get_ura_number_should_raise_expection_when_ura_number_cannot_be_extract
     mock_cert.return_value = "some-cert"
     mock_ura_module.return_value = None
     with pytest.raises(RuntimeError):
-        UraNumberService.get_ura_number(mock_config)
+        UraNumberService.get_ura_number_from_config(mock_config)
 
 
 def test_get_cert_should_succeed(monkeypatch: pytest.MonkeyPatch) -> None:

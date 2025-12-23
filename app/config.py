@@ -5,6 +5,8 @@ from typing import Any, List
 
 from pydantic import BaseModel, Field, field_validator
 
+from app.models.data_domain import DataDomain
+
 _PATH = "app.conf"
 _CONFIG = None
 _ENVIRONMENT_CONFIG_PATH_NAME = "FASTAPI_CONFIG_PATH"
@@ -21,15 +23,21 @@ class LogLevel(str, Enum):
 class ConfigApp(BaseModel):
     loglevel: LogLevel = Field(default=LogLevel.info)
     provider_id: str
-    data_domains: List[str] = Field(default=[])
+    data_domains: List[DataDomain] = Field(default=[])
     default_organization_type: str = Field(default="hospital")
+    nvi_certificate_path: str
 
     @field_validator("data_domains", mode="before")
     @classmethod
-    def split_values(cls, value: object) -> object:
+    def split_values(cls, value: object) -> List[DataDomain]:
         if isinstance(value, str):
             value = "".join(value.split())
-            return [] if value == "" else value.split(",")
+            value_list = [] if value == "" else value.split(",")
+            return [DataDomain(data_domain) for data_domain in value_list]
+
+        if not isinstance(value, list) or not all(isinstance(item, DataDomain) for item in value):
+            return []
+
         return value
 
 

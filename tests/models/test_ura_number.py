@@ -49,7 +49,7 @@ def test_from_certificate_should_succeed(mock_uzi_server: MagicMock) -> None:
     }
     mock_uzi_server.return_value = mock_data
 
-    expected = UraNumber("1234567")
+    expected = UraNumber("12345678")
     actual = UraNumber.from_certificate("some-certificate")
 
     assert expected == actual

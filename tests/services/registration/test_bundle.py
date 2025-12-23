@@ -11,7 +11,7 @@ from app.data import (
     BSN_SYSTEM,
 )
 from app.exceptions.fhir_exception import FHIRException
-from app.models.referrals import Referral
+from app.models.referrals import ReferralEntity
 from app.services.fhir.bunde_entry_response import (
     KnownBundleRegistrationOutcome,
     create_known_response,
@@ -51,7 +51,7 @@ def test_make_map_should_raise_exception_when_bundle_has_no_entries(
 def test_register_should_succeed(
     referral_response: MagicMock,
     bundle_registration_service: BundleRegistrationService,
-    mock_referral: Referral,
+    mock_referral: ReferralEntity,
     regular_bundle: Bundle,
 ) -> None:
     referral_response.return_value = mock_referral

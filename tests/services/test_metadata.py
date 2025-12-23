@@ -2,6 +2,7 @@ from unittest.mock import MagicMock, patch
 
 from fhir.resources.R4B.bundle import Bundle
 
+from app.models.data_domain import DataDomain
 from app.services.metadata import MetadataService
 
 PATCHED_MODULE = "app.services.metadata.FhirHttpService.do_request"
@@ -24,7 +25,7 @@ def test_get_update_scheme_should_succeed(
     mock_response.json.return_value = regular_bundle.model_dump()
     mock_get.return_value = mock_response
 
-    actual_bsn_scheme, actual_latest_timestamp = metadata_service.get_update_scheme("ImagingStudy")
+    actual_bsn_scheme, actual_latest_timestamp = metadata_service.get_update_scheme(DataDomain("ImagingStudy"))
 
     assert expected_bsn_scheme == actual_bsn_scheme
     assert expected_latest_timestamp == actual_latest_timestamp
@@ -43,7 +44,7 @@ def test_get_update_scheme_should_succeed_and_return_empty_list_and_timestamp_wh
     mock_response.json.return_value = bundle_without_bsn_system.model_dump()
     mock_get.return_value = mock_response
 
-    actual_bsn_scheme, actual_latest_timestamp = metadata_service.get_update_scheme("ImagingStudy")
+    actual_bsn_scheme, actual_latest_timestamp = metadata_service.get_update_scheme(DataDomain("ImagingStudy"))
     assert expected_bsn_scheme == actual_bsn_scheme
     assert expected_latest_timestamp == actual_latest_timestamp
     mock_get.assert_called_once()
@@ -62,7 +63,7 @@ def test_get_update_scheme_should_succeed_and_return_empty_list_when_bundle_has_
     mock_response.json.return_value = bundle_without_patient.model_dump()
     mock_get.return_value = mock_response
 
-    actual_bsn_scheme, actual_timestamp = metadata_service.get_update_scheme("ImagingStudy")
+    actual_bsn_scheme, actual_timestamp = metadata_service.get_update_scheme(DataDomain("ImagingStudy"))
     assert expected_bsn_scheme == actual_bsn_scheme
     assert expected_timestamp == actual_timestamp
     mock_get.assert_called_once()
