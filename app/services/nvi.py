@@ -28,9 +28,9 @@ class NviService:
     def get_referrals(self, payload: ReferralQuery) -> ReferralEntity | None:
         try:
             response = self.http_service.do_request(
-                method="POST",
-                sub_route="registrations/query",
-                data=payload.model_dump(mode="json"),
+                method="GET",
+                sub_route="NVIDataReference",
+                params=payload.model_dump(mode="json", by_alias=True),
             )
             response.raise_for_status()
         except Exception as e:
@@ -50,7 +50,7 @@ class NviService:
 
     def submit(self, data: CreateReferralRequest) -> ReferralEntity:
         response = self.http_service.do_request(
-            method="POST", sub_route="registrations", data=data.model_dump(mode="json")
+            method="POST", sub_route="NVIDataReference", data=data.model_dump(mode="json", by_alias=True)
         )
         response.raise_for_status()
         logging.info(f"Updating NVI with new referrals: {data}")

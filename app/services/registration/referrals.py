@@ -68,7 +68,6 @@ class ReferralRegistrationService:
                 blind_factor=blind_factor,
                 data_domain=data_domain,
                 ura_number=self._ura_number,
-                requesting_uzi_number=str(self._ura_number),
                 organization_type=self._default_organization_type,
             )
         )

@@ -157,7 +157,6 @@ def referral_query(mock_oprf_pseudonym_jwe: OprfPseudonymJWE) -> ReferralQuery:
 def create_referral_dto(referral_query: ReferralQuery) -> CreateReferralRequest:
     return CreateReferralRequest(
         **referral_query.model_dump(mode="python"),
-        requesting_uzi_number="some_uzi_number",
         organization_type="hospital",
     )
 
