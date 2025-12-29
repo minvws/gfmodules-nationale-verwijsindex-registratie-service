@@ -11,7 +11,7 @@ PATCHED_PSEUDONYM = "app.services.registration.referrals.PseudonymService.submit
 
 
 @patch(f"{PATCHED_NVI}.submit")
-@patch(f"{PATCHED_NVI}.get_referrals")
+@patch(f"{PATCHED_NVI}.is_referral_registered")
 @patch(PATCHED_PSEUDONYM)
 def test_register_should_succeed(
     pseudonym_response: MagicMock,
@@ -31,7 +31,7 @@ def test_register_should_succeed(
     assert mock_referral == actual
 
 
-@patch(f"{PATCHED_NVI}.get_referrals")
+@patch(f"{PATCHED_NVI}.is_referral_registered")
 @patch(PATCHED_PSEUDONYM)
 def test_register_should_return_none_if_referral_exists(
     pseudonym_response: MagicMock,

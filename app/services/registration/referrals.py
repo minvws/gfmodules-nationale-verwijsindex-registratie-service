@@ -49,7 +49,7 @@ class ReferralRegistrationService:
             )
         )
 
-        referral = self.nvi_service.get_referrals(
+        referral_registered = self.nvi_service.is_referral_registered(
             ReferralQuery(
                 oprf_jwe=pseudonym,
                 blind_factor=blind_factor,
@@ -58,7 +58,7 @@ class ReferralRegistrationService:
             )
         )
 
-        if referral:
+        if referral_registered:
             logger.info(f"referral for {pseudonym.jwe} and data domain {data_domain} already registered")
             return None
 

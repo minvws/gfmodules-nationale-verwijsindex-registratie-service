@@ -100,7 +100,7 @@ def test_get_allowed_domains(
 @patch(f"{PATCHED_METADATA_API}.get_update_scheme")
 @patch(f"{PATCHED_PSEUDONYM_API}.submit")
 @patch(f"{PATCHED_NVI_API}.submit")
-@patch(f"{PATCHED_NVI_API}.get_referrals")
+@patch(f"{PATCHED_NVI_API}.is_referral_registered")
 @patch(PATCHED_SYNCHRONIZE_HEALTH)
 def test_synchronize_should_succeed_when_there_is_data_from_metadata(
     mock_healthcheck: MagicMock,
@@ -138,7 +138,7 @@ def test_synchronize_should_succeed_when_there_is_data_from_metadata(
 @patch(f"{PATCHED_METADATA_API}.get_update_scheme")
 @patch(f"{PATCHED_PSEUDONYM_API}.submit")
 @patch(f"{PATCHED_NVI_API}.submit")
-@patch(f"{PATCHED_NVI_API}.get_referrals")
+@patch(f"{PATCHED_NVI_API}.is_referral_registered")
 @patch(PATCHED_SYNCHRONIZE_HEALTH)
 def test_synchronize_should_succeed_and_update_timestamp_on_domain_entry_when_there_is_update_from_metadata(
     mock_healthcheck: MagicMock,
@@ -194,7 +194,7 @@ def test_synchronize_should_succeed_and_update_timestamp_on_domain_entry_when_th
 @patch(f"{PATCHED_METADATA_API}.get_update_scheme")
 @patch(f"{PATCHED_PSEUDONYM_API}.submit")
 @patch(f"{PATCHED_NVI_API}.submit")
-@patch(f"{PATCHED_NVI_API}.get_referrals")
+@patch(f"{PATCHED_NVI_API}.is_referral_registered")
 @patch(PATCHED_SYNCHRONIZE_HEALTH)
 def test_synchronize_should_succeed_and_return_only_new_domain_entries_when_no_patients_are_updated_from_metadata(
     mock_healthcheck: MagicMock,
@@ -228,7 +228,7 @@ def test_synchronize_should_succeed_and_return_only_new_domain_entries_when_no_p
 @patch(f"{PATCHED_METADATA_API}.get_update_scheme")
 @patch(f"{PATCHED_PSEUDONYM_API}.submit")
 @patch(f"{PATCHED_NVI_API}.submit")
-@patch(f"{PATCHED_NVI_API}.get_referrals")
+@patch(f"{PATCHED_NVI_API}.is_referral_registered")
 @patch(PATCHED_SYNCHRONIZE_HEALTH)
 def test_syncrhonize_should_succeed_and_update_timestamp_when_referral_exists(
     mock_healthcheck: MagicMock,
@@ -266,7 +266,7 @@ def test_syncrhonize_should_succeed_and_update_timestamp_when_referral_exists(
 @patch(f"{PATCHED_METADATA_API}.get_update_scheme")
 @patch(f"{PATCHED_PSEUDONYM_API}.submit")
 @patch(f"{PATCHED_NVI_API}.submit")
-@patch(f"{PATCHED_NVI_API}.get_referrals")
+@patch(f"{PATCHED_NVI_API}.is_referral_registered")
 @patch(PATCHED_SYNCHRONIZE_HEALTH)
 def test_synchronize_should_fail_when_nvi_is_unreachable(
     mock_healthcheck: MagicMock,
@@ -301,7 +301,7 @@ def test_synchronize_should_fail_when_nvi_is_unreachable(
 @patch(f"{PATCHED_METADATA_API}.get_update_scheme")
 @patch(f"{PATCHED_PSEUDONYM_API}.submit")
 @patch(f"{PATCHED_NVI_API}.submit")
-@patch(f"{PATCHED_NVI_API}.get_referrals")
+@patch(f"{PATCHED_NVI_API}.is_referral_registered")
 @patch(PATCHED_SYNCHRONIZE_HEALTH)
 def test_synchronize_should_fail_when_pseudonym_api_is_unreachable(
     mock_healthcheck: MagicMock,
@@ -333,7 +333,7 @@ def test_synchronize_should_fail_when_pseudonym_api_is_unreachable(
 @patch(f"{PATCHED_METADATA_API}.get_update_scheme")
 @patch(f"{PATCHED_PSEUDONYM_API}.submit")
 @patch(f"{PATCHED_NVI_API}.submit")
-@patch(f"{PATCHED_NVI_API}.get_referrals")
+@patch(f"{PATCHED_NVI_API}.is_referral_registered")
 @patch(PATCHED_SYNCHRONIZE_HEALTH)
 def test_syncrhonize_should_fail_when_metadata_is_unreachable(
     mock_healthcheck: MagicMock,
