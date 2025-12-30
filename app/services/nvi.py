@@ -25,7 +25,7 @@ class NviService:
             verify_ca=verify_ca,
         )
 
-    def get_referrals(self, payload: ReferralQuery) -> ReferralEntity | None:
+    def is_referral_registered(self, payload: ReferralQuery) -> bool:
         try:
             response = self.http_service.do_request(
                 method="POST",
@@ -35,18 +35,12 @@ class NviService:
             response.raise_for_status()
         except Exception as e:
             logger.error(f"Failed to fetch referrals: {e}")
-            return None
+            raise e
         decoded = response.json()
-        if not decoded or not isinstance(decoded, list) or len(decoded) == 0:
-            return None
-        data = decoded[0]
-        referrals = ReferralEntity(
-            ura_number=UraNumber(data.get("ura_number")),
-            pseudonym=data.get("pseudonym"),
-            data_domain=DataDomain(data.get("data_domain")),
-            organization_type=data.get("organization_type"),
-        )
-        return referrals
+        entries = decoded.get("entry", [])
+        if len(entries) == 0:
+            return False
+        return True
 
     def submit(self, data: CreateReferralRequest) -> ReferralEntity:
         response = self.http_service.do_request(
