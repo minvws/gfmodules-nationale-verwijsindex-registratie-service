@@ -16,7 +16,8 @@ router = APIRouter(prefix="/synchronize", tags=["Synchronizer"])
     "",
     response_model=Dict[str, List[UpdateScheme]],
     summary="Synchronize Data Domain",
-    description=dedent("""
+    description=dedent(
+        """
     Synchronize local referrals with the National Referral Index (NVI) for one or all domains.
 
     This endpoint triggers a single synchronization of referral data into the NVI service.
@@ -32,7 +33,8 @@ router = APIRouter(prefix="/synchronize", tags=["Synchronizer"])
     **Use Cases:**
     - Keep NVI referrals up-to-date with latest local data
     - On-demand refresh for specific domains
-    """),
+    """
+    ),
     status_code=status.HTTP_200_OK,
     responses={
         200: {
@@ -97,7 +99,7 @@ def synchronize_domain(
 ) -> Dict[str, List[UpdateScheme]]:
     if data_domain is not None:
         allowed_domains = service.get_allowed_domains()
-        if data_domain not in allowed_domains:
+        if DataDomain(data_domain) not in allowed_domains:
             raise HTTPException(
                 status_code=400,
                 detail=f"Invalid data_domain. Must be one of: {', '.join(str(data_domain) for data_domain in allowed_domains)}",
