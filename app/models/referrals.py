@@ -1,16 +1,15 @@
-from pydantic import BaseModel, field_serializer, model_validator
+from pydantic import BaseModel, Field, field_serializer, model_validator
 from app.models.data_domain import DataDomain
 from app.models.pseudonym import OprfPseudonymJWE
 from app.models.ura_number import UraNumber
 
 
 class CreateReferralRequest(BaseModel):
-    oprf_jwe: OprfPseudonymJWE
-    blind_factor: str
-    ura_number: UraNumber
-    organization_type: str
-    data_domain: DataDomain
-    requesting_uzi_number: str
+    oprf_jwe: OprfPseudonymJWE = Field(serialization_alias="pseudonym")
+    blind_factor: str = Field(serialization_alias="oprfKey")
+    ura_number: UraNumber = Field(serialization_alias="source")
+    organization_type: str = Field(serialization_alias="sourceType")
+    data_domain: DataDomain = Field(serialization_alias="careContext")
 
     @field_serializer("data_domain", when_used="json")
     def serialize_data_domain(self, data_domain: DataDomain) -> str:
@@ -26,10 +25,10 @@ class CreateReferralRequest(BaseModel):
 
 
 class ReferralQuery(BaseModel):
-    oprf_jwe: OprfPseudonymJWE | None = None
-    blind_factor: str | None = None
-    data_domain: DataDomain | None = None
-    ura_number: UraNumber
+    oprf_jwe: OprfPseudonymJWE | None = Field(serialization_alias="pseudonym", default=None)
+    blind_factor: str | None = Field(serialization_alias="oprfKey", default=None)
+    data_domain: DataDomain | None = Field(serialization_alias="careContext", default=None)
+    ura_number: UraNumber = Field(serialization_alias="source")
 
     @field_serializer("data_domain", when_used="json")
     def serialize_data_domain(self, data_domain: DataDomain | None) -> str | None:
