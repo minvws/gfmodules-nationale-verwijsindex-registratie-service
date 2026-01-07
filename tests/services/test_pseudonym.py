@@ -36,7 +36,7 @@ def test_register_should_succeed(
     mock_post.assert_called_once_with(
         method="POST",
         sub_route="oprf/eval",
-        data={
+        json={
             "encryptedPersonalId": mock_dto.encrypted_personal_id,
             "recipientOrganization": mock_dto.recipient_organization,
             "recipientScope": mock_dto.recipient_scope,

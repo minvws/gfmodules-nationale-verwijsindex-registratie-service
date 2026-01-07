@@ -40,7 +40,7 @@ class PseudonymService:
 
         try:
             response = self.http_service.do_request(
-                method="POST", sub_route="oprf/eval", data=data.model_dump(by_alias=True)
+                method="POST", sub_route="oprf/eval", json=data.model_dump(by_alias=True)
             )
             response.raise_for_status()
         except Exception as e:

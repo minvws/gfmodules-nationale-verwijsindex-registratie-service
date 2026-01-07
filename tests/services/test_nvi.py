@@ -7,10 +7,13 @@ from app.models.referrals import ReferralQuery, CreateReferralRequest
 from app.services.nvi import NviService
 
 PATCHED_MODULE = "app.services.nvi.GfHttpService.do_request"
+PATCHED_OAUTH = "app.services.api.oauth.OauthService.fetch_token"
 
 
 @patch(PATCHED_MODULE)
+@patch(PATCHED_OAUTH)
 def test_get_referrals_should_succeed(
+    fetch_token: MagicMock,
     mock_post: MagicMock,
     nvi_service: NviService,
     referral_query: ReferralQuery,
@@ -29,6 +32,7 @@ def test_get_referrals_should_succeed(
         ],
     }
     mock_post.return_value = mock_response
+    fetch_token.return_value = MagicMock(access_token="some_access_token")
 
     actual = nvi_service.is_referral_registered(referral_query)
 
@@ -36,12 +40,15 @@ def test_get_referrals_should_succeed(
         method="GET",
         sub_route="NVIDataReference",
         params=referral_query.model_dump(mode="json", by_alias=True),
+        headers={"Authorization": "Bearer some_access_token", "Content-Type": "application/x-www-form-urlencoded"},
     )
     assert actual == expected_registered
 
 
 @patch(PATCHED_MODULE)
+@patch(PATCHED_OAUTH)
 def test_get_referrals_should_return_none_if_not_found(
+    fetch_token: MagicMock,
     mock_post: MagicMock,
     nvi_service: NviService,
     referral_query: ReferralQuery,
@@ -56,6 +63,7 @@ def test_get_referrals_should_return_none_if_not_found(
         ],
     }
     mock_post.return_value = mock_response
+    fetch_token.return_value = MagicMock(access_token="some_access_token")
 
     actual = nvi_service.is_referral_registered(referral_query)
 
@@ -63,6 +71,7 @@ def test_get_referrals_should_return_none_if_not_found(
         method="GET",
         sub_route="NVIDataReference",
         params=referral_query.model_dump(mode="json", by_alias=True),
+        headers={"Authorization": "Bearer some_access_token", "Content-Type": "application/x-www-form-urlencoded"},
     )
 
     assert actual is False

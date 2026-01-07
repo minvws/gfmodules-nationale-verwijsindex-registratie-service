@@ -5,6 +5,7 @@ from app.config import (
     ConfigMetadataApi,
     ConfigPseudonymApi,
     ConfigReferralApi,
+    ConfigReferralApiOauth,
     ConfigScheduler,
     ConfigUvicorn,
     LogLevel,
@@ -27,6 +28,9 @@ def get_test_config() -> Config:
             ssl_base_dir=None,
             ssl_cert_file=None,
             ssl_key_file=None,
+        ),
+        referral_api_oauth=ConfigReferralApiOauth(
+            endpoint="http://example.com/oauth/token",
         ),
         metadata_api=ConfigMetadataApi(
             mock=True,

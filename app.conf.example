@@ -41,6 +41,14 @@ timeout=10
 # mtls_cert=secrets/ssl/referral_api.cert
 # mtls_key=secrets/ssl/referral_api.key
 # verify_ca=secrets/ssl/referral_api_ca.cert
+# Oauth token endpoint in the referral api
+
+[referral_api_oauth]
+endpoint=http://localhost:8501/oauth/token
+timeout=10
+# mtls_cert=secrets/ssl/referral_api.cert
+# mtls_key=secrets/ssl/referral_api.key
+# verify_ca=secrets/ssl/referral_api_ca.cert
 
 [nvi_fhir_systems]
 # FHIR NamingSystem for pseudonyms

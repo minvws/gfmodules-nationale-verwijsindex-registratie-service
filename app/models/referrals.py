@@ -1,3 +1,5 @@
+from typing import Any, Dict
+from uuid import UUID
 from pydantic import BaseModel, Field, field_serializer, model_validator
 from app.models.data_domain import DataDomain
 from app.models.pseudonym import OprfPseudonymJWE
@@ -50,7 +52,16 @@ class ReferralQuery(BaseModel):
 
 
 class ReferralEntity(BaseModel):
+    id: UUID
     ura_number: UraNumber
-    pseudonym: str
     data_domain: DataDomain
-    organization_type: str | None = None
+    organization_type: str
+
+    @classmethod
+    def from_nvi_fhir(cls, fhir_data: Dict[str, Any]) -> "ReferralEntity":
+        return cls(
+            id=UUID(fhir_data.get("id")),
+            ura_number=UraNumber(fhir_data.get("source", {}).get("value")),
+            data_domain=DataDomain(fhir_data.get("careContext", {}).get("coding", [])[0].get("code")),
+            organization_type=fhir_data.get("sourceType", {}).get("coding", [])[0].get("code"),
+        )
