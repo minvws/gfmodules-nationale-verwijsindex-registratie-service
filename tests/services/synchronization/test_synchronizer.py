@@ -1,5 +1,6 @@
 from typing import List
 from unittest.mock import MagicMock, patch
+from uuid import UUID
 
 import pytest
 from requests.exceptions import ConnectionError
@@ -168,8 +169,8 @@ def test_synchronize_should_succeed_and_update_timestamp_on_domain_entry_when_th
             BsnUpdateScheme(
                 bsn=mock_update_scheme_with_new_timestamp[0][0],
                 referral=ReferralEntity(
+                    id=UUID("123e4567-e89b-12d3-a456-426614174000"),
                     ura_number=UraNumber("12345678"),
-                    pseudonym="some_pseudonym",
                     data_domain=DataDomain("beeldbank"),
                     organization_type="some_organization_type",
                 ),

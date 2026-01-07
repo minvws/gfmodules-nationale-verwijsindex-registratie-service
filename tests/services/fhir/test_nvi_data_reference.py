@@ -25,7 +25,6 @@ def sample_request() -> CreateReferralRequest:
         ura_number=UraNumber("90000001"),
         organization_type="laboratorium",
         data_domain=DataDomain("LaboratoryTestResult"),
-        requesting_uzi_number="UZI123456789",
     )
 
 

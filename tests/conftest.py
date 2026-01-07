@@ -1,5 +1,6 @@
 from datetime import datetime
 from typing import Any, Dict, List
+from uuid import UUID
 
 import pytest
 from fhir.resources.R4B.bundle import Bundle
@@ -17,6 +18,8 @@ from app.models.update_scheme import BsnUpdateScheme
 from app.models.ura_number import UraNumber
 from app.services.api.fhir import FhirHttpService
 from app.services.api.http_service import HttpService
+from app.services.api.oauth import OauthService
+from app.services.fhir.nvi_data_reference import NviDataReferenceMapper
 from app.services.metadata import MetadataService
 from app.services.nvi import NviService
 from app.services.pseudonym import PseudonymService
@@ -52,7 +55,7 @@ def config_pseudonym_api() -> ConfigPseudonymApi:
 
 @pytest.fixture
 def mock_url() -> str:
-    return "http://example.org/fhir/"
+    return "http://example.org/fhir"
 
 
 @pytest.fixture
@@ -93,8 +96,37 @@ def pseudonym_service(mock_url: str, mock_ura_number: UraNumber) -> PseudonymSer
 
 
 @pytest.fixture
-def nvi_service(mock_url: str) -> NviService:
-    return NviService(endpoint=mock_url, timeout=1, mtls_cert=None, mtls_key=None, verify_ca=True)
+def fhir_mapper() -> NviDataReferenceMapper:
+    return NviDataReferenceMapper(
+        pseudonym_system="http://example.com/pseudonym",
+        source_system="http://example.com/source",
+        organization_type_system="http://example.com/organization-type",
+        care_context_system="http://example.com/care-context",
+    )
+
+
+@pytest.fixture
+def oauth_service(mock_url: str) -> OauthService:
+    return OauthService(
+        endpoint=mock_url,
+        timeout=1,
+        mtls_cert=None,
+        mtls_key=None,
+        verify_ca=True,
+    )
+
+
+@pytest.fixture
+def nvi_service(mock_url: str, fhir_mapper: NviDataReferenceMapper, oauth_service: OauthService) -> NviService:
+    return NviService(
+        endpoint=mock_url,
+        timeout=1,
+        mtls_cert=None,
+        mtls_key=None,
+        verify_ca=True,
+        fhir_mapper=fhir_mapper,
+        oauth_service=oauth_service,
+    )
 
 
 @pytest.fixture
@@ -187,10 +219,10 @@ def mock_pseudonym_jwe() -> OprfPseudonymJWE:
 
 
 @pytest.fixture
-def mock_referral(mock_ura_number: UraNumber, mock_pseudonym_jwe: OprfPseudonymJWE) -> ReferralEntity:
+def mock_referral(mock_ura_number: UraNumber) -> ReferralEntity:
     return ReferralEntity(
+        id=UUID("123e4567-e89b-12d3-a456-426614174000"),
         ura_number=mock_ura_number,
-        pseudonym=mock_pseudonym_jwe.jwe,
         data_domain=DataDomain("beeldbank"),
         organization_type="some_organization_type",
     )

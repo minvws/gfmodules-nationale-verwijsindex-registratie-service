@@ -2,6 +2,7 @@ import inject
 
 from app.config import get_config
 from app.models.ura_number import UraNumber
+from app.services.api.oauth import OauthService
 from app.services.fhir.nvi_data_reference import NviDataReferenceMapper
 from app.services.metadata import MetadataService
 from app.services.nvi import NviService
@@ -30,12 +31,30 @@ def container_config(binder: inject.Binder) -> None:
     )
     binder.bind(PseudonymService, pseudonym_service)
 
+    nvi_data_reference_mapper = NviDataReferenceMapper(
+        pseudonym_system=config.nvi_fhir_systems.pseudonym_system,
+        source_system=config.nvi_fhir_systems.source_system,
+        organization_type_system=config.nvi_fhir_systems.organization_type_system,
+        care_context_system=config.nvi_fhir_systems.care_context_system,
+    )
+    binder.bind(NviDataReferenceMapper, nvi_data_reference_mapper)
+
+    oauth_service = OauthService(
+        endpoint=config.referral_api_oauth.endpoint,
+        timeout=config.referral_api_oauth.timeout,
+        mtls_cert=config.referral_api_oauth.mtls_cert,
+        mtls_key=config.referral_api_oauth.mtls_key,
+        verify_ca=config.referral_api_oauth.verify_ca,
+    )
+
     nvi_service = NviService(
         endpoint=config.referral_api.endpoint,
         timeout=config.referral_api.timeout,
         mtls_cert=config.referral_api.mtls_cert,
         mtls_key=config.referral_api.mtls_key,
         verify_ca=config.referral_api.verify_ca,
+        oauth_service=oauth_service,
+        fhir_mapper=nvi_data_reference_mapper,
     )
     binder.bind(NviService, nvi_service)
 
@@ -47,14 +66,6 @@ def container_config(binder: inject.Binder) -> None:
         verify_ca=config.metadata_api.verify_ca,
     )
     binder.bind(MetadataService, metadata_service)
-
-    nvi_data_reference_mapper = NviDataReferenceMapper(
-        pseudonym_system=config.nvi_fhir_systems.pseudonym_system,
-        source_system=config.nvi_fhir_systems.source_system,
-        organization_type_system=config.nvi_fhir_systems.organization_type_system,
-        care_context_system=config.nvi_fhir_systems.care_context_system,
-    )
-    binder.bind(NviDataReferenceMapper, nvi_data_reference_mapper)
 
     nvi_ura = UraNumberService.get_ura_number(config.app.nvi_certificate_path)
     referral_registration_service = ReferralRegistrationService(

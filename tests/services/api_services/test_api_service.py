@@ -51,7 +51,7 @@ def test_do_request_should_succeed(
     mock_request.json.return_value = mock_body
     mock_post.return_value = mock_request
 
-    actual = http_service.do_request(method="POST", data=mock_body)
+    actual = http_service.do_request(method="POST", json=mock_body)
 
     assert actual.json() == mock_body
     assert actual.status_code == 200
