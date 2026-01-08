@@ -24,7 +24,7 @@ class ConfigApp(BaseModel):
     loglevel: LogLevel = Field(default=LogLevel.info)
     provider_id: str
     data_domains: List[DataDomain] = Field(default=[])
-    default_organization_type: str = Field(default="hospital")
+    default_organization_type: str = Field(default="ziekenhuis")
     nvi_certificate_path: str
 
     @field_validator("data_domains", mode="before")
@@ -74,6 +74,7 @@ class ConfigReferralApi(BaseModel):
 
 
 class ConfigReferralApiOauth(BaseModel):
+    mock: bool = Field(default=False)
     endpoint: str
     timeout: int = Field(default=30, gt=0)
     mtls_cert: str | None = Field(default=None)

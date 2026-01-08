@@ -145,7 +145,7 @@ def registration_service(
         nvi_service=nvi_service,
         pseudonym_service=pseudonym_service,
         ura_number=mock_ura_number,
-        default_organization_type="hospital",
+        default_organization_type="ziekenhuis",
         nvi_ura_number=mock_nvi_ura_number,
     )
 
@@ -189,7 +189,7 @@ def referral_query(mock_oprf_pseudonym_jwe: OprfPseudonymJWE) -> ReferralQuery:
 def create_referral_dto(referral_query: ReferralQuery) -> CreateReferralRequest:
     return CreateReferralRequest(
         **referral_query.model_dump(mode="python"),
-        organization_type="hospital",
+        organization_type="ziekenhuis",
     )
 
 
