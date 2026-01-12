@@ -31,6 +31,7 @@ class OauthService:
         mtls_cert: str | None = None,
         mtls_key: str | None = None,
         verify_ca: str | bool = True,
+        mock: bool = False,
     ):
         self._http_service = GfHttpService(
             endpoint=endpoint,
@@ -40,8 +41,16 @@ class OauthService:
             verify_ca=verify_ca,
         )
         self._tokens: List[Token] = []
+        self.mock = mock
 
     def fetch_token(self, scope: str) -> Token:
+        if self.mock:
+            return Token(
+                access_token="mock-access-token",
+                token_type="Bearer",
+                expires_in=999999,
+                scope=[scope],
+            )
         logger.info(f"Fetching OAuth token for scope: {scope}")
         token = self._get_last_token(scope=scope)
         if token is None:
