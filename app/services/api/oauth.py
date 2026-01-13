@@ -9,18 +9,22 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+TOKEN_EXPIRES_IN = 600  # 10 minutes
+REFRESH_TOKEN_EXPIRES_IN = 3600  # 1 hour
+
+
 class Token(BaseModel):
     access_token: str
     token_type: str
-    expires_in: int
-    scope: List[str]
+    scope: str
+    refresh_token: str | None = None
     added_at: int | None = Field(default_factory=lambda: int(time.time()))
 
     @property
     def is_expired(self) -> bool:
         if self.added_at is None:
             return True
-        return (self.added_at + self.expires_in) <= int(time.time())
+        return (self.added_at + TOKEN_EXPIRES_IN) <= int(time.time())
 
 
 class OauthService:
@@ -28,6 +32,7 @@ class OauthService:
         self,
         endpoint: str,
         timeout: int,
+        target_audience: str,
         mtls_cert: str | None = None,
         mtls_key: str | None = None,
         verify_ca: str | bool = True,
@@ -42,14 +47,14 @@ class OauthService:
         )
         self._tokens: List[Token] = []
         self.mock = mock
+        self.target_audience = target_audience
 
     def fetch_token(self, scope: str) -> Token:
         if self.mock:
             return Token(
                 access_token="mock-access-token",
                 token_type="Bearer",
-                expires_in=999999,
-                scope=[scope],
+                scope=scope,
             )
         logger.info(f"Fetching OAuth token for scope: {scope}")
         token = self._get_last_token(scope=scope)
@@ -77,7 +82,7 @@ class OauthService:
                 continue
             if token.added_at is None:
                 continue
-            if (token.added_at + token.expires_in) > int(time.time()):
+            if (token.added_at + TOKEN_EXPIRES_IN) > int(time.time()):
                 logger.info(f"Reusing existing OAuth token for scope: {scope}")
                 return token
         return None
@@ -96,6 +101,7 @@ class OauthService:
                 {
                     "grant_type": "client_credentials",
                     "scope": scope,
+                    "target_audience": self.target_audience,
                 }
             ),
         )

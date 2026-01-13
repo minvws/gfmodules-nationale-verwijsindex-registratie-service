@@ -46,6 +46,7 @@ def container_config(binder: inject.Binder) -> None:
         mtls_key=config.referral_api_oauth.mtls_key,
         verify_ca=config.referral_api_oauth.verify_ca,
         mock=config.referral_api_oauth.mock,
+        target_audience=config.referral_api_oauth.target_audience,
     )
 
     nvi_service = NviService(
