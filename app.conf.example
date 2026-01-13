@@ -48,6 +48,7 @@ timeout=10
 # mtls_cert=secrets/ssl/referral_api.cert
 # mtls_key=secrets/ssl/referral_api.key
 # verify_ca=secrets/ssl/referral_api_ca.cert
+target_audience=service.nvi
 
 [nvi_fhir_systems]
 # FHIR NamingSystem for pseudonyms

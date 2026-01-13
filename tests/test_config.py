@@ -31,6 +31,7 @@ def get_test_config() -> Config:
         ),
         referral_api_oauth=ConfigReferralApiOauth(
             endpoint="http://example.com/oauth/token",
+            target_audience="http://example.com/api",
         ),
         metadata_api=ConfigMetadataApi(
             mock=True,

@@ -18,6 +18,7 @@ def mock_token_request_data() -> str:
         {
             "grant_type": "client_credentials",
             "scope": "some_scope",
+            "target_audience": "http://example.org/api",
         }
     )
 
@@ -27,8 +28,8 @@ def mock_token_response_body() -> Dict[str, Any]:
     return {
         "access_token": "some_value",
         "token_type": "Bearer",
-        "expires_in": 3600,
-        "scope": ["some_scope"],
+        "scope": "some_scope",
+        "refresh_token": "some_refresh_value",
     }
 
 
@@ -39,6 +40,7 @@ def mock_oauth(
     return OauthService(
         endpoint="http://example.org/oauth/token",
         timeout=1,
+        target_audience="http://example.org/api",
     )
 
 
@@ -62,9 +64,9 @@ def test_do_request_should_succeed(
     assert request.call_args[1]["method"] == "POST"
     assert request.call_args[1]["url"] == "http://example.org/oauth/token"
     assert request.call_args[1]["data"] == mock_token_request_data
+
     assert actual.access_token == mock_token_response_body["access_token"]
     assert actual.token_type == mock_token_response_body["token_type"]
-    assert actual.expires_in == mock_token_response_body["expires_in"]
     assert actual.scope == mock_token_response_body["scope"]
 
     assert len(mock_oauth._tokens) == 1
@@ -81,7 +83,6 @@ def test_do_request_should_reuse_token(
         Token(
             access_token=mock_token_response_body["access_token"],
             token_type=mock_token_response_body["token_type"],
-            expires_in=mock_token_response_body["expires_in"],
             scope=mock_token_response_body["scope"],
             added_at=int(time.time()),
         )
@@ -93,7 +94,6 @@ def test_do_request_should_reuse_token(
     assert len(mock_oauth._tokens) == 1
     assert actual.access_token == mock_token_response_body["access_token"]
     assert actual.token_type == mock_token_response_body["token_type"]
-    assert actual.expires_in == mock_token_response_body["expires_in"]
     assert actual.scope == mock_token_response_body["scope"]
 
 
@@ -108,22 +108,19 @@ def test_do_request_should_request_new_token_if_expired(
             Token(
                 access_token="expired_token",
                 token_type=mock_token_response_body["token_type"],
-                expires_in=1,
                 scope=mock_token_response_body["scope"],
                 added_at=int(time.time()) - 4000,
             ),
             Token(
                 access_token="expired_token_2",
                 token_type=mock_token_response_body["token_type"],
-                expires_in=1,
                 scope=mock_token_response_body["scope"],
                 added_at=int(time.time()) - 4000,
             ),
             Token(
                 access_token="token_3",
                 token_type=mock_token_response_body["token_type"],
-                expires_in=3600,
-                scope=["Different_scope"],
+                scope="Different_scope",
                 added_at=int(time.time()),
             ),
         ]
@@ -136,12 +133,11 @@ def test_do_request_should_request_new_token_if_expired(
     mock_token_response.json.return_value = mock_token_response_body
     request.return_value = mock_token_response
 
-    actual = mock_oauth.fetch_token(scope=mock_token_response_body["scope"][0])
+    actual = mock_oauth.fetch_token(scope=mock_token_response_body["scope"])
     assert request.call_count == 1
     assert len(mock_oauth._tokens) == 2
     assert actual.access_token == mock_token_response_body["access_token"]
     assert actual.token_type == mock_token_response_body["token_type"]
-    assert actual.expires_in == mock_token_response_body["expires_in"]
     assert actual.scope == mock_token_response_body["scope"]
     for token in mock_oauth._tokens:
         assert token.is_expired is False

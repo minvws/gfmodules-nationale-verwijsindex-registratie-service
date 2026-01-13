@@ -113,6 +113,7 @@ def oauth_service(mock_url: str) -> OauthService:
         mtls_cert=None,
         mtls_key=None,
         verify_ca=True,
+        target_audience="http://example.org/api",
     )
 
 
