@@ -40,13 +40,12 @@ def container_config(binder: inject.Binder) -> None:
     binder.bind(NviDataReferenceMapper, nvi_data_reference_mapper)
 
     oauth_service = OauthService(
-        endpoint=config.referral_api_oauth.endpoint,
-        timeout=config.referral_api_oauth.timeout,
-        mtls_cert=config.referral_api_oauth.mtls_cert,
-        mtls_key=config.referral_api_oauth.mtls_key,
-        verify_ca=config.referral_api_oauth.verify_ca,
-        mock=config.referral_api_oauth.mock,
-        target_audience=config.referral_api_oauth.target_audience,
+        endpoint=config.oauth_api.endpoint,
+        timeout=config.oauth_api.timeout,
+        mtls_cert=config.oauth_api.mtls_cert,
+        mtls_key=config.oauth_api.mtls_key,
+        verify_ca=config.oauth_api.verify_ca,
+        mock=config.oauth_api.mock,
     )
 
     nvi_service = NviService(
@@ -57,6 +56,7 @@ def container_config(binder: inject.Binder) -> None:
         verify_ca=config.referral_api.verify_ca,
         oauth_service=oauth_service,
         fhir_mapper=nvi_data_reference_mapper,
+        oauth_target_audience=config.referral_api.oauth_target_audience,
     )
     binder.bind(NviService, nvi_service)
 

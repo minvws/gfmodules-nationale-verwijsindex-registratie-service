@@ -5,7 +5,7 @@ from app.config import (
     ConfigMetadataApi,
     ConfigPseudonymApi,
     ConfigReferralApi,
-    ConfigReferralApiOauth,
+    ConfigOauthApi,
     ConfigScheduler,
     ConfigUvicorn,
     LogLevel,
@@ -16,7 +16,7 @@ def get_test_config() -> Config:
     return Config(
         app=ConfigApp(loglevel=LogLevel.error, provider_id="00000001", nvi_certificate_path="fake/path"),
         pseudonym_api=ConfigPseudonymApi(endpoint="http://example.com", mtls_key=""),
-        referral_api=ConfigReferralApi(endpoint="http://example.com"),
+        referral_api=ConfigReferralApi(endpoint="http://example.com", oauth_target_audience="service.nvi"),
         uvicorn=ConfigUvicorn(
             swagger_enabled=False,
             docs_url="/docs",
@@ -29,10 +29,7 @@ def get_test_config() -> Config:
             ssl_cert_file=None,
             ssl_key_file=None,
         ),
-        referral_api_oauth=ConfigReferralApiOauth(
-            endpoint="http://example.com/oauth/token",
-            target_audience="http://example.com/api",
-        ),
+        oauth_api=ConfigOauthApi(endpoint="http://example.com/oauth/token", timeout=30),
         metadata_api=ConfigMetadataApi(
             mock=True,
             endpoint="http://example.com",

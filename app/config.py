@@ -71,16 +71,16 @@ class ConfigReferralApi(BaseModel):
     mtls_cert: str | None = Field(default=None)
     mtls_key: str | None = Field(default=None)
     verify_ca: str | bool = Field(default=True)
+    oauth_target_audience: str
 
 
-class ConfigReferralApiOauth(BaseModel):
+class ConfigOauthApi(BaseModel):
     mock: bool = Field(default=False)
     endpoint: str
     timeout: int = Field(default=30, gt=0)
     mtls_cert: str | None = Field(default=None)
     mtls_key: str | None = Field(default=None)
     verify_ca: str | bool = Field(default=True)
-    target_audience: str
 
 
 class ConfigFhirSystems(BaseModel):
@@ -113,7 +113,7 @@ class Config(BaseModel):
     pseudonym_api: ConfigPseudonymApi
     referral_api: ConfigReferralApi
     nvi_fhir_systems: ConfigFhirSystems
-    referral_api_oauth: ConfigReferralApiOauth
+    oauth_api: ConfigOauthApi
 
 
 def read_ini_file(path: str) -> Any:

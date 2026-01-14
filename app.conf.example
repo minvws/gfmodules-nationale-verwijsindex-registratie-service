@@ -41,14 +41,14 @@ timeout=10
 # mtls_cert=secrets/ssl/referral_api.cert
 # mtls_key=secrets/ssl/referral_api.key
 # verify_ca=secrets/ssl/referral_api_ca.cert
+oauth_target_audience=service.nvi
 
-[referral_api_oauth]
+[oauth_api]
 endpoint=http://localhost:8501/oauth/token
 timeout=10
-# mtls_cert=secrets/ssl/referral_api.cert
-# mtls_key=secrets/ssl/referral_api.key
-# verify_ca=secrets/ssl/referral_api_ca.cert
-target_audience=service.nvi
+# mtls_cert=secrets/ssl/oauth.cert
+# mtls_key=secrets/ssl/oauth.key
+# verify_ca=secrets/ssl/oauth_ca.cert
 
 [nvi_fhir_systems]
 # FHIR NamingSystem for pseudonyms
