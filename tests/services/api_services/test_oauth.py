@@ -42,7 +42,7 @@ def mock_token_response_body() -> Dict[str, Any]:
     return {
         "access_token": "some_value",
         "token_type": "Bearer",
-        "scope": ["some_scope"],
+        "scope": "some_scope",
         "refresh_token": "some_refresh_value",
     }
 
@@ -52,7 +52,7 @@ def mock_refreshed_token_response_body() -> Dict[str, Any]:
     return {
         "access_token": "new_refreshed_token",
         "token_type": "Bearer",
-        "scope": ["some_scope"],
+        "scope": "some_scope",
         "refresh_token": "new_refresh_value",
     }
 
@@ -81,7 +81,7 @@ def test_do_request_should_succeed(
     mock_token_response.json.return_value = mock_token_response_body
     request.return_value = mock_token_response
 
-    actual = mock_oauth.fetch_token(scope=["some_scope"], target_audience=TARGET_AUDIENCE)
+    actual = mock_oauth.fetch_token(scope="some_scope", target_audience=TARGET_AUDIENCE)
 
     assert request.call_count == 1
     assert request.call_args[1]["method"] == "POST"
@@ -147,7 +147,7 @@ def test_do_request_should_request_new_token_if_expired(
             Token(
                 access_token="token_3",
                 token_type=mock_token_response_body["token_type"],
-                scope=["different_scope"],
+                scope="different_scope",
                 target_audience=TARGET_AUDIENCE,
                 added_at=int(time.time()),
             ),
@@ -281,22 +281,22 @@ def test_token_has_scope_and_target_audience() -> None:
     token = Token(
         access_token="test",
         token_type="Bearer",
-        scope=["read", "write", "admin"],
+        scope="read write admin",
         target_audience="http://example.org/api",
     )
-    assert token.has_scope_and_target_audience(["read"], "http://example.org/api") is True
-    assert token.has_scope_and_target_audience(["read", "write"], "http://example.org/api") is True
-    assert token.has_scope_and_target_audience(["read", "write", "admin"], "http://example.org/api") is True
-    assert token.has_scope_and_target_audience(["delete"], "http://example.org/api") is False
-    assert token.has_scope_and_target_audience(["read", "delete"], "http://example.org/api") is False
-    assert token.has_scope_and_target_audience(["read"], "http://other.org/api") is False
+    assert token.has_scope_and_target_audience("read", "http://example.org/api") is True
+    assert token.has_scope_and_target_audience("read write", "http://example.org/api") is True
+    assert token.has_scope_and_target_audience("read write admin", "http://example.org/api") is True
+    assert token.has_scope_and_target_audience("delete", "http://example.org/api") is False
+    assert token.has_scope_and_target_audience("read delete", "http://example.org/api") is False
+    assert token.has_scope_and_target_audience("read", "http://other.org/api") is False
 
 
 def test_token_can_refresh() -> None:
     token_no_refresh = Token(
         access_token="test",
         token_type="Bearer",
-        scope=["test"],
+        scope="test",
         refresh_token=None,
     )
     assert token_no_refresh.can_refresh is False
@@ -304,7 +304,7 @@ def test_token_can_refresh() -> None:
     token_with_refresh = Token(
         access_token="test",
         token_type="Bearer",
-        scope=["test"],
+        scope="test",
         refresh_token="refresh_token_value",
         added_at=int(time.time()),
     )
@@ -313,7 +313,7 @@ def test_token_can_refresh() -> None:
     token_expired_refresh = Token(
         access_token="test",
         token_type="Bearer",
-        scope=["test"],
+        scope="test",
         refresh_token="refresh_token_value",
         added_at=int(time.time()) - REFRESH_TOKEN_EXPIRED,  # Refresh token expired
     )
@@ -330,21 +330,21 @@ def test_clear_expired_tokens_keeps_refreshable_tokens(
             Token(
                 access_token="expired_no_refresh",
                 token_type="Bearer",
-                scope=["scope1"],
+                scope="scope1",
                 refresh_token=None,
                 added_at=int(time.time()) - TOKEN_EXPIRED,
             ),
             Token(
                 access_token="expired_with_refresh",
                 token_type="Bearer",
-                scope=["scope2"],
+                scope="scope2",
                 refresh_token="refresh_value",
                 added_at=int(time.time()) - TOKEN_EXPIRED,  # Expired but can refresh
             ),
             Token(
                 access_token="valid_token",
                 token_type="Bearer",
-                scope=["scope3"],
+                scope="scope3",
                 added_at=int(time.time()),
             ),
         ]
@@ -367,11 +367,11 @@ def test_mock_mode_returns_mock_token() -> None:
         mock=True,
     )
 
-    token = oauth.fetch_token(scope=["test_scope"], target_audience=TARGET_AUDIENCE)
+    token = oauth.fetch_token(scope="test_scope", target_audience=TARGET_AUDIENCE)
 
     assert token.access_token == "mock-access-token"
     assert token.token_type == "Bearer"
-    assert token.scope == ["test_scope"]
+    assert token.scope == "test_scope"
 
 
 @patch(PATCHED_MODULE)

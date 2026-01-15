@@ -18,17 +18,19 @@ TOKEN_EXPIRY_BUFFER = 30  # Refresh token 30 seconds before expiry
 class Token(BaseModel):
     access_token: str
     token_type: str
-    scope: List[str]
+    scope: str
     refresh_token: str | None = None
     expires_in: int | None = None
     added_at: int = Field(default_factory=lambda: int(time.time()))
     target_audience: str | None = None
 
-    def has_scope_and_target_audience(self, scope: List[str], target_audience: str) -> bool:
+    def has_scope_and_target_audience(self, scope: str, target_audience: str) -> bool:
         """
         Checks if this token has all the requested scopes and matches the target audience.
         """
-        return all(s in self.scope for s in scope) and self.target_audience == target_audience
+        token_scopes = self.scope.split()
+        requested_scopes = scope.split()
+        return all(s in token_scopes for s in requested_scopes) and self.target_audience == target_audience
 
     @property
     def is_expired(self) -> bool:
@@ -66,7 +68,7 @@ class OauthService:
         self._tokens: List[Token] = []
         self.mock = mock
 
-    def fetch_token(self, scope: List[str], target_audience: str) -> Token:
+    def fetch_token(self, scope: str, target_audience: str) -> Token:
         if self.mock:
             return Token(
                 access_token="mock-access-token",
@@ -91,7 +93,7 @@ class OauthService:
         """
         self._tokens = [token for token in self._tokens if not token.is_expired or token.can_refresh]
 
-    def _get_valid_token(self, scope: List[str], target_audience: str) -> Token | None:
+    def _get_valid_token(self, scope: str, target_audience: str) -> Token | None:
         """
         Gets a non-expired token with the given scope, else None
         """
@@ -108,7 +110,7 @@ class OauthService:
                 return token
         return None
 
-    def _get_refreshable_token(self, scope: List[str], target_audience: str) -> Token | None:
+    def _get_refreshable_token(self, scope: str, target_audience: str) -> Token | None:
         """
         Returns expired token that can still be refreshed, else None
         """
@@ -141,16 +143,15 @@ class OauthService:
         )
         return new_token
 
-    def _get_new_token(self, scope: List[str], target_audience: str) -> Token:
+    def _get_new_token(self, scope: str, target_audience: str) -> Token:
         """
         Requests a token from the oauth server for the given scope
         """
-        scope_str = " ".join(scope)
         logger.info(f"Requesting new OAuth token for scope: {scope}, target_audience: {target_audience}")
         token = self._request_token(
             data={
                 "grant_type": "client_credentials",
-                "scope": scope_str,
+                "scope": scope,
                 "target_audience": target_audience,
             },
             target_audience=target_audience,
