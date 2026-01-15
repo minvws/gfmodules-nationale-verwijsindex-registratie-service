@@ -33,7 +33,7 @@ class NviService:
 
     def is_referral_registered(self, payload: ReferralQuery) -> bool:
         try:
-            token = self.oauth_service.fetch_token(scope=["epd:read"], target_audience=self.oauth_target_audience)
+            token = self.oauth_service.fetch_token(scope="epd:read", target_audience=self.oauth_target_audience)
             response = self.http_service.do_request(
                 method="GET",
                 sub_route="NVIDataReference",
@@ -54,7 +54,7 @@ class NviService:
         return True
 
     def submit(self, data: CreateReferralRequest) -> ReferralEntity:
-        token = self.oauth_service.fetch_token(scope=["epd:write"], target_audience=self.oauth_target_audience)
+        token = self.oauth_service.fetch_token(scope="epd:write", target_audience=self.oauth_target_audience)
         response = self.http_service.do_request(
             method="POST",
             sub_route="NVIDataReference",
