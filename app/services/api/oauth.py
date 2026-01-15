@@ -1,19 +1,24 @@
 import logging
 import time
-import hashlib
-from typing import Any, Dict, List, Optional
+import uuid
+from typing import Any
 from urllib.parse import urlencode
 
+import jwt
+from cryptography import x509
+from jwt.algorithms import AllowedPrivateKeys
 from pydantic import BaseModel, Field
 
-import uuid
-import jwt
-import base64
-from cryptography import x509
-from cryptography.hazmat.primitives import serialization
-
+from app.models.ura_number import UraNumber
 from app.services.api.http_service import GfHttpService
-from uzireader.uziserver import UziServer
+from app.services.api.utils import (
+    cert_thumbprint_x5t_s256,
+    cert_to_x5c_b64,
+    is_uzi_cert,
+    load_cert_pem,
+    load_private_key_pem,
+)
+from app.services.ura import UraNumberService
 
 logger = logging.getLogger(__name__)
 
@@ -21,38 +26,7 @@ logger = logging.getLogger(__name__)
 TOKEN_EXPIRES_IN = 600  # 10 minutes
 REFRESH_TOKEN_EXPIRES_IN = 3600  # 1 hour
 TOKEN_EXPIRY_BUFFER = 30  # Refresh token 30 seconds before expiry
-
-
-def b64url_nopad(data: bytes) -> str:
-    return base64.urlsafe_b64encode(data).decode("ascii").rstrip("=")
-
-
-# Do we have this logic already somewhere?
-def load_private_key_pem(path: str, password: Optional[str]) -> object:
-    with open(path, "rb") as f:
-        key_bytes = f.read()
-    pw = password.encode("utf-8") if password else None
-    return serialization.load_pem_private_key(key_bytes, password=pw)
-
-
-# Do we have this logic already somewhere?
-def load_cert_pem(path: str) -> x509.Certificate:
-    with open(path, "rb") as f:
-        data = f.read()
-    return x509.load_pem_x509_certificate(data)
-
-
-# Do we have this logic already somewhere?
-def cert_thumbprint_x5t_s256(cert: x509.Certificate) -> str:
-    der = cert.public_bytes(serialization.Encoding.DER)
-    digest = hashlib.sha256(der).digest()
-    return b64url_nopad(digest)
-
-
-# Do we have this logic already somewhere?
-def cert_to_x5c_b64(cert: x509.Certificate) -> str:
-    der = cert.public_bytes(serialization.Encoding.DER)
-    return base64.b64encode(der).decode("ascii")
+TOKEN_REQUEST_JWT_EXPIRES_IN = 1800  # 30 minutes
 
 
 class Token(BaseModel):
@@ -88,32 +62,144 @@ class Token(BaseModel):
         return self.refresh_token is not None and not self.is_refresh_token_expired
 
 
+class JWTData(BaseModel):
+    jwt: str
+    expires_at: int
+
+
 class OauthService:
     def __init__(
         self,
         endpoint: str,
         timeout: int,
-        jwt_cert_path: str,
-        jwt_key_path: str,
+        mock: bool = False,
         mtls_cert: str | None = None,
         mtls_key: str | None = None,
         verify_ca: str | bool = True,
-        mock: bool = False,
+        uzi_cert_path: str | None = None,
+        uzi_key_path: str | None = None,
+        include_x5c: bool = True,
     ):
+        self._endpoint = endpoint
+        self.mock = mock
         self._http_service = GfHttpService(
-            endpoint=endpoint,
+            endpoint=self._endpoint,
             timeout=timeout,
             mtls_cert=mtls_cert,
             mtls_key=mtls_key,
             verify_ca=verify_ca,
         )
-        self._endpoint = endpoint
-        self._jwt_cert_path = jwt_cert_path
-        self._jwt_key_path = jwt_key_path
+
+        # mTLS certificate (can be either LDN or UZI cert)
         self._mtls_cert = mtls_cert
-        self._mtls_key = mtls_key
-        self._tokens: List[Token] = []
-        self.mock = mock
+        self._mtls_is_uzi: bool | None = None
+
+        # JWT signing configuration (UZI cert for signing client assertions)
+        self._uzi_cert_path = uzi_cert_path
+        self._uzi_key_path = uzi_key_path
+        self._jwt_signing_cert: x509.Certificate | None = None
+        self._jwt_signing_key: AllowedPrivateKeys | None = None
+        self._mtls_x5t_s256: str | None = None
+        self._jwt_signing_x5t_s256: str | None = None
+        self._ura_number: UraNumber | None = None
+        self._include_x5c = include_x5c
+        self._x5c_chain: list[str] | None = None
+
+        # Token cache
+        self._tokens: list[Token] = []
+        self._jwt: JWTData | None = None
+
+    @property
+    def mtls_is_uzi(self) -> bool:
+        if self._mtls_is_uzi is None:
+            self._mtls_is_uzi = is_uzi_cert(self._mtls_cert) if self._mtls_cert else False
+        return self._mtls_is_uzi
+
+    @property
+    def mtls_x5t_s256(self) -> str | None:
+        if self._mtls_x5t_s256 is None and self._mtls_cert:
+            self._mtls_x5t_s256 = cert_thumbprint_x5t_s256(load_cert_pem(self._mtls_cert))
+        return self._mtls_x5t_s256
+
+    @property
+    def jwt_signing_cert(self) -> x509.Certificate | None:
+        if self._jwt_signing_cert is None and self._uzi_cert_path:
+            self._jwt_signing_cert = load_cert_pem(self._uzi_cert_path)
+        return self._jwt_signing_cert
+
+    @property
+    def jwt_signing_key(self) -> AllowedPrivateKeys | None:
+        if self._jwt_signing_key is None and self._uzi_key_path:
+            self._jwt_signing_key = load_private_key_pem(self._uzi_key_path, password=None)
+        return self._jwt_signing_key
+
+    @property
+    def jwt_signing_x5t_s256(self) -> str | None:
+        if self._jwt_signing_x5t_s256 is None and self.jwt_signing_cert:
+            self._jwt_signing_x5t_s256 = cert_thumbprint_x5t_s256(self.jwt_signing_cert)
+        return self._jwt_signing_x5t_s256
+
+    @property
+    def ura_number(self) -> UraNumber | None:
+        if self._ura_number is None and self._uzi_cert_path:
+            self._ura_number = UraNumberService.get_ura_number(self._uzi_cert_path)
+        return self._ura_number
+
+    @property
+    def x5c_chain(self) -> list[str]:
+        if self._x5c_chain is None:
+            if self._include_x5c and self.jwt_signing_cert:
+                self._x5c_chain = [cert_to_x5c_b64(self.jwt_signing_cert)]
+            else:
+                self._x5c_chain = []
+        return self._x5c_chain
+
+    def _get_or_create_jwt(self, target_audience: str, scope: str) -> JWTData:
+        if self._jwt is None or time.time() >= self._jwt.expires_at:
+            self._jwt = self._build_jwt_request_token(target_audience=target_audience, scope=scope)
+        return self._jwt
+
+    def _build_jwt_request_token(self, target_audience: str, scope: str) -> JWTData:
+        if self.ura_number is None:
+            raise ValueError("URA number is not set")
+        if self.mtls_x5t_s256 is None:
+            raise ValueError("mTLS certificate thumbprint is not set")
+        if self.jwt_signing_x5t_s256 is None:
+            raise ValueError("JWT signing certificate thumbprint is not set")
+        if self.jwt_signing_key is None:
+            raise ValueError("JWT signing key is not set")
+
+        now = int(time.time())
+        exp = now + TOKEN_REQUEST_JWT_EXPIRES_IN
+        alg = "RS256"
+
+        claims = {
+            "iss": str(self.ura_number),
+            "sub": str(self.ura_number),
+            "aud": self._endpoint,
+            "scope": scope,
+            "target_audience": target_audience,
+            "iat": now,
+            "exp": exp,
+            "jti": str(uuid.uuid4()),
+            "cnf": {"x5t#S256": self.mtls_x5t_s256},
+        }
+
+        header: dict[str, Any] = {
+            "typ": "JWT",
+            "alg": alg,
+            "kid": self.jwt_signing_x5t_s256,
+        }
+        if self.x5c_chain:
+            header["x5c"] = self.x5c_chain
+
+        token = jwt.encode(payload=claims, key=self.jwt_signing_key, algorithm=alg, headers=header)
+        return JWTData(jwt=token, expires_at=exp)
+
+    def _add_data_if_ldn(self, data: dict[str, Any], scope: str, target_audience: str) -> None:
+        if not self.mtls_is_uzi:
+            data["client_assertion_type"] = "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"
+            data["client_assertion"] = self._get_or_create_jwt(target_audience=target_audience, scope=scope).jwt
 
     def fetch_token(self, scope: str, target_audience: str) -> Token:
         if self.mock:
@@ -123,101 +209,6 @@ class OauthService:
                 scope=scope,
             )
         logger.info(f"Fetching OAuth token for scope: {scope}, target_audience: {target_audience}")
-
-        # Load mTLS cert and compute thumbprint
-        mtls_cert = load_cert_pem(self._mtls_cert)
-        mtls_x5t_s256 = cert_thumbprint_x5t_s256(mtls_cert)
-
-        # Load signing key + cert
-        cert_chain: List[x509.Certificate] = []
-        if not (args.signing_cert and args.signing_key):
-            ap.error("Provide --signing-cert and --signing-key.")
-        signing_cert = load_cert_pem(args.signing_cert)
-        signing_key = load_private_key_pem(args.signing_key, password=None)
-
-        # Get the URA from the signing cert's subject CN
-        with open(args.signing_cert, "r", encoding="utf-8") as f:
-            cert_pem = f.read()
-        uzi_data = UziServer(verify="SUCCESS", cert=cert_pem)
-        ura_number = uzi_data["SubscriberNumber"]
-
-        alg = "RS256"
-
-        now = int(time.time())
-        jti = str(uuid.uuid4())
-
-        # Client Assertion claims (common RFC7523 pattern)
-        claims = {
-            "iss": ura_number,
-            "sub": ura_number,
-            "aud": args.token_url,
-            "scope": args.scope,
-            "target_audience": args.target_audience,
-            "iat": now,
-            "exp": now + int(args.expires_in),
-            "jti": jti,
-            # Certificate binding (mTLS fingerprint)
-            "cnf": {"x5t#S256": mtls_x5t_s256},
-        }
-
-        # JWT header
-        header: Dict[str, Any] = {
-            "typ": "JWT",
-            "alg": alg,
-            "kid": cert_thumbprint_x5t_s256(signing_cert),
-        }
-        if args.include_x5c:
-            chain = [signing_cert] + cert_chain
-            header["x5c"] = [cert_to_x5c_b64(c) for c in chain]
-
-        token = jwt.encode(
-            payload=claims,
-            key=signing_key,
-            algorithm=alg,
-            headers=header,
-        )
-
-        now = int(time.time())
-        jti = str(uuid.uuid4())
-
-        jwt_cert = load_cert_pem(self.__cert_path)
-        mtls_x5t_s256 = cert_thumbprint_x5t_s256(jwt_cert)
-
-        with open(args.signing_cert, "r", encoding="utf-8") as f:
-            cert_pem = f.read()
-
-        uzi_data = UziServer(verify="SUCCESS", cert=cert_pem)
-        ura_number = uzi_data["SubscriberNumber"]
-        # Client Assertion claims (common RFC7523 pattern)
-        claims = {
-            "iss": ura_number,
-            "sub": ura_number,
-            "aud": self._endpoint,  # Should be the oauth/token endpoint
-            "scope": scope,
-            "target_audience": "target_audience",  # Who is this?
-            "iat": now,
-            "exp": now + int(15000),  # expires in 15 min?
-            "jti": jti,
-            # Certificate binding (mTLS fingerprint)
-            "cnf": {"x5t#S256": mtls_x5t_s256},
-        }
-        claims = {}
-
-        header: Dict[str, Any] = {
-            "typ": "JWT",
-            "alg": alg,
-            "kid": cert_thumbprint_x5t_s256(signing_cert),
-        }
-        if args.include_x5c:
-            chain = [signing_cert] + cert_chain
-            header["x5c"] = [cert_to_x5c_b64(c) for c in chain]
-
-        token = jwt.encode(
-            payload=claims,
-            key=signing_key,
-            algorithm=alg,
-            headers=header,
-        )
 
         token = self._get_valid_token(scope=scope, target_audience=target_audience)
         if token is not None:
@@ -278,6 +269,7 @@ class OauthService:
                 "target_audience": target_audience,
             },
             target_audience=target_audience,
+            scope=token.scope,
         )
         self._tokens.remove(token)
         logger.info(
@@ -297,14 +289,16 @@ class OauthService:
                 "target_audience": target_audience,
             },
             target_audience=target_audience,
+            scope=scope,
         )
         logger.info(f"New OAuth token for scope: {scope}, target_audience: {target_audience}")
         return token
 
-    def _request_token(self, data: Dict[str, Any], target_audience: str) -> Token:
+    def _request_token(self, data: dict[str, Any], target_audience: str, scope: str) -> Token:
         """
         Requests a token from the oauth server with the given data
         """
+        self._add_data_if_ldn(data, scope=scope, target_audience=target_audience)
         try:
             response = self._http_service.do_request(
                 method="POST",
