@@ -145,21 +145,82 @@ jobs:
               with:
                 sonar-token: ${{ secrets.SONAR_TOKEN }}
 
+    image_scanner:
+      name: Scan Docker image for vulnerabilities
+      runs-on: ubuntu-24.04
+      needs: [build, detect_modified_files]
+      if: |
+        github.ref == 'refs/heads/main' ||
+        startsWith(github.ref, 'refs/tags/v') ||
+        needs.detect_modified_files.outputs.image_files_changed == 'true'
+      steps:
+        - name: Checkout repository
+          uses: actions/checkout@v6
+
+        - name: Log in to the Container registry
+          uses: docker/login-action@v3
+          with:
+            registry: ghcr.io
+            username: ${{ github.actor }}
+            password: ${{ secrets.GITHUB_TOKEN }}
+
+        - name: Build Docker image
+          uses: docker/build-push-action@v6
+          with:
+            context: .
+            file: docker/Dockerfile
+            push: false
+            tags: ghcr.io/${{ github.repository }}:${{ github.sha }}
+
+        - name: Run Trivy vulnerability scanner
+          uses: aquasecurity/trivy-action@0.33.1
+          with:
+            image-ref: ghcr.io/${{ github.repository }}:${{ github.sha }}
+            format: "sarif"
+            output: "trivy-results.sarif"
+            exit-code: "0"
+            severity: "CRITICAL,HIGH"
+            vuln-type: "library"
+
+        - name: Upload Trivy scan results to GitHub Security tab
+          uses: github/codeql-action/upload-sarif@v4 # Don't clutter security tab on PRs
+          if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v') 
+          with:
+            sarif_file: "trivy-results.sarif"
+
+        - name: Fail build on vulnerabilities
+          uses: aquasecurity/trivy-action@0.33.1
+          with:
+            image-ref: ghcr.io/${{ github.repository }}:${{ github.sha }}
+            format: "table"
+            exit-code: "1"
+            severity: "CRITICAL,HIGH"
+            vuln-type: "library"
+            skip-setup-trivy: true
+
     detect_modified_files:
-        name: Modified files
-        runs-on: ubuntu-24.04
-        outputs:
-          dockerfile_changed: ${{ steps.changed-files.outputs.any_changed }}
-          all_modified_files: ${{ steps.changed-files.outputs.all_modified_files }}
-        steps:
-            - name: Checkout repository
-              uses: actions/checkout@v6
-            - name: Get changed files
-              id: changed-files
-              uses: tj-actions/changed-files@e0021407031f5be11a464abee9a0776171c79891 # v46
-              with:
-                files: |
-                  docker/Dockerfile
+      name: Modified files
+      runs-on: ubuntu-24.04
+      outputs:
+        dockerfile_changed: ${{ steps.dockerfile-changed.outputs.any_changed }}
+        image_files_changed: ${{ steps.image-files-changed.outputs.any_changed }}
+      steps:
+        - name: Checkout repository
+          uses: actions/checkout@v6
+        - name: Check Dockerfile changes
+          id: dockerfile-changed
+          uses: tj-actions/changed-files@e0021407031f5be11a464abee9a0776171c79891 # v46
+          with:
+            files: |
+              docker/Dockerfile
+        - name: Check image-related file changes
+          id: image-files-changed
+          uses: tj-actions/changed-files@e0021407031f5be11a464abee9a0776171c79891 # v46
+          with:
+            files: |
+              docker/Dockerfile
+              pyproject.toml
+              poetry.lock
 
     push_container:
         if: |
@@ -201,4 +262,3 @@ jobs:
                   NEW_UID=${{ env.NEW_UID }}
                   NEW_GID=${{ env.NEW_GID }}
                   standalone=true
-
