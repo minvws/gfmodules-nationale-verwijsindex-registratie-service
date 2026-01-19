@@ -25,7 +25,6 @@ class ConfigApp(BaseModel):
     provider_id: str
     data_domains: List[DataDomain] = Field(default=[])
     default_organization_type: str = Field(default="ziekenhuis")
-    nvi_certificate_path: str
 
     @field_validator("data_domains", mode="before")
     @classmethod
@@ -72,6 +71,7 @@ class ConfigReferralApi(BaseModel):
     mtls_key: str | None = Field(default=None)
     verify_ca: str | bool = Field(default=True)
     oauth_target_audience: str
+    nvi_ura_number: str
 
 
 class ConfigOauthApi(BaseModel):

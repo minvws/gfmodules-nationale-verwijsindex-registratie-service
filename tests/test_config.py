@@ -14,9 +14,16 @@ from app.config import (
 
 def get_test_config() -> Config:
     return Config(
-        app=ConfigApp(loglevel=LogLevel.error, provider_id="00000001", nvi_certificate_path="fake/path"),
+        app=ConfigApp(
+            loglevel=LogLevel.error,
+            provider_id="00000001",
+        ),
         pseudonym_api=ConfigPseudonymApi(endpoint="http://example.com", mtls_key=""),
-        referral_api=ConfigReferralApi(endpoint="http://example.com", oauth_target_audience="service.nvi"),
+        referral_api=ConfigReferralApi(
+            endpoint="http://example.com",
+            oauth_target_audience="service.nvi",
+            nvi_ura_number="000000124",
+        ),
         uvicorn=ConfigUvicorn(
             swagger_enabled=False,
             docs_url="/docs",
