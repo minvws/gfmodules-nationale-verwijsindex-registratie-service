@@ -69,13 +69,12 @@ def container_config(binder: inject.Binder) -> None:
     )
     binder.bind(MetadataService, metadata_service)
 
-    nvi_ura = UraNumberService.get_ura_number(config.app.nvi_certificate_path)
     referral_registration_service = ReferralRegistrationService(
         nvi_service=nvi_service,
         pseudonym_service=pseudonym_service,
         ura_number=ura_number,
         default_organization_type=config.app.default_organization_type,
-        nvi_ura_number=nvi_ura,
+        nvi_ura_number=UraNumber(config.referral_api.nvi_ura_number),
     )
 
     bundle_registration_service = BundleRegistrationService(referrals_service=referral_registration_service)
