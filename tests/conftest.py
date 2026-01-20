@@ -18,10 +18,10 @@ from app.models.update_scheme import BsnUpdateScheme
 from app.models.ura_number import UraNumber
 from app.services.api.fhir import FhirHttpService
 from app.services.api.http_service import HttpService
-from app.services.api.oauth import OauthService
 from app.services.fhir.nvi_data_reference import NviDataReferenceMapper
 from app.services.metadata import MetadataService
 from app.services.nvi import NviService
+from app.services.oauth.oauth_service import OauthService
 from app.services.pseudonym import PseudonymService
 from app.services.registration.bundle import BundleRegistrationService
 from app.services.registration.referrals import ReferralRegistrationService

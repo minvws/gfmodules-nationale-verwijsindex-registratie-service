@@ -2,8 +2,8 @@ import logging
 
 from app.models.referrals import ReferralQuery, ReferralEntity, CreateReferralRequest
 from app.services.api.http_service import GfHttpService
-from app.services.api.oauth import OauthService
 from app.services.fhir.nvi_data_reference import NviDataReferenceMapper
+from app.services.oauth.oauth_service import OauthService
 
 logger = logging.getLogger(__name__)
 

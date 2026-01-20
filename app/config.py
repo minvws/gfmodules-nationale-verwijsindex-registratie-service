@@ -25,6 +25,8 @@ class ConfigApp(BaseModel):
     provider_id: str
     data_domains: List[DataDomain] = Field(default=[])
     default_organization_type: str = Field(default="ziekenhuis")
+    uzi_cert_path: str | None = Field(default=None)
+    uzi_key_path: str | None = Field(default=None)
 
     @field_validator("data_domains", mode="before")
     @classmethod
@@ -81,6 +83,7 @@ class ConfigOauthApi(BaseModel):
     mtls_cert: str | None = Field(default=None)
     mtls_key: str | None = Field(default=None)
     verify_ca: str | bool = Field(default=True)
+    include_x5c: bool = Field(default=True)
 
 
 class ConfigFhirSystems(BaseModel):
