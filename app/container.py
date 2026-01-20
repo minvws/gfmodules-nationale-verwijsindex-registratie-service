@@ -2,10 +2,11 @@ import inject
 
 from app.config import get_config
 from app.models.ura_number import UraNumber
-from app.services.api.oauth import OauthService
 from app.services.fhir.nvi_data_reference import NviDataReferenceMapper
 from app.services.metadata import MetadataService
 from app.services.nvi import NviService
+from app.services.oauth import jwt_builder_factory
+from app.services.oauth.oauth_service import OauthService
 from app.services.pseudonym import PseudonymService
 from app.services.registration.bundle import BundleRegistrationService
 from app.services.registration.referrals import ReferralRegistrationService
@@ -18,9 +19,14 @@ from app.services.ura import UraNumberService
 def container_config(binder: inject.Binder) -> None:
     config = get_config()
 
-    ura_number = UraNumberService.get_ura_number_from_config(config)
-    binder.bind(UraNumber, ura_number)
-
+    if config.referral_api.mtls_cert is not None and jwt_builder_factory.is_uzi_cert(config.referral_api.mtls_cert):
+        ura_number = UraNumberService.get_ura_number(config.referral_api.mtls_cert)
+        binder.bind(UraNumber, ura_number)
+    elif config.app.uzi_cert_path is not None and jwt_builder_factory.is_uzi_cert(config.app.uzi_cert_path):
+        ura_number = UraNumberService.get_ura_number(config.app.uzi_cert_path)
+        binder.bind(UraNumber, ura_number)
+    else:
+        raise ValueError("An UZI certificate must be provided for UraNumber extraction")
     pseudonym_service = PseudonymService(
         endpoint=config.pseudonym_api.endpoint,
         timeout=config.pseudonym_api.timeout,
@@ -39,13 +45,24 @@ def container_config(binder: inject.Binder) -> None:
     )
     binder.bind(NviDataReferenceMapper, nvi_data_reference_mapper)
 
+    if config.oauth_api.mtls_cert is None:
+        raise ValueError("An LDN or UZI mTLS certificate must be provided for OAuth API")
+    jwt_builder = jwt_builder_factory.initialize_jwt_builder(
+        endpoint=config.oauth_api.endpoint,
+        ura_number=ura_number,
+        mtls_cert=config.oauth_api.mtls_cert,
+        uzi_cert_path=config.app.uzi_cert_path,
+        uzi_key_path=config.app.uzi_key_path,
+        include_x5c=config.oauth_api.include_x5c,
+    )
     oauth_service = OauthService(
         endpoint=config.oauth_api.endpoint,
         timeout=config.oauth_api.timeout,
+        mock=config.oauth_api.mock,
         mtls_cert=config.oauth_api.mtls_cert,
         mtls_key=config.oauth_api.mtls_key,
         verify_ca=config.oauth_api.verify_ca,
-        mock=config.oauth_api.mock,
+        jwt_builder=jwt_builder,
     )
 
     nvi_service = NviService(
