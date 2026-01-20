@@ -5,8 +5,6 @@ ARG PYTHON_VERSION=3.11
 
 FROM python:${PYTHON_VERSION}-slim AS base
 
-RUN pip3 install --upgrade pip setuptools wheel
-
 ARG PROJECT_DIR="/src"
 ARG APP_USER="app"
 ARG APP_GROUP="app"
