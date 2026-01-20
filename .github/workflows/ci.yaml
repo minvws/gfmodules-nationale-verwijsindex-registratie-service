@@ -149,7 +149,6 @@ jobs:
       name: Modified files
       runs-on: ubuntu-24.04
       outputs:
-        dockerfile_changed: ${{ steps.dockerfile-changed.outputs.any_changed }}
         image_files_changed: ${{ steps.image-files-changed.outputs.any_changed }}
       steps:
         - name: Checkout repository
