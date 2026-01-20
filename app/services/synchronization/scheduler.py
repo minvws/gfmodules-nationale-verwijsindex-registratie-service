@@ -43,7 +43,10 @@ class Scheduler:
 
     def __run(self) -> None:
         while self.__stop_event.is_set() is False:
-            self.__function()
+            try:
+                self.__function()
+            except Exception as e:
+                logger.error(f"Error in scheduled function: {e}")
             self.__stop_event.wait(self.__delay)
             self.__update_runner()
 
