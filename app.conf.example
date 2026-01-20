@@ -7,8 +7,6 @@ provider_id=4af95a5f-3663-4832-b080-8ba1548e78f5
 data_domains = ImagingStudy
 # Default type of this registering organization
 default_organization_type = ziekenhuis
-# Path to the NVI certificate for creating OPRF requests
-nvi_certificate_path=/secrets/nvi.crt
 
 [scheduler]
 # the amount of seconds the update will run in the background
@@ -42,6 +40,8 @@ timeout=10
 # mtls_key=secrets/ssl/referral_api.key
 # verify_ca=secrets/ssl/referral_api_ca.cert
 oauth_target_audience=service.nvi
+# ura number of the NVI
+nvi_ura_number = 90000002
 
 [oauth_api]
 endpoint=http://localhost:8501/oauth/token
