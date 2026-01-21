@@ -72,7 +72,6 @@ class ConfigReferralApi(BaseModel):
     mtls_cert: str | None = Field(default=None)
     mtls_key: str | None = Field(default=None)
     verify_ca: str | bool = Field(default=True)
-    oauth_target_audience: str
     nvi_ura_number: str
 
 

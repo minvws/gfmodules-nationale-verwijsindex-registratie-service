@@ -126,7 +126,6 @@ def nvi_service(mock_url: str, fhir_mapper: NviDataReferenceMapper, oauth_servic
         verify_ca=True,
         fhir_mapper=fhir_mapper,
         oauth_service=oauth_service,
-        oauth_target_audience="service.nvi",
     )
 
 
