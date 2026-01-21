@@ -42,7 +42,6 @@ timeout=10
 # mtls_cert=secrets/ssl/referral_api.cert
 # mtls_key=secrets/ssl/referral_api.key
 # verify_ca=secrets/ssl/referral_api_ca.cert
-oauth_target_audience=service.nvi
 # ura number of the NVI
 nvi_ura_number = 90000002
 

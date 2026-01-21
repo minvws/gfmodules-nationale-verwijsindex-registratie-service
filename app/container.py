@@ -73,7 +73,6 @@ def container_config(binder: inject.Binder) -> None:
         verify_ca=config.referral_api.verify_ca,
         oauth_service=oauth_service,
         fhir_mapper=nvi_data_reference_mapper,
-        oauth_target_audience=config.referral_api.oauth_target_audience,
     )
     binder.bind(NviService, nvi_service)
 
