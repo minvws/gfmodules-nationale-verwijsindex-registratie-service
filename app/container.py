@@ -27,23 +27,6 @@ def container_config(binder: inject.Binder) -> None:
         binder.bind(UraNumber, ura_number)
     else:
         raise ValueError("An UZI certificate must be provided for UraNumber extraction")
-    pseudonym_service = PseudonymService(
-        endpoint=config.pseudonym_api.endpoint,
-        timeout=config.pseudonym_api.timeout,
-        mtls_cert=config.pseudonym_api.mtls_cert,
-        mtls_key=config.pseudonym_api.mtls_key,
-        verify_ca=config.pseudonym_api.verify_ca,
-        provider_id=config.app.provider_id,
-    )
-    binder.bind(PseudonymService, pseudonym_service)
-
-    nvi_data_reference_mapper = NviDataReferenceMapper(
-        pseudonym_system=config.nvi_fhir_systems.pseudonym_system,
-        source_system=config.nvi_fhir_systems.source_system,
-        organization_type_system=config.nvi_fhir_systems.organization_type_system,
-        care_context_system=config.nvi_fhir_systems.care_context_system,
-    )
-    binder.bind(NviDataReferenceMapper, nvi_data_reference_mapper)
 
     if config.oauth_api.mtls_cert is None:
         raise ValueError("An LDN or UZI mTLS certificate must be provided for OAuth API")
@@ -64,6 +47,25 @@ def container_config(binder: inject.Binder) -> None:
         verify_ca=config.oauth_api.verify_ca,
         jwt_builder=jwt_builder,
     )
+
+    pseudonym_service = PseudonymService(
+        endpoint=config.pseudonym_api.endpoint,
+        timeout=config.pseudonym_api.timeout,
+        mtls_cert=config.pseudonym_api.mtls_cert,
+        mtls_key=config.pseudonym_api.mtls_key,
+        verify_ca=config.pseudonym_api.verify_ca,
+        provider_id=config.app.provider_id,
+        oauth_service=oauth_service,
+    )
+    binder.bind(PseudonymService, pseudonym_service)
+
+    nvi_data_reference_mapper = NviDataReferenceMapper(
+        pseudonym_system=config.nvi_fhir_systems.pseudonym_system,
+        source_system=config.nvi_fhir_systems.source_system,
+        organization_type_system=config.nvi_fhir_systems.organization_type_system,
+        care_context_system=config.nvi_fhir_systems.care_context_system,
+    )
+    binder.bind(NviDataReferenceMapper, nvi_data_reference_mapper)
 
     nvi_service = NviService(
         endpoint=config.referral_api.endpoint,
