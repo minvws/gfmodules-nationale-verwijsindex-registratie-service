@@ -1,51 +1,16 @@
 import logging
-import time
-from typing import Any, Dict, List
+from typing import Any
 from urllib.parse import urlencode
 
-from pydantic import BaseModel, Field
 
+from app.models.token import AccessToken
 from app.services.api.http_service import GfHttpService
+from app.services.oauth.jwt_builder import JWTBuilder
 
 logger = logging.getLogger(__name__)
 
 
-TOKEN_EXPIRES_IN = 600  # 10 minutes
-REFRESH_TOKEN_EXPIRES_IN = 3600  # 1 hour
-TOKEN_EXPIRY_BUFFER = 30  # Refresh token 30 seconds before expiry
-
-
-class Token(BaseModel):
-    access_token: str
-    token_type: str
-    scope: str
-    refresh_token: str | None = None
-    expires_in: int | None = None
-    added_at: int = Field(default_factory=lambda: int(time.time()))
-    target_audience: str | None = None
-
-    def has_scope_and_target_audience(self, scope: str, target_audience: str) -> bool:
-        """
-        Checks if this token has all the requested scopes and matches the target audience.
-        """
-        token_scopes = self.scope.split()
-        requested_scopes = scope.split()
-        return all(s in token_scopes for s in requested_scopes) and self.target_audience == target_audience
-
-    @property
-    def is_expired(self) -> bool:
-        expires_in = self.expires_in or TOKEN_EXPIRES_IN
-        return (self.added_at + expires_in - TOKEN_EXPIRY_BUFFER) <= int(time.time())
-
-    @property
-    def is_refresh_token_expired(self) -> bool:
-        if self.refresh_token is None:
-            return True
-        return (self.added_at + REFRESH_TOKEN_EXPIRES_IN - TOKEN_EXPIRY_BUFFER) <= int(time.time())
-
-    @property
-    def can_refresh(self) -> bool:
-        return self.refresh_token is not None and not self.is_refresh_token_expired
+TOKEN_REQUEST_JWT_EXPIRES_IN = 1800  # 30 minutes
 
 
 class OauthService:
@@ -53,24 +18,35 @@ class OauthService:
         self,
         endpoint: str,
         timeout: int,
+        mock: bool = False,
         mtls_cert: str | None = None,
         mtls_key: str | None = None,
         verify_ca: str | bool = True,
-        mock: bool = False,
+        jwt_builder: JWTBuilder | None = None,
     ):
+        self._endpoint = endpoint
+        self.mock = mock
         self._http_service = GfHttpService(
-            endpoint=endpoint,
+            endpoint=self._endpoint,
             timeout=timeout,
             mtls_cert=mtls_cert,
             mtls_key=mtls_key,
             verify_ca=verify_ca,
         )
-        self._tokens: List[Token] = []
-        self.mock = mock
+        self._jwt_builder = jwt_builder
+        # Token cache
+        self._tokens: list[AccessToken] = []
 
-    def fetch_token(self, scope: str, target_audience: str) -> Token:
+    def _add_data_if_ldn(self, data: dict[str, Any], scope: str, target_audience: str) -> None:
+        logger.debug("Adding data if LDN certificate is used for mTLS")
+        if self._jwt_builder is not None:
+            token = self._jwt_builder.build(target_audience=target_audience, scope=scope)
+            data["client_assertion_type"] = "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"
+            data["client_assertion"] = token
+
+    def fetch_token(self, scope: str, target_audience: str) -> AccessToken:
         if self.mock:
-            return Token(
+            return AccessToken(
                 access_token="mock-access-token",
                 token_type="Bearer",
                 scope=scope,
@@ -93,7 +69,7 @@ class OauthService:
         """
         self._tokens = [token for token in self._tokens if not token.is_expired or token.can_refresh]
 
-    def _get_valid_token(self, scope: str, target_audience: str) -> Token | None:
+    def _get_valid_token(self, scope: str, target_audience: str) -> AccessToken | None:
         """
         Gets a non-expired token with the given scope, else None
         """
@@ -110,7 +86,7 @@ class OauthService:
                 return token
         return None
 
-    def _get_refreshable_token(self, scope: str, target_audience: str) -> Token | None:
+    def _get_refreshable_token(self, scope: str, target_audience: str) -> AccessToken | None:
         """
         Returns expired token that can still be refreshed, else None
         """
@@ -121,7 +97,7 @@ class OauthService:
                 return token
         return None
 
-    def _refresh_token(self, token: Token, target_audience: str) -> Token:
+    def _refresh_token(self, token: AccessToken, target_audience: str) -> AccessToken:
         """
         Refreshes expired token with refresh token.
         """
@@ -129,13 +105,14 @@ class OauthService:
             raise ValueError("Cannot refresh token without refresh_token")
 
         logger.info(f"Refreshing OAuth token for scope: {token.scope}, target_audience: {target_audience}")
-        new_token = self._request_token(
+        new_token = self._call_oauth_api(
             data={
                 "grant_type": "refresh_token",
                 "refresh_token": token.refresh_token,
                 "target_audience": target_audience,
             },
             target_audience=target_audience,
+            scope=token.scope,
         )
         self._tokens.remove(token)
         logger.info(
@@ -143,26 +120,40 @@ class OauthService:
         )
         return new_token
 
-    def _get_new_token(self, scope: str, target_audience: str) -> Token:
+    def _get_new_token(self, scope: str, target_audience: str) -> AccessToken:
         """
         Requests a token from the oauth server for the given scope
         """
         logger.info(f"Requesting new OAuth token for scope: {scope}, target_audience: {target_audience}")
-        token = self._request_token(
+        token = self._call_oauth_api(
             data={
                 "grant_type": "client_credentials",
                 "scope": scope,
                 "target_audience": target_audience,
             },
             target_audience=target_audience,
+            scope=scope,
         )
         logger.info(f"New OAuth token for scope: {scope}, target_audience: {target_audience}")
         return token
 
-    def _request_token(self, data: Dict[str, Any], target_audience: str) -> Token:
+    def _call_oauth_api(self, data: dict[str, Any], target_audience: str, scope: str) -> AccessToken:
+        """
+        Calls the OAuth API to request a token with the given data
+        """
+        self._add_data_if_ldn(data, scope, target_audience)
+        response = self._request_token(
+            data=data,
+            target_audience=target_audience,
+        )
+        self._tokens.append(response)
+        return response
+
+    def _request_token(self, data: dict[str, Any], target_audience: str) -> AccessToken:
         """
         Requests a token from the oauth server with the given data
         """
+        logger.debug(f"Requesting token with data: {data}")
         try:
             response = self._http_service.do_request(
                 method="POST",
@@ -175,6 +166,4 @@ class OauthService:
         except Exception as e:
             logger.error(f"Failed to obtain OAuth token: {e}")
             raise
-        token = Token(**response.json(), target_audience=target_audience)
-        self._tokens.append(token)
-        return token
+        return AccessToken(**response.json(), target_audience=target_audience)

@@ -18,10 +18,10 @@ from app.models.update_scheme import BsnUpdateScheme
 from app.models.ura_number import UraNumber
 from app.services.api.fhir import FhirHttpService
 from app.services.api.http_service import HttpService
-from app.services.api.oauth import OauthService
 from app.services.fhir.nvi_data_reference import NviDataReferenceMapper
 from app.services.metadata import MetadataService
 from app.services.nvi import NviService
+from app.services.oauth.oauth_service import OauthService
 from app.services.pseudonym import PseudonymService
 from app.services.registration.bundle import BundleRegistrationService
 from app.services.registration.referrals import ReferralRegistrationService
@@ -84,7 +84,7 @@ def fhir_http_service(mock_url: str) -> FhirHttpService:
 
 
 @pytest.fixture
-def pseudonym_service(mock_url: str, mock_ura_number: UraNumber) -> PseudonymService:
+def pseudonym_service(mock_url: str, mock_ura_number: UraNumber, oauth_service: OauthService) -> PseudonymService:
     return PseudonymService(
         provider_id=mock_ura_number.value,
         endpoint=mock_url,
@@ -92,6 +92,7 @@ def pseudonym_service(mock_url: str, mock_ura_number: UraNumber) -> PseudonymSer
         mtls_cert=None,
         mtls_key=None,
         verify_ca=True,
+        oauth_service=oauth_service,
     )
 
 
@@ -126,7 +127,6 @@ def nvi_service(mock_url: str, fhir_mapper: NviDataReferenceMapper, oauth_servic
         verify_ca=True,
         fhir_mapper=fhir_mapper,
         oauth_service=oauth_service,
-        oauth_target_audience="service.nvi",
     )
 
 
