@@ -1,5 +1,6 @@
 import base64
 import hashlib
+import re
 import time
 import uuid
 from typing import Any, Dict, List, Optional
@@ -41,6 +42,26 @@ class JWTBuilder:
         return x509.load_pem_x509_certificate(data)
 
     @staticmethod
+    def split_certificates(pem_bundle: str) -> List[str]:
+        """Return each certificate block found in a concatenated PEM bundle."""
+
+        _CERT_PATTERN = re.compile(
+            r"-----BEGIN CERTIFICATE-----\s.+?-----END CERTIFICATE-----",
+            re.DOTALL,
+        )
+        return [match.strip() for match in _CERT_PATTERN.findall(pem_bundle)]
+
+    @staticmethod
+    def load_cert_pem_bundle(path: str) -> List[x509.Certificate]:
+        with open(path, "r", encoding="utf-8") as f:
+            pem_bundle = f.read()
+        certs_pem = JWTBuilder.split_certificates(pem_bundle)
+        certs = [
+            x509.load_pem_x509_certificate(cert.encode("utf-8")) for cert in certs_pem
+        ]
+        return certs
+
+    @staticmethod
     def load_private_key_pem(path: str, password: Optional[str]) -> AllowedPrivateKeys:
         with open(path, "rb") as f:
             key_bytes = f.read()
@@ -66,16 +87,16 @@ class JWTBuilder:
         scope: Optional[str],
         target_audience: Optional[str],
         expires_in: int = 300,
-        include_x5c: bool = False,
+        include_x5c: bool = True,
         signing_key_password: Optional[str] = None,
     ) -> str:
         mtls_cert = self.load_cert_pem(self.mtls_cert_path)
         mtls_x5t_s256 = self.cert_thumbprint_x5t_s256(mtls_cert)
 
-        cert_chain: List[x509.Certificate] = []
         if not (self.signing_cert_path and self.signing_key_path):
             raise ValueError("Provide signing_cert_path and signing_key_path.")
-        signing_cert = self.load_cert_pem(self.signing_cert_path)
+        cert_chain: List[x509.Certificate] = self.load_cert_pem_bundle(self.signing_cert_path)
+        signing_cert = cert_chain[0]
         signing_key = self.load_private_key_pem(
             self.signing_key_path, password=signing_key_password
         )
@@ -107,8 +128,7 @@ class JWTBuilder:
             "kid": self.cert_thumbprint_x5t_s256(signing_cert),
         }
         if include_x5c:
-            chain = [signing_cert] + cert_chain
-            header["x5c"] = [self.cert_to_x5c_b64(c) for c in chain]
+            header["x5c"] = [self.cert_to_x5c_b64(c) for c in cert_chain]
 
         token = jwt.encode(
             payload=claims,
