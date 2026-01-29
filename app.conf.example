@@ -52,13 +52,13 @@ timeout=10
 
 [nvi_fhir_systems]
 # FHIR NamingSystem for pseudonyms
-pseudonym_system = http://vws.nl/fhir/NamingSystem/nvi-pseudonym
+pseudonym_system = https://nvi.proeftuin.gf.irealisatie.nl/fhir/NamingSystem/nvi-pseudonym
 # OID for URA numbers
 source_system = urn:oid:2.16.528.1.1007.3.3
 # CodeSystem for organization types
-organization_type_system = http://vws.nl/fhir/CodeSystem/nvi-organization-types
+organization_type_system = https://nvi.proeftuin.gf.irealisatie.nl/fhir/CodeSystem/nvi-organization-types
 # CodeSystem for care context
-care_context_system = http://nictiz.nl/fhir/hcim-2024
+care_context_system = https://nvi.proeftuin.gf.irealisatie.nl/fhir/CodeSystem/care-context-type
 
 [uvicorn]
 # If true, the api docs will be enabled
