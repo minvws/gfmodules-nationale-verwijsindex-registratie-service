@@ -10,10 +10,10 @@ from app.services.fhir.nvi_data_reference import NviDataReferenceMapper
 @pytest.fixture
 def mapper() -> NviDataReferenceMapper:
     return NviDataReferenceMapper(
-        pseudonym_system="http://vws.nl/fhir/NamingSystem/nvi-pseudonym",
+        pseudonym_system="http://example.com/some-pseudonym-system",
         source_system="urn:oid:2.16.528.1.1007.3.3",
-        organization_type_system="http://vws.nl/fhir/CodeSystem/nvi-organization-types",
-        care_context_system="http://nictiz.nl/fhir/hcim-2024",
+        organization_type_system="http://example.com/some-org-type-system",
+        care_context_system="http://example.com/some-care-context-system",
     )
 
 
@@ -34,7 +34,7 @@ def test_to_fhir_structure(mapper: NviDataReferenceMapper, sample_request: Creat
     expected = {
         "resourceType": "NVIDataReference",
         "subject": {
-            "system": "http://vws.nl/fhir/NamingSystem/nvi-pseudonym",
+            "system": "http://example.com/some-pseudonym-system",
             "value": "fake_jwe",
         },
         "source": {
@@ -44,7 +44,7 @@ def test_to_fhir_structure(mapper: NviDataReferenceMapper, sample_request: Creat
         "sourceType": {
             "coding": [
                 {
-                    "system": "http://vws.nl/fhir/CodeSystem/nvi-organization-types",
+                    "system": "http://example.com/some-org-type-system",
                     "code": "laboratorium",
                     "display": "Laboratorium",
                 }
@@ -53,7 +53,7 @@ def test_to_fhir_structure(mapper: NviDataReferenceMapper, sample_request: Creat
         "careContext": {
             "coding": [
                 {
-                    "system": "http://nictiz.nl/fhir/hcim-2024",
+                    "system": "http://example.com/some-care-context-system",
                     "code": "LaboratoryTestResult",
                 }
             ]
