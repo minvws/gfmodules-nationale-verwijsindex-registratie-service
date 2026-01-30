@@ -98,7 +98,7 @@ class DemoFlow:
         bearer_token = self.oauth.get_bearer_token(
             scope="prs:read",
             target_audience=PRS_ENDPOINT,
-            with_jwt=False,
+            with_jwt=True,
         )
         blind_factor, blinded_input = OPRF.create_blinded_input(
             personal_identifier={
@@ -124,7 +124,7 @@ class DemoFlow:
         bearer_token = self.oauth.get_bearer_token(
             scope="epd:write",
             target_audience=NVI_ENDPOINT,
-            with_jwt=False,
+            with_jwt=True,
         )
         response = self.nvi.register(
             ura_number=KETENPARTIJ_URA_NUMBER,
