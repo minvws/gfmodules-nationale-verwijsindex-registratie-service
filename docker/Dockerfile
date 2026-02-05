@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 # syntax directive is used to enable Docker BuildKit
 
-ARG PYTHON_VERSION=3.11
+ARG PYTHON_VERSION=3.14
 
 FROM python:${PYTHON_VERSION}-slim AS base
 
@@ -59,7 +59,7 @@ COPY --chown=${APP_USER}:${APP_GROUP} --from=builder /liboprf/src/lib*.so /usr/l
 RUN ldconfig
 
 # Copy installed python packages from the builder stage.
-COPY --chown=${APP_USER}:${APP_GROUP} --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
+COPY --chown=${APP_USER}:${APP_GROUP} --from=builder /usr/local/lib/python3.14/site-packages /usr/local/lib/python3.14/site-packages
 
 # Copy application source code.
 COPY --chown=${APP_USER}:${APP_GROUP} . /src
