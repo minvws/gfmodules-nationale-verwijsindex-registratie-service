@@ -23,7 +23,7 @@ jobs:
             - name: Run build action
               uses: minvws/action-python-poetry-install@v1
               with:
-                python_version: "3.11"
+                python_version: "3.14"
 
     lint:
         name: Run code linter
@@ -37,7 +37,7 @@ jobs:
             - name: Run build action
               uses: minvws/action-python-poetry-install@v1
               with:
-                python_version: "3.11"
+                python_version: "3.14"
 
             - name: Lint
               run: poetry run $(make lint --just-print --silent)
@@ -54,7 +54,7 @@ jobs:
             - name: Run build action
               uses: minvws/action-python-poetry-install@v1
               with:
-                python_version: "3.11"
+                python_version: "3.14"
 
             - name: Check static types
               run: poetry run $(make type-check --just-print --silent)
@@ -71,7 +71,7 @@ jobs:
             - name: Run build action
               uses: minvws/action-python-poetry-install@v1
               with:
-                python_version: "3.11"
+                python_version: "3.14"
 
             - name: Scan packages for vulnerabilities
               run: poetry run $(make safety-check --just-print --silent)
@@ -88,7 +88,7 @@ jobs:
             - name: Run build action
               uses: minvws/action-python-poetry-install@v1
               with:
-                python_version: "3.11"
+                python_version: "3.14"
 
             - uses: codespell-project/codespell-problem-matcher@v1
 
@@ -116,7 +116,7 @@ jobs:
             - name: Run build action
               uses: minvws/action-python-poetry-install@v1
               with:
-                python_version: "3.11"
+                python_version: "3.14"
 
             - name: Run the tests
               run: poetry run $(make test --just-print --silent)
