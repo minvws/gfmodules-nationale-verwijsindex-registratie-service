@@ -21,7 +21,7 @@ puzi = { git = "https://github.com/minvws/puzi-python" }
 cryptography = "^46.0.4"
 pyoprf = "^0.9.3"
 pyjwt = "^2.11.0"
-fhir-core = "1.1.5"
+fhir-core = "=1.1.4"
 
 [tool.poetry.group.dev.dependencies]
 types-requests = "^2.32.4"
