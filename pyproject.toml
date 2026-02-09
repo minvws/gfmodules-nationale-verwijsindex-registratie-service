@@ -21,16 +21,16 @@ puzi = { git = "https://github.com/minvws/puzi-python" }
 cryptography = "^46.0.4"
 pyoprf = "^0.9.3"
 pyjwt = "^2.11.0"
-fhir-core = "1.1.4"
+fhir-core = "1.1.5"
 
 [tool.poetry.group.dev.dependencies]
 types-requests = "^2.32.4"
-faker = "^40.1.2"
+faker = "^40.4.0"
 pytest = "^9.0.2"
 pytest-cov = "^7.0.0"
 pytest-mock = "^3.15.1"
 httpx = "^0.28.1"
-ruff = "0.14.14"
+ruff = "0.15.0"
 codespell = "^2.4.1"
 pip-audit = "^2.10.0"
 
