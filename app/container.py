@@ -2,10 +2,11 @@ import inject
 
 from app.config import get_config
 from app.models.ura_number import UraNumber
-from app.services.api.oauth import OauthService
 from app.services.fhir.nvi_data_reference import NviDataReferenceMapper
 from app.services.metadata import MetadataService
 from app.services.nvi import NviService
+from app.services.oauth import jwt_builder_factory
+from app.services.oauth.oauth_service import OauthService
 from app.services.pseudonym import PseudonymService
 from app.services.registration.bundle import BundleRegistrationService
 from app.services.registration.referrals import ReferralRegistrationService
@@ -18,8 +19,34 @@ from app.services.ura import UraNumberService
 def container_config(binder: inject.Binder) -> None:
     config = get_config()
 
-    ura_number = UraNumberService.get_ura_number_from_config(config)
-    binder.bind(UraNumber, ura_number)
+    if config.referral_api.mtls_cert is not None and jwt_builder_factory.is_uzi_cert(config.referral_api.mtls_cert):
+        ura_number = UraNumberService.get_ura_number(config.referral_api.mtls_cert)
+        binder.bind(UraNumber, ura_number)
+    elif config.app.uzi_cert_path is not None and jwt_builder_factory.is_uzi_cert(config.app.uzi_cert_path):
+        ura_number = UraNumberService.get_ura_number(config.app.uzi_cert_path)
+        binder.bind(UraNumber, ura_number)
+    else:
+        raise ValueError("An UZI certificate must be provided for UraNumber extraction")
+
+    if config.oauth_api.mtls_cert is None:
+        raise ValueError("An LDN or UZI mTLS certificate must be provided for OAuth API")
+    jwt_builder = jwt_builder_factory.initialize_jwt_builder(
+        endpoint=config.oauth_api.endpoint,
+        ura_number=ura_number,
+        mtls_cert=config.oauth_api.mtls_cert,
+        uzi_cert_path=config.app.uzi_cert_path,
+        uzi_key_path=config.app.uzi_key_path,
+        include_x5c=config.oauth_api.include_x5c,
+    )
+    oauth_service = OauthService(
+        endpoint=config.oauth_api.endpoint,
+        timeout=config.oauth_api.timeout,
+        mock=config.oauth_api.mock,
+        mtls_cert=config.oauth_api.mtls_cert,
+        mtls_key=config.oauth_api.mtls_key,
+        verify_ca=config.oauth_api.verify_ca,
+        jwt_builder=jwt_builder,
+    )
 
     pseudonym_service = PseudonymService(
         endpoint=config.pseudonym_api.endpoint,
@@ -28,6 +55,7 @@ def container_config(binder: inject.Binder) -> None:
         mtls_key=config.pseudonym_api.mtls_key,
         verify_ca=config.pseudonym_api.verify_ca,
         provider_id=config.app.provider_id,
+        oauth_service=oauth_service,
     )
     binder.bind(PseudonymService, pseudonym_service)
 
@@ -39,15 +67,6 @@ def container_config(binder: inject.Binder) -> None:
     )
     binder.bind(NviDataReferenceMapper, nvi_data_reference_mapper)
 
-    oauth_service = OauthService(
-        endpoint=config.oauth_api.endpoint,
-        timeout=config.oauth_api.timeout,
-        mtls_cert=config.oauth_api.mtls_cert,
-        mtls_key=config.oauth_api.mtls_key,
-        verify_ca=config.oauth_api.verify_ca,
-        mock=config.oauth_api.mock,
-    )
-
     nvi_service = NviService(
         endpoint=config.referral_api.endpoint,
         timeout=config.referral_api.timeout,
@@ -56,7 +75,6 @@ def container_config(binder: inject.Binder) -> None:
         verify_ca=config.referral_api.verify_ca,
         oauth_service=oauth_service,
         fhir_mapper=nvi_data_reference_mapper,
-        oauth_target_audience=config.referral_api.oauth_target_audience,
     )
     binder.bind(NviService, nvi_service)
 
