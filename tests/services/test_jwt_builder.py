@@ -10,6 +10,13 @@ import builtins
 
 DUMMY_CERT = b"-----BEGIN CERTIFICATE-----\nTESTCERT\n-----END CERTIFICATE-----\n"
 DUMMY_KEY = b"-----BEGIN PRIVATE KEY-----\nTESTKEY\n-----END PRIVATE KEY-----\n"
+DUMMY_CERT_BUNDLE = b"""-----BEGIN CERTIFICATE-----
+TESTCERT1
+-----END CERTIFICATE-----
+-----BEGIN CERTIFICATE-----
+TESTCERT2
+-----END CERTIFICATE-----
+"""
 
 
 @pytest.fixture
@@ -125,3 +132,46 @@ def test_jwt_builder_x5c_chain_absent(
     _, kwargs = mock_jwt_encode.call_args
     headers = kwargs["headers"]
     assert "x5c" not in headers
+
+
+@patch("app.services.oauth.jwt_builder.x509.load_pem_x509_certificate")
+@patch("app.services.oauth.jwt_builder.serialization.load_pem_private_key")
+def test_jwt_builder_x5c_chain_from_bundle(
+    mock_load_key: MagicMock,
+    mock_load_cert: MagicMock,
+    builder_args: dict[str, Any],
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    def open_side_effect(path: str, mode: str = "rb", *args: Any, **kwargs: Any) -> io.BytesIO:
+        if "key" in path:
+            return io.BytesIO(DUMMY_KEY)
+        if path == "mtls-cert.pem":
+            return io.BytesIO(DUMMY_CERT)
+        if path == "jwt-signing-bundle.pem":
+            return io.BytesIO(DUMMY_CERT_BUNDLE)
+        return io.BytesIO(DUMMY_CERT)
+
+    monkeypatch.setattr(builtins, "open", MagicMock(side_effect=open_side_effect))
+
+    mtls_cert = MagicMock()
+    mtls_cert.public_bytes.return_value = b"mtls-cert-der"
+    signing_cert = MagicMock()
+    signing_cert.public_bytes.return_value = b"signing-cert-der"
+    chain_cert = MagicMock()
+    chain_cert.public_bytes.return_value = b"chain-cert-der"
+    mock_load_cert.side_effect = [mtls_cert, signing_cert, chain_cert]
+
+    mock_key = MagicMock(spec=rsa.RSAPrivateKey)
+    mock_load_key.return_value = mock_key
+
+    builder = JWTBuilder(
+        endpoint=builder_args["endpoint"],
+        mtls_cert="mtls-cert.pem",
+        ura_number=builder_args["ura_number"],
+        jwt_signing_cert="jwt-signing-bundle.pem",
+        jwt_signing_key=builder_args["jwt_signing_key"],
+        include_x5c=True,
+    )
+
+    assert len(builder._x5c_chain) == 2
+    assert builder._x5c_chain[0] != builder._x5c_chain[1]

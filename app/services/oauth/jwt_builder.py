@@ -1,5 +1,6 @@
+import re
 from app.models.ura_number import UraNumber
-from typing import Any
+from typing import Any, List
 
 import time
 import uuid
@@ -34,11 +35,11 @@ class JWTBuilder:
         self._ura_number = ura_number
         self._mtls_x5t_s256 = self._cert_thumbprint_x5t_s256(self._load_cert_pem(mtls_cert))
         self._jwt_signing_key = self._load_private_key_pem(jwt_signing_key, password=None)
-        jwt_cert_pem = self._load_cert_pem(jwt_signing_cert)
-        self._jwt_signing_x5t_s256 = self._cert_thumbprint_x5t_s256(jwt_cert_pem)
+        jwt_cert_bundle = self._load_certificates_pem(jwt_signing_cert)
+        self._jwt_signing_x5t_s256 = self._cert_thumbprint_x5t_s256(jwt_cert_bundle[0])
 
         if include_x5c:
-            self._x5c_chain = [self._cert_to_x5c_b64(jwt_cert_pem)]
+            self._x5c_chain = [self._cert_to_x5c_b64(cert) for cert in jwt_cert_bundle]
         else:
             self._x5c_chain = []
 
@@ -69,7 +70,8 @@ class JWTBuilder:
 
         return jwt.encode(payload=claims, key=self._jwt_signing_key, algorithm=alg, headers=header)
 
-    def _load_private_key_pem(self, path: str, password: str | None = None) -> JWTSigningKey:
+    @staticmethod
+    def _load_private_key_pem(path: str, password: str | None = None) -> JWTSigningKey:
         with open(path, "rb") as f:
             key_bytes = f.read()
         pw = password.encode("utf-8") if password else None
@@ -78,16 +80,40 @@ class JWTBuilder:
             raise ValueError("Unsupported private key type")
         return key
 
-    def _load_cert_pem(self, path: str) -> x509.Certificate:
+    @staticmethod
+    def _load_cert_pem(path: str) -> x509.Certificate:
+        certs = JWTBuilder._load_certificates_pem(path)
+        return certs[0]
+
+    @staticmethod
+    def _load_certificates_pem(path: str) -> List[x509.Certificate]:
         with open(path, "rb") as f:
             data = f.read()
-        return x509.load_pem_x509_certificate(data)
+        certificates = [
+            x509.load_pem_x509_certificate(cert_pem.encode("utf-8"))
+            for cert_pem in JWTBuilder.split_certificates(data.decode("utf-8"))
+        ]
+        if not certificates:
+            raise ValueError(f"No certificates found in {path}")
+        return certificates
 
-    def _cert_thumbprint_x5t_s256(self, cert: x509.Certificate) -> str:
+    @staticmethod
+    def _cert_thumbprint_x5t_s256(cert: x509.Certificate) -> str:
         der = cert.public_bytes(serialization.Encoding.DER)
         digest = hashlib.sha256(der).digest()
         return base64.urlsafe_b64encode(digest).decode("ascii").rstrip("=")
 
-    def _cert_to_x5c_b64(self, cert: x509.Certificate) -> str:
+    @staticmethod
+    def _cert_to_x5c_b64(cert: x509.Certificate) -> str:
         der = cert.public_bytes(serialization.Encoding.DER)
         return base64.b64encode(der).decode("ascii")
+
+    @staticmethod
+    def split_certificates(pem_bundle: str) -> List[str]:
+        """Return each certificate block found in a concatenated PEM bundle."""
+
+        _CERT_PATTERN = re.compile(
+            r"-----BEGIN CERTIFICATE-----\s*.*?-----END CERTIFICATE-----",
+            re.DOTALL,
+        )
+        return [match.strip() for match in _CERT_PATTERN.findall(pem_bundle)]
