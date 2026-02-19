@@ -3,6 +3,7 @@ import logging
 from app.models.pseudonym import OprfPseudonymJWE
 from app.models.pseudonym import PseudonymRequest
 from app.services.api.http_service import GfHttpService
+from app.services.oauth.oauth_service import OauthService
 
 logger = logging.getLogger(__name__)
 
@@ -20,7 +21,9 @@ class PseudonymService:
         mtls_cert: str | None,
         mtls_key: str | None,
         verify_ca: str | bool,
+        oauth_service: OauthService,
     ) -> None:
+        self._endpoint = endpoint
         self.http_service = GfHttpService(
             endpoint=endpoint,
             timeout=timeout,
@@ -28,6 +31,7 @@ class PseudonymService:
             mtls_key=mtls_key,
             verify_ca=verify_ca,
         )
+        self._oauth_service = oauth_service
         self._provider_id = provider_id
 
     def submit(self, data: PseudonymRequest) -> OprfPseudonymJWE:
@@ -38,9 +42,14 @@ class PseudonymService:
             f"Request OPRF JWE for organisation {data.recipient_organization} with scope {data.recipient_scope}"
         )
 
+        token = self._oauth_service.fetch_token(scope="prs:read", target_audience=self._endpoint)
+
         try:
             response = self.http_service.do_request(
-                method="POST", sub_route="oprf/eval", json=data.model_dump(by_alias=True)
+                method="POST",
+                sub_route="oprf/eval",
+                json=data.model_dump(by_alias=True),
+                headers={"Authorization": f"Bearer {token.access_token}"},
             )
             response.raise_for_status()
         except Exception as e:

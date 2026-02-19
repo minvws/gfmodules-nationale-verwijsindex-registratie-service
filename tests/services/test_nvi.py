@@ -7,7 +7,7 @@ from app.models.referrals import ReferralQuery, CreateReferralRequest
 from app.services.nvi import NviService
 
 PATCHED_MODULE = "app.services.nvi.GfHttpService.do_request"
-PATCHED_OAUTH = "app.services.api.oauth.OauthService.fetch_token"
+PATCHED_OAUTH = "app.services.oauth.oauth_service.OauthService.fetch_token"
 
 
 @patch(PATCHED_MODULE)

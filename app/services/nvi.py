@@ -2,8 +2,8 @@ import logging
 
 from app.models.referrals import ReferralQuery, ReferralEntity, CreateReferralRequest
 from app.services.api.http_service import GfHttpService
-from app.services.api.oauth import OauthService
 from app.services.fhir.nvi_data_reference import NviDataReferenceMapper
+from app.services.oauth.oauth_service import OauthService
 
 logger = logging.getLogger(__name__)
 
@@ -15,11 +15,11 @@ class NviService:
         timeout: int,
         fhir_mapper: NviDataReferenceMapper,
         oauth_service: OauthService,
-        oauth_target_audience: str,
         mtls_cert: str | None = None,
         mtls_key: str | None = None,
         verify_ca: str | bool = True,
     ):
+        self.endpoint = endpoint
         self.http_service = GfHttpService(
             endpoint=endpoint,
             timeout=timeout,
@@ -29,11 +29,10 @@ class NviService:
         )
         self.oauth_service = oauth_service
         self.fhir_mapper = fhir_mapper
-        self.oauth_target_audience = oauth_target_audience
 
     def is_referral_registered(self, payload: ReferralQuery) -> bool:
         try:
-            token = self.oauth_service.fetch_token(scope="epd:read", target_audience=self.oauth_target_audience)
+            token = self.oauth_service.fetch_token(scope="epd:read", target_audience=self.endpoint)
             response = self.http_service.do_request(
                 method="GET",
                 sub_route="NVIDataReference",
@@ -54,7 +53,7 @@ class NviService:
         return True
 
     def submit(self, data: CreateReferralRequest) -> ReferralEntity:
-        token = self.oauth_service.fetch_token(scope="epd:write", target_audience=self.oauth_target_audience)
+        token = self.oauth_service.fetch_token(scope="epd:write", target_audience=self.endpoint)
         response = self.http_service.do_request(
             method="POST",
             sub_route="NVIDataReference",
