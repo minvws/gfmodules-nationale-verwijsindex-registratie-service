@@ -21,7 +21,7 @@ jobs:
         run: tar -czf gfmodules-nationale-verwijsindex-registratie-service_${{ env.RELEASE_VERSION }}.tar.gz app ./version.json
 
       - name: Upload release tar
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: gfmodules-nationale-verwijsindex-registratie-service_${{ env.RELEASE_VERSION }}
           path: gfmodules-nationale-verwijsindex-registratie-service_${{ env.RELEASE_VERSION }}.tar.gz
