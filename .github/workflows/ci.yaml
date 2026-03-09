@@ -192,7 +192,7 @@ jobs:
           images: ghcr.io/${{ github.repository }}
 
       - name: Build Docker image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         env:
           NEW_UID: 1000
           NEW_GID: 1000
@@ -236,7 +236,7 @@ jobs:
           skip-setup-trivy: true
 
       - name: Push Docker image
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')
         env:
           NEW_UID: 1000
