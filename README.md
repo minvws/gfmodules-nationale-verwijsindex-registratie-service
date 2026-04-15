@@ -89,6 +89,12 @@ poetry run python -m app.main
 
 ### Docker
 
+Before starting, you can generate some dummy certificates for local development:
+
+```bash
+./tools/generate_dummy_certs.sh
+```
+
 Build and run with Docker Compose:
 
 ```bash

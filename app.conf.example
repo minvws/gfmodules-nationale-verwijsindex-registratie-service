@@ -8,14 +8,15 @@ data_domains = ImagingStudy
 # Default type of this registering organization
 default_organization_type = ziekenhuis
 # Uzi certificate paths, not required if referral api mTLS cert is an UZI cert
-uzi_cert_path=secrets/uzi.cert
-uzi_key_path=secrets/uzi.key
+uzi_cert_path=secrets/dummy-uzi.crt
+uzi_key_path=secrets/dummy-uzi.key
 
 [scheduler]
 # the amount of seconds the update will run in the background
 scheduled_delay=5
 # background updates automatically start on bootstrap
-automatic_background_update = True
+# Disabled by default for local development: requires a running NVI instance
+automatic_background_update = False
 
 [metadata_api]
 # The base URLs of FHIR stores (metadata registers)
@@ -48,9 +49,9 @@ nvi_ura_number = 90000002
 [oauth_api]
 endpoint=http://localhost:8501/oauth/token
 timeout=10
-# mtls_cert=secrets/ssl/oauth.cert
-# mtls_key=secrets/ssl/oauth.key
-# verify_ca=secrets/ssl/oauth_ca.cert
+mtls_cert=secrets/dummy-uzi.crt
+mtls_key=secrets/dummy-uzi.key
+# verify_ca=secrets/uzi-server-ca.crt
 # include_x5c=True
 
 [nvi_fhir_systems]
