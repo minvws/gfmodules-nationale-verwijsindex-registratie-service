@@ -1,3 +1,10 @@
 app.conf
 .git
 .github
+tests/
+test_flow/
+docs/
+coverage.xml
+sonar-project.properties
+LICENSES/
+version.json
