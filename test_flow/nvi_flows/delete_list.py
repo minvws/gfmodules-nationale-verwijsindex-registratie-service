@@ -1,16 +1,14 @@
+from test_flow.data import NVI_ENDPOINT, SOURCE_IDENTIFIER_SYSTEM, SUBJECT_IDENTIFIER_SYSTEM
 from test_flow.NVIList import NVIList
 from test_flow.OAuth import OAuth
-from test_flow.data import NVI_ENDPOINT
 
 
 def delete_list(
     oauth_service: OAuth,
     nvi_list_service: NVIList,
     list_id: str | None = None,
-    subject_system: str | None = None,
-    subject_value: str | None = None,
-    source_system: str | None = None,
-    source_value: str | None = None,
+    subject: str | None = None,
+    source: str | None = None,
     code: str | None = None,
 ) -> None:
     print("Deleting FHIR List entries")
@@ -24,10 +22,10 @@ def delete_list(
 
     status = nvi_list_service.delete(
         bearer_token=nvi_token,
-        subject_system=subject_system,
-        subject_value=subject_value,
-        source_system=source_system,
-        source_value=source_value,
+        subject_system=SUBJECT_IDENTIFIER_SYSTEM,
+        subject_value=subject,
+        source_system=SOURCE_IDENTIFIER_SYSTEM,
+        source_value=source,
         code=code,
     )
     print("Delete by query status:")

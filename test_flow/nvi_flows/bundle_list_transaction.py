@@ -1,18 +1,16 @@
+from test_flow.data import NVI_ENDPOINT, SOURCE_IDENTIFIER_SYSTEM, SUBJECT_IDENTIFIER_SYSTEM
 from test_flow.NVIList import NVIList
 from test_flow.OAuth import OAuth
-from test_flow.data import NVI_ENDPOINT
 
 
 def bundle_list_transaction(
     oauth_service: OAuth,
     nvi_list_service: NVIList,
     ura_number: str,
-    subject_system: str,
-    subject_value: str,
+    subject: str,
     code: str,
     reference_id: str,
-    source_system: str,
-    source_value: str,
+    source: str,
     display: str,
 ) -> None:
     print("Posting List transaction bundle")
@@ -37,14 +35,14 @@ def bundle_list_transaction(
                     ],
                     "subject": {
                         "identifier": {
-                            "system": subject_system,
-                            "value": subject_value,
+                            "system": SUBJECT_IDENTIFIER_SYSTEM,
+                            "value": subject,
                         }
                     },
                     "source": {
                         "identifier": {
-                            "system": source_system,
-                            "value": source_value,
+                            "system": SOURCE_IDENTIFIER_SYSTEM,
+                            "value": source,
                         },
                         "type": "Device",
                     },
@@ -78,7 +76,7 @@ def bundle_list_transaction(
             {
                 "request": {
                     "method": "GET",
-                    "url": f"List?patient.identifier={subject_system}|{subject_value}&code={code}",
+                    "url": f"List?patient.identifier={SUBJECT_IDENTIFIER_SYSTEM}|{subject}&code={code}",
                 }
             },
             {

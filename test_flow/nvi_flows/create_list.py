@@ -1,20 +1,28 @@
+import base64
+import json
+
+from test_flow.data import (
+    CODE_CODING_SYSTEM,
+    NVI_ENDPOINT,
+    NVI_URA_NUMBER,
+    PRS_ENDPOINT,
+    SOURCE_IDENTIFIER_SYSTEM,
+    SUBJECT_IDENTIFIER_SYSTEM,
+)
 from test_flow.NVIList import NVIList
 from test_flow.OAuth import OAuth
-from test_flow.data import NVI_ENDPOINT
+from test_flow.OPRF import OPRF
+from test_flow.PRS import PRS
 
 
 def create_list(
-    oauth_service: OAuth,
     nvi_list_service: NVIList,
     ura_number: str,
-    subject_system: str,
-    subject_value: str,
-    source_system: str,
-    source_value: str,
+    source: str,
+    subject: str,
     code: str,
     display: str,
 ) -> None:
-    print("Creating FHIR List entry for code:", code)
     body = {
         "resourceType": "List",
         "extension": [
@@ -30,14 +38,14 @@ def create_list(
         ],
         "subject": {
             "identifier": {
-                "system": subject_system,
-                "value": subject_value,
+                "system": SUBJECT_IDENTIFIER_SYSTEM,
+                "value": subject,
             }
         },
         "source": {
             "identifier": {
-                "system": source_system,
-                "value": source_value,
+                "system": SOURCE_IDENTIFIER_SYSTEM,
+                "value": source,
             },
             "type": "Device",
         },
@@ -55,7 +63,7 @@ def create_list(
             "coding": [
                 {
                     "code": code,
-                    "system": "http://minvws.github.io/generiekefuncties-docs/CodeSystem/nl-gf-data-categories-cs",
+                    "system": CODE_CODING_SYSTEM,
                     "display": display,
                 }
             ]

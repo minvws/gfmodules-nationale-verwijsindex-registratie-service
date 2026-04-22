@@ -1,9 +1,12 @@
+import base64
+import json
 from typing import Any, Dict
 
 from test_flow.data import (
     MTLS_CERT_PATH,
     MTLS_KEY_PATH,
     NVI_ENDPOINT,
+    NVI_URA_NUMBER,
     OAUTH_ENDPOINT,
     PRS_ENDPOINT,
     SINGING_CERT_PATH,
@@ -25,6 +28,7 @@ from test_flow.nvi_flows.query_referrals import query_referrals
 from test_flow.nvi_flows.register import register
 from test_flow.NVIList import NVIList
 from test_flow.OAuth import OAuth
+from test_flow.OPRF import OPRF
 from test_flow.PRS import PRS
 
 
@@ -108,22 +112,20 @@ def main(arg: str, kwargs: Dict[str, Any]) -> None:
             )
         case "create_list":
             create_list(
-                oauth_service=oauth_service,
                 nvi_list_service=nvi_list_service,
                 ura_number=kwargs["ura_number"],
-                subject_system=kwargs["subject_system"],
-                subject_value=kwargs["subject_value"],
-                source_system=kwargs.get("source_system", "urn:ietf:rfc:3986"),
-                source_value=kwargs.get("source_value", "EHR-SYS-2024-001"),
+                subject=bsn_to_subject(oauth_service=oauth_service, prs_service=prs_service, bsn=kwargs["bsn"]),
+                source=kwargs.get("source_value", "EHR-SYS-2024-001"),
                 code=kwargs["code"],
                 display=kwargs.get("display", "Medicatieafspraak"),
             )
         case "query_list":
             query_list(
-                prs_service=prs_service,
                 oauth_service=oauth_service,
                 nvi_list_service=nvi_list_service,
-                bsn=kwargs.get("bsn"),
+                subject=optional_bsn_to_subject(
+                    oauth_service=oauth_service, prs_service=prs_service, bsn=kwargs.get("bsn")
+                ),
                 care_context=kwargs.get("care_context"),
             )
         case "get_list_by_id":
@@ -137,10 +139,10 @@ def main(arg: str, kwargs: Dict[str, Any]) -> None:
                 oauth_service=oauth_service,
                 nvi_list_service=nvi_list_service,
                 list_id=kwargs.get("list_id"),
-                subject_system=kwargs.get("subject_system"),
-                subject_value=kwargs.get("subject_value"),
-                source_system=kwargs.get("source_system"),
-                source_value=kwargs.get("source_value"),
+                subject=optional_bsn_to_subject(
+                    oauth_service=oauth_service, prs_service=prs_service, bsn=kwargs.get("bsn")
+                ),
+                source=kwargs.get("source"),
                 code=kwargs.get("code"),
             )
         case "bundle_list_transaction":
@@ -148,12 +150,10 @@ def main(arg: str, kwargs: Dict[str, Any]) -> None:
                 oauth_service=oauth_service,
                 nvi_list_service=nvi_list_service,
                 ura_number=kwargs["ura_number"],
-                subject_system=kwargs["subject_system"],
-                subject_value=kwargs["subject_value"],
+                subject=bsn_to_subject(oauth_service=oauth_service, prs_service=prs_service, bsn=kwargs["bsn"]),
                 code=kwargs["code"],
                 reference_id=kwargs["reference_id"],
-                source_system=kwargs.get("source_system", "urn:ietf:rfc:3986"),
-                source_value=kwargs.get("source_value", "EHR-SYS-2024-001"),
+                source=kwargs.get("source_value", "EHR-SYS-2024-001"),
                 display=kwargs.get("display", "Medicatieafspraak"),
             )
         case _:
@@ -188,6 +188,31 @@ def main(arg: str, kwargs: Dict[str, Any]) -> None:
                 "code=<code> reference_id=<list_id> [source_system=<system>] [source_value=<value>] [display=<text>]"
             )
             raise SystemExit(2)
+
+
+def optional_bsn_to_subject(oauth_service: OAuth, prs_service: PRS, bsn: str | None) -> str | None:
+    if not bsn:
+        return None
+    return bsn_to_subject(oauth_service=oauth_service, prs_service=prs_service, bsn=bsn)
+
+
+def bsn_to_subject(oauth_service: OAuth, prs_service: PRS, bsn: str) -> str:
+    prs_token = oauth_service.get_bearer_token(scope="prs:read", target_audience=PRS_ENDPOINT, with_jwt=True)
+    blind_factor, blinded_input = OPRF.create_blinded_input(
+        personal_identifier={
+            "landCode": "NL",
+            "type": "BSN",
+            "value": bsn,
+        },
+        recipient_organization="ura:" + NVI_URA_NUMBER,
+        recipient_scope="nationale-verwijsindex",
+    )
+    evaluated_oprf = prs_service.evaluate_oprf(
+        blinded_input=blinded_input, bearer_token=prs_token, recepient_org="ura:" + NVI_URA_NUMBER
+    )
+    return base64.b64encode(
+        json.dumps({"evaluated_output": evaluated_oprf, "blind_factor": blind_factor}).encode("utf8")
+    ).decode()
 
 
 if __name__ == "__main__":
