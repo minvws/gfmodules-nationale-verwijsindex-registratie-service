@@ -20,6 +20,7 @@ import json
 from typing import Any
 
 from test_flow.data import (
+    CODE_CODING_SYSTEM,
     KETENPARTIJ_ORGANIZATION_TYPE,
     KETENPARTIJ_URA_NUMBER,
     MTLS_CERT_PATH,
@@ -30,6 +31,7 @@ from test_flow.data import (
     PRS_ENDPOINT,
     SINGING_CERT_PATH,
     SINGING_KEY_PATH,
+    SUBJECT_IDENTIFIER_SYSTEM,
     TO_BE_REGISTERED_BSN,
     TO_BE_REGISTERED_CARE_CONTEXT,
     VERIFY_CA_PATH,
@@ -183,7 +185,7 @@ class DemoFlow:
             ],
             "subject": {
                 "identifier": {
-                    "system": "http://minvws.github.io/generiekefuncties-docs/NamingSystem/nvi-identifier",
+                    "system": SUBJECT_IDENTIFIER_SYSTEM,
                     "value": subject_identifier,
                 }
             },
@@ -208,7 +210,7 @@ class DemoFlow:
                 "coding": [
                     {
                         "code": code,
-                        "system": "http://minvws.github.io/generiekefuncties-docs/CodeSystem/nl-gf-data-categories-cs",
+                        "system": CODE_CODING_SYSTEM,
                         "display": "Medicatieafspraak",
                     }
                 ]
@@ -247,7 +249,7 @@ class DemoFlow:
         )
         return self.nvi_list.query(
             bearer_token=bearer_token,
-            subject_system="http://minvws.github.io/generiekefuncties-docs/NamingSystem/nvi-identifier",
+            subject_system=SUBJECT_IDENTIFIER_SYSTEM,
             subject_value=subject_identifier,
             code=code,
         )
@@ -293,7 +295,7 @@ class DemoFlow:
                         ],
                         "subject": {
                             "identifier": {
-                                "system": "http://minvws.github.io/generiekefuncties-docs/NamingSystem/nvi-identifier",
+                                "system": SUBJECT_IDENTIFIER_SYSTEM,
                                 "value": subject_identifier,
                             }
                         },
@@ -318,7 +320,7 @@ class DemoFlow:
                             "coding": [
                                 {
                                     "code": "Genomics",
-                                    "system": "http://minvws.github.io/generiekefuncties-docs/CodeSystem/nl-gf-data-categories-cs",
+                                    "system": CODE_CODING_SYSTEM,
                                     "display": "Medicatieafspraak",
                                 }
                             ]
@@ -329,7 +331,7 @@ class DemoFlow:
                 {
                     "request": {
                         "method": "GET",
-                        "url": f"List?patient.identifier=http://minvws.github.io/generiekefuncties-docs/NamingSystem/nvi-identifier|{subject_identifier}&code=Genomics",
+                        "url": f"List?patient.identifier={SUBJECT_IDENTIFIER_SYSTEM}|{subject_identifier}&code=Genomics",
                     }
                 },
                 {"request": {"method": "DELETE", "url": f"List/{reference_id}"}},
@@ -341,41 +343,32 @@ class DemoFlow:
 if __name__ == "__main__":
     demo_flow = DemoFlow()
 
-    blind_factor, oprf_jwe = demo_flow.step_1_request_oprf_token(value="123456789")
+    blind_factor, oprf_jwe = demo_flow.step_1_request_oprf_token()
 
-    queried = demo_flow.step_5_query_list_entries(
-        blind_factor=blind_factor, oprf_jwe=oprf_jwe, code="MedicationAgreement"
+    registered_data_reference = demo_flow.step_2_register_referral(pseudonym=oprf_jwe, blind_factor=blind_factor)
+    print("Registered data reference:")
+    print(registered_data_reference)
+
+    created_list = demo_flow.step_3_create_list_entry(
+        blind_factor=blind_factor,
+        oprf_jwe=oprf_jwe,
     )
+    print("Created list entry:")
+    print(created_list)
 
-    print("queried:")
-    print(queried)
+    if "id" in created_list:
+        list_id = created_list["id"]
+        listed = demo_flow.step_4_get_list_entry_by_id(list_id=list_id)
+        print("Fetched list entry:")
+        print(listed)
 
-    # blind_factor, oprf_jwe = demo_flow.step_1_request_oprf_token()
+        queried = demo_flow.step_5_query_list_entries(
+            blind_factor=blind_factor,
+            oprf_jwe=oprf_jwe,
+        )
+        print("Queried list entries:")
+        print(queried)
 
-    # registered_data_reference = demo_flow.step_2_register_referral(pseudonym=oprf_jwe, blind_factor=blind_factor)
-    # print("Registered data reference:")
-    # print(registered_data_reference)
-
-    # created_list = demo_flow.step_3_create_list_entry(
-    #     blind_factor=blind_factor,
-    #     oprf_jwe=oprf_jwe,
-    # )
-    # print("Created list entry:")
-    # print(created_list)
-
-    # if "id" in created_list:
-    #     list_id = created_list["id"]
-    #     listed = demo_flow.step_4_get_list_entry_by_id(list_id=list_id)
-    #     print("Fetched list entry:")
-    #     print(listed)
-
-    #     queried = demo_flow.step_5_query_list_entries(
-    #         blind_factor=blind_factor,
-    #         oprf_jwe=oprf_jwe,
-    #     )
-    #     print("Queried list entries:")
-    #     print(queried)
-
-    #     deleted_status = demo_flow.step_6_delete_list_entry_by_id(list_id=list_id)
-    #     print("Deleted list entry status:")
-    #     print(deleted_status)
+        deleted_status = demo_flow.step_6_delete_list_entry_by_id(list_id=list_id)
+        print("Deleted list entry status:")
+        print(deleted_status)

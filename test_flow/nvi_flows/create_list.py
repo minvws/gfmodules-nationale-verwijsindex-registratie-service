@@ -1,23 +1,17 @@
-import base64
-import json
-
 from test_flow.data import (
     CODE_CODING_SYSTEM,
+    KETENPARTIJ_URA_NUMBER,
     NVI_ENDPOINT,
-    NVI_URA_NUMBER,
-    PRS_ENDPOINT,
     SOURCE_IDENTIFIER_SYSTEM,
     SUBJECT_IDENTIFIER_SYSTEM,
 )
 from test_flow.NVIList import NVIList
 from test_flow.OAuth import OAuth
-from test_flow.OPRF import OPRF
-from test_flow.PRS import PRS
 
 
 def create_list(
+    oauth_service: OAuth,
     nvi_list_service: NVIList,
-    ura_number: str,
     source: str,
     subject: str,
     code: str,
@@ -30,7 +24,7 @@ def create_list(
                 "valueReference": {
                     "identifier": {
                         "system": "http://fhir.nl/fhir/NamingSystem/ura",
-                        "value": ura_number,
+                        "value": KETENPARTIJ_URA_NUMBER,
                     }
                 },
                 "url": "http://minvws.github.io/generiekefuncties-docs/StructureDefinition/nl-gf-localization-custodian",

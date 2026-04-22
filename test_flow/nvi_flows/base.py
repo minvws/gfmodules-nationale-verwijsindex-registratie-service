@@ -112,8 +112,8 @@ def main(arg: str, kwargs: Dict[str, Any]) -> None:
             )
         case "create_list":
             create_list(
+                oauth_service=oauth_service,
                 nvi_list_service=nvi_list_service,
-                ura_number=kwargs["ura_number"],
                 subject=bsn_to_subject(oauth_service=oauth_service, prs_service=prs_service, bsn=kwargs["bsn"]),
                 source=kwargs.get("source_value", "EHR-SYS-2024-001"),
                 code=kwargs["code"],
@@ -126,7 +126,7 @@ def main(arg: str, kwargs: Dict[str, Any]) -> None:
                 subject=optional_bsn_to_subject(
                     oauth_service=oauth_service, prs_service=prs_service, bsn=kwargs.get("bsn")
                 ),
-                care_context=kwargs.get("care_context"),
+                code=kwargs.get("code"),
             )
         case "get_list_by_id":
             get_list_by_id(
