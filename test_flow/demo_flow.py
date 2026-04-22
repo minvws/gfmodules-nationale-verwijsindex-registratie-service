@@ -18,12 +18,7 @@
 import base64
 import json
 from typing import Any
-from test_flow.JWT import JWTBuilder
-from test_flow.NVI import NVI
-from test_flow.NVIList import NVIList
-from test_flow.PRS import PRS
-from test_flow.OAuth import OAuth
-from test_flow.OPRF import OPRF
+
 from test_flow.data import (
     KETENPARTIJ_ORGANIZATION_TYPE,
     KETENPARTIJ_URA_NUMBER,
@@ -39,6 +34,12 @@ from test_flow.data import (
     TO_BE_REGISTERED_CARE_CONTEXT,
     VERIFY_CA_PATH,
 )
+from test_flow.JWT import JWTBuilder
+from test_flow.NVI import NVI
+from test_flow.NVIList import NVIList
+from test_flow.OAuth import OAuth
+from test_flow.OPRF import OPRF
+from test_flow.PRS import PRS
 
 # 1-    OAth flow:
 #           a- retrieve a bearer token with proper sub
@@ -94,7 +95,7 @@ class DemoFlow:
         self.oauth = OAuth(OAUTH_ENDPOINT, MTLS_CERT_PATH, MTLS_KEY_PATH, VERIFY_CA_PATH, jwt_builder)
         self.prs = PRS(PRS_ENDPOINT, MTLS_CERT_PATH, MTLS_KEY_PATH, VERIFY_CA_PATH)
 
-    def step_1_request_oprf_token(self) -> tuple[str, str]:
+    def step_1_request_oprf_token(self, value=TO_BE_REGISTERED_BSN) -> tuple[str, str]:
         """
         Step 1: Request OPRF token at PRS.
         Returns blind_factor and oprf_jwe.
@@ -108,7 +109,7 @@ class DemoFlow:
             personal_identifier={
                 "landCode": "NL",
                 "type": "BSN",
-                "value": TO_BE_REGISTERED_BSN,
+                "value": value,
             },
             recipient_organization="ura:" + NVI_URA_NUMBER,
             recipient_scope="nationale-verwijsindex",
@@ -340,32 +341,41 @@ class DemoFlow:
 if __name__ == "__main__":
     demo_flow = DemoFlow()
 
-    blind_factor, oprf_jwe = demo_flow.step_1_request_oprf_token()
+    blind_factor, oprf_jwe = demo_flow.step_1_request_oprf_token(value="123456789")
 
-    registered_data_reference = demo_flow.step_2_register_referral(pseudonym=oprf_jwe, blind_factor=blind_factor)
-    print("Registered data reference:")
-    print(registered_data_reference)
-
-    created_list = demo_flow.step_3_create_list_entry(
-        blind_factor=blind_factor,
-        oprf_jwe=oprf_jwe,
+    queried = demo_flow.step_5_query_list_entries(
+        blind_factor=blind_factor, oprf_jwe=oprf_jwe, code="MedicationAgreement"
     )
-    print("Created list entry:")
-    print(created_list)
 
-    if "id" in created_list:
-        list_id = created_list["id"]
-        listed = demo_flow.step_4_get_list_entry_by_id(list_id=list_id)
-        print("Fetched list entry:")
-        print(listed)
+    print("queried:")
+    print(queried)
 
-        queried = demo_flow.step_5_query_list_entries(
-            blind_factor=blind_factor,
-            oprf_jwe=oprf_jwe,
-        )
-        print("Queried list entries:")
-        print(queried)
+    # blind_factor, oprf_jwe = demo_flow.step_1_request_oprf_token()
 
-        deleted_status = demo_flow.step_6_delete_list_entry_by_id(list_id=list_id)
-        print("Deleted list entry status:")
-        print(deleted_status)
+    # registered_data_reference = demo_flow.step_2_register_referral(pseudonym=oprf_jwe, blind_factor=blind_factor)
+    # print("Registered data reference:")
+    # print(registered_data_reference)
+
+    # created_list = demo_flow.step_3_create_list_entry(
+    #     blind_factor=blind_factor,
+    #     oprf_jwe=oprf_jwe,
+    # )
+    # print("Created list entry:")
+    # print(created_list)
+
+    # if "id" in created_list:
+    #     list_id = created_list["id"]
+    #     listed = demo_flow.step_4_get_list_entry_by_id(list_id=list_id)
+    #     print("Fetched list entry:")
+    #     print(listed)
+
+    #     queried = demo_flow.step_5_query_list_entries(
+    #         blind_factor=blind_factor,
+    #         oprf_jwe=oprf_jwe,
+    #     )
+    #     print("Queried list entries:")
+    #     print(queried)
+
+    #     deleted_status = demo_flow.step_6_delete_list_entry_by_id(list_id=list_id)
+    #     print("Deleted list entry status:")
+    #     print(deleted_status)

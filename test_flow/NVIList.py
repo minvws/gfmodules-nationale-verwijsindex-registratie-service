@@ -78,7 +78,9 @@ class NVIList:
             params["code"] = code
         if extra_params:
             params.update(extra_params)
-
+        print("PARAMS:")
+        print(f"{self.endpoint}{self._url_prefix}/fhir/List")
+        print(params)
         response = requests.get(
             f"{self.endpoint}{self._url_prefix}/fhir/List",
             params=params,

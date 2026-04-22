@@ -1,9 +1,17 @@
 from typing import Any, Dict
+
+from test_flow.data import (
+    MTLS_CERT_PATH,
+    MTLS_KEY_PATH,
+    NVI_ENDPOINT,
+    OAUTH_ENDPOINT,
+    PRS_ENDPOINT,
+    SINGING_CERT_PATH,
+    SINGING_KEY_PATH,
+    VERIFY_CA_PATH,
+)
 from test_flow.JWT import JWTBuilder
 from test_flow.NVI import NVI
-from test_flow.NVIList import NVIList
-from test_flow.OAuth import OAuth
-from test_flow.PRS import PRS
 from test_flow.nvi_flows.bundle_list_transaction import bundle_list_transaction
 from test_flow.nvi_flows.create_list import create_list
 from test_flow.nvi_flows.delete import delete
@@ -15,16 +23,9 @@ from test_flow.nvi_flows.localize import localize
 from test_flow.nvi_flows.query_list import query_list
 from test_flow.nvi_flows.query_referrals import query_referrals
 from test_flow.nvi_flows.register import register
-from test_flow.data import (
-    SINGING_CERT_PATH,
-    SINGING_KEY_PATH,
-    MTLS_CERT_PATH,
-    MTLS_KEY_PATH,
-    NVI_ENDPOINT,
-    OAUTH_ENDPOINT,
-    PRS_ENDPOINT,
-    VERIFY_CA_PATH,
-)
+from test_flow.NVIList import NVIList
+from test_flow.OAuth import OAuth
+from test_flow.PRS import PRS
 
 
 def main(arg: str, kwargs: Dict[str, Any]) -> None:
@@ -119,13 +120,11 @@ def main(arg: str, kwargs: Dict[str, Any]) -> None:
             )
         case "query_list":
             query_list(
+                prs_service=prs_service,
                 oauth_service=oauth_service,
                 nvi_list_service=nvi_list_service,
-                subject_system=kwargs.get("subject_system"),
-                subject_value=kwargs.get("subject_value"),
-                source_system=kwargs.get("source_system"),
-                source_value=kwargs.get("source_value"),
-                code=kwargs.get("code"),
+                bsn=kwargs.get("bsn"),
+                care_context=kwargs.get("care_context"),
             )
         case "get_list_by_id":
             get_list_by_id(
