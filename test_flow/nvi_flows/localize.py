@@ -1,15 +1,26 @@
 from typing import List
-from test_flow.NVI import NVI
-from test_flow.OAuth import OAuth
-from test_flow.OPRF import OPRF
-from test_flow.PRS import PRS
+from warnings import deprecated
+
 from test_flow.data import (
     NVI_ENDPOINT,
     NVI_URA_NUMBER,
     PRS_ENDPOINT,
 )
+from test_flow.NVI import NVI
+from test_flow.OAuth import OAuth
+from test_flow.OPRF import OPRF
+from test_flow.PRS import PRS
 
-def localize(oauth_service: OAuth, prs_service: PRS, nvi_service: NVI, bsn: str, care_context: str, source_type: List[str]|None=None) -> None:
+
+@deprecated("Referrals API is going to be phased out")
+def localize(
+    oauth_service: OAuth,
+    prs_service: PRS,
+    nvi_service: NVI,
+    bsn: str,
+    care_context: str,
+    source_type: List[str] | None = None,
+) -> None:
     print("Localizing referrals for BSN:", bsn, "and care context:", care_context)
     personal_identifier = {
         "landCode": "NL",

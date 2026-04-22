@@ -80,7 +80,7 @@ if __name__ == "__main__":
         jwt_builder=jwt_builder,
     )
 
-    # retrieving Token for Pseudoniemendients
+    # retrieving Token for Pseudoniemendienst
     bearer_token = oauth_service.get_bearer_token(
         scope="prs:read", target_audience=PRS_ENDPOINT, with_jwt=True
     )

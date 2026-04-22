@@ -24,6 +24,7 @@ class OPRF:
             Tuple of (blind_factor, blinded_input) both base64 encoded
         """
         info = f"{recipient_organization}|{recipient_scope}|v1".encode("utf-8")
+        print("info:", info)
         hkdf = HKDF(algorithm=hashes.SHA256(), length=32, salt=None, info=info)
         pid = json.dumps(personal_identifier)
         pseudonym = hkdf.derive(pid.encode("utf-8"))

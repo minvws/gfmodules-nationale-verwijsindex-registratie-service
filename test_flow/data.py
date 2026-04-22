@@ -16,3 +16,7 @@ KETENPARTIJ_ORGANIZATION_TYPE = "ziekenhuis"
 KETENPARTIJ_URA_NUMBER = "90000002"
 TO_BE_REGISTERED_CARE_CONTEXT = "MedicationAgreement"
 TO_BE_REGISTERED_BSN = "999990007"
+
+SOURCE_IDENTIFIER_SYSTEM = "urn:ietf:rfc:3986"
+SUBJECT_IDENTIFIER_SYSTEM = "http://minvws.github.io/generiekefuncties-docs/NamingSystem/nvi-identifier"
+CODE_CODING_SYSTEM = "http://minvws.github.io/generiekefuncties-docs/CodeSystem/nl-gf-data-categories-cs"
