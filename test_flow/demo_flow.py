@@ -15,9 +15,12 @@
 # a. Get OAuth access token using client credentials
 # b. Query status of Referral using access token
 
+import base64
+import json
 from typing import Any
 from test_flow.JWT import JWTBuilder
 from test_flow.NVI import NVI
+from test_flow.NVIList import NVIList
 from test_flow.PRS import PRS
 from test_flow.OAuth import OAuth
 from test_flow.OPRF import OPRF
@@ -81,6 +84,7 @@ class DemoFlow:
         self,
     ) -> None:
         self.nvi = NVI(NVI_ENDPOINT, MTLS_CERT_PATH, MTLS_KEY_PATH, VERIFY_CA_PATH)
+        self.nvi_list = NVIList(NVI_ENDPOINT, MTLS_CERT_PATH, MTLS_KEY_PATH, VERIFY_CA_PATH)
         jwt_builder = JWTBuilder(
             token_url=f"{OAUTH_ENDPOINT}/oauth/token",
             mtls_cert_path=MTLS_CERT_PATH,
@@ -136,6 +140,202 @@ class DemoFlow:
         )
         return response
 
+    @staticmethod
+    def _encode_subject_identifier(oprf_jwe: str, blind_factor: str) -> str:
+        payload = {
+            "evaluated_output": oprf_jwe,
+            "blind_factor": blind_factor,
+        }
+        payload_json = json.dumps(payload, separators=(",", ":")).encode("utf-8")
+        return base64.urlsafe_b64encode(payload_json).decode("ascii")
+
+    def step_3_create_list_entry(
+        self,
+        blind_factor: str,
+        oprf_jwe: str,
+        code: str = "Genomics",
+    ) -> Any:
+        """
+        Step 3: Create a FHIR List entry in NVI.
+        """
+        subject_identifier = self._encode_subject_identifier(
+            oprf_jwe=oprf_jwe,
+            blind_factor=blind_factor,
+        )
+        bearer_token = self.oauth.get_bearer_token(
+            scope="epd:write",
+            target_audience=NVI_ENDPOINT,
+            with_jwt=True,
+        )
+        body = {
+            "resourceType": "List",
+            "extension": [
+                {
+                    "valueReference": {
+                        "identifier": {
+                            "system": "http://fhir.nl/fhir/NamingSystem/ura",
+                            "value": KETENPARTIJ_URA_NUMBER,
+                        }
+                    },
+                    "url": "http://minvws.github.io/generiekefuncties-docs/StructureDefinition/nl-gf-localization-custodian",
+                }
+            ],
+            "subject": {
+                "identifier": {
+                    "system": "http://minvws.github.io/generiekefuncties-docs/NamingSystem/nvi-identifier",
+                    "value": subject_identifier,
+                }
+            },
+            "source": {
+                "identifier": {
+                    "system": "urn:ietf:rfc:3986",
+                    "value": "EHR-SYS-2024-001",
+                },
+                "type": "Device",
+            },
+            "status": "current",
+            "mode": "working",
+            "emptyReason": {
+                "coding": [
+                    {
+                        "code": "withheld",
+                        "system": "http://terminology.hl7.org/CodeSystem/list-empty-reason",
+                    }
+                ]
+            },
+            "code": {
+                "coding": [
+                    {
+                        "code": code,
+                        "system": "http://minvws.github.io/generiekefuncties-docs/CodeSystem/nl-gf-data-categories-cs",
+                        "display": "Medicatieafspraak",
+                    }
+                ]
+            },
+        }
+        return self.nvi_list.create(body=body, bearer_token=bearer_token)
+
+    def step_4_get_list_entry_by_id(self, list_id: str) -> Any:
+        """
+        Step 4: Get a FHIR List entry by ID.
+        """
+        bearer_token = self.oauth.get_bearer_token(
+            scope="epd:read",
+            target_audience=NVI_ENDPOINT,
+            with_jwt=True,
+        )
+        return self.nvi_list.get_by_id(list_id=list_id, bearer_token=bearer_token)
+
+    def step_5_query_list_entries(
+        self,
+        blind_factor: str,
+        oprf_jwe: str,
+        code: str = "Genomics",
+    ) -> Any:
+        """
+        Step 5: Query FHIR List entries.
+        """
+        subject_identifier = self._encode_subject_identifier(
+            oprf_jwe=oprf_jwe,
+            blind_factor=blind_factor,
+        )
+        bearer_token = self.oauth.get_bearer_token(
+            scope="epd:read",
+            target_audience=NVI_ENDPOINT,
+            with_jwt=True,
+        )
+        return self.nvi_list.query(
+            bearer_token=bearer_token,
+            subject_system="http://minvws.github.io/generiekefuncties-docs/NamingSystem/nvi-identifier",
+            subject_value=subject_identifier,
+            code=code,
+        )
+
+    def step_6_delete_list_entry_by_id(self, list_id: str) -> int:
+        """
+        Step 6: Delete a FHIR List entry by ID.
+        """
+        bearer_token = self.oauth.get_bearer_token(
+            scope="epd:write",
+            target_audience=NVI_ENDPOINT,
+            with_jwt=True,
+        )
+        return self.nvi_list.delete_by_id(list_id=list_id, bearer_token=bearer_token)
+
+    def step_7_list_transaction_bundle(self, subject_identifier: str, reference_id: str) -> Any:
+        """
+        Step 7: Execute a FHIR transaction bundle for List operations.
+        """
+        bearer_token = self.oauth.get_bearer_token(
+            scope="epd:write",
+            target_audience=NVI_ENDPOINT,
+            with_jwt=True,
+        )
+        bundle = {
+            "resourceType": "Bundle",
+            "type": "transaction",
+            "entry": [
+                {
+                    "request": {"method": "POST", "url": "List"},
+                    "resource": {
+                        "resourceType": "List",
+                        "extension": [
+                            {
+                                "valueReference": {
+                                    "identifier": {
+                                        "system": "http://fhir.nl/fhir/NamingSystem/ura",
+                                        "value": KETENPARTIJ_URA_NUMBER,
+                                    }
+                                },
+                                "url": "http://minvws.github.io/generiekefuncties-docs/StructureDefinition/nl-gf-localization-custodian",
+                            }
+                        ],
+                        "subject": {
+                            "identifier": {
+                                "system": "http://minvws.github.io/generiekefuncties-docs/NamingSystem/nvi-identifier",
+                                "value": subject_identifier,
+                            }
+                        },
+                        "source": {
+                            "identifier": {
+                                "system": "urn:ietf:rfc:3986",
+                                "value": "EHR-SYS-2024-001",
+                            },
+                            "type": "Device",
+                        },
+                        "status": "current",
+                        "mode": "working",
+                        "emptyReason": {
+                            "coding": [
+                                {
+                                    "code": "withheld",
+                                    "system": "http://terminology.hl7.org/CodeSystem/list-empty-reason",
+                                }
+                            ]
+                        },
+                        "code": {
+                            "coding": [
+                                {
+                                    "code": "Genomics",
+                                    "system": "http://minvws.github.io/generiekefuncties-docs/CodeSystem/nl-gf-data-categories-cs",
+                                    "display": "Medicatieafspraak",
+                                }
+                            ]
+                        },
+                    },
+                },
+                {"request": {"method": "GET", "url": f"List/{reference_id}"}},
+                {
+                    "request": {
+                        "method": "GET",
+                        "url": f"List?patient.identifier=http://minvws.github.io/generiekefuncties-docs/NamingSystem/nvi-identifier|{subject_identifier}&code=Genomics",
+                    }
+                },
+                {"request": {"method": "DELETE", "url": f"List/{reference_id}"}},
+            ],
+        }
+        return self.nvi_list.transaction(bundle=bundle, bearer_token=bearer_token)
+
 
 if __name__ == "__main__":
     demo_flow = DemoFlow()
@@ -143,3 +343,29 @@ if __name__ == "__main__":
     blind_factor, oprf_jwe = demo_flow.step_1_request_oprf_token()
 
     registered_data_reference = demo_flow.step_2_register_referral(pseudonym=oprf_jwe, blind_factor=blind_factor)
+    print("Registered data reference:")
+    print(registered_data_reference)
+
+    created_list = demo_flow.step_3_create_list_entry(
+        blind_factor=blind_factor,
+        oprf_jwe=oprf_jwe,
+    )
+    print("Created list entry:")
+    print(created_list)
+
+    if "id" in created_list:
+        list_id = created_list["id"]
+        listed = demo_flow.step_4_get_list_entry_by_id(list_id=list_id)
+        print("Fetched list entry:")
+        print(listed)
+
+        queried = demo_flow.step_5_query_list_entries(
+            blind_factor=blind_factor,
+            oprf_jwe=oprf_jwe,
+        )
+        print("Queried list entries:")
+        print(queried)
+
+        deleted_status = demo_flow.step_6_delete_list_entry_by_id(list_id=list_id)
+        print("Deleted list entry status:")
+        print(deleted_status)
