@@ -1,5 +1,5 @@
 import base64
-import json
+import rfc8785
 from typing import Dict, Tuple
 
 import pyoprf
@@ -26,8 +26,9 @@ class OPRF:
         info = f"{recipient_organization}|{recipient_scope}|v1".encode("utf-8")
         print("info:", info)
         hkdf = HKDF(algorithm=hashes.SHA256(), length=32, salt=None, info=info)
-        pid = json.dumps(personal_identifier)
-        pseudonym = hkdf.derive(pid.encode("utf-8"))
+        pid = rfc8785.dumps(personal_identifier)
+        print("pid:", pid.decode("utf-8"))
+        pseudonym = hkdf.derive(pid)
 
         blind_factor, blinded_input = pyoprf.blind(pseudonym)
 
