@@ -1,4 +1,5 @@
 import base64
+import rfc8785
 from typing import Tuple
 
 import pyoprf
@@ -22,8 +23,8 @@ class OprfService:
         # Create hashed bsn that is dedicated for the given receiver
         info = f"{recipient_organization}|{recipient_scope}|v1".encode("utf-8")
         hkdf = HKDF(algorithm=hashes.SHA256(), length=32, salt=None, info=info)
-        pid = personal_identifier.model_dump_json(by_alias=True)
-        pseudonym = hkdf.derive(pid.encode("utf-8"))
+        pid = rfc8785.dumps(personal_identifier.model_dump())
+        pseudonym = hkdf.derive(pid)
 
         # Create blinded input. This will mask the BSN so we can send it directly to the PRS
         blind_factor, blinded_input = pyoprf.blind(pseudonym)
