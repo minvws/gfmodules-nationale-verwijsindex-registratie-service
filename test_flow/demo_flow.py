@@ -149,7 +149,7 @@ class DemoFlow:
             "evaluated_output": oprf_jwe,
             "blind_factor": blind_factor,
         }
-        payload_json = json.dumps(payload, separators=(",", ":")).encode("utf-8")
+        payload_json = json.dumps(payload).encode("utf-8")
         return base64.urlsafe_b64encode(payload_json).decode("ascii")
 
     def step_3_create_list_entry(
