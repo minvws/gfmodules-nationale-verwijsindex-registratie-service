@@ -80,8 +80,12 @@ COPY --from=builder /liboprf/src/noise_xk/lib*.so /usr/local/lib/
 COPY --from=builder /liboprf/src/lib*.so /usr/local/lib/
 RUN ldconfig
 
+# Set different virtualenv path for runtime to avoid issues when mounting source code
+ENV VIRTUAL_ENV="/opt/app/docker-venv"
+ENV PATH="${VIRTUAL_ENV}/bin:$PATH"
+
 # Copy only the virtualenv — no pip, no poetry, no build tools
-COPY --from=builder --chown=${APP_USER}:${APP_GROUP} /src/.venv /src/.venv
+COPY --from=builder --chown=${APP_USER}:${APP_GROUP} /src/.venv ${VIRTUAL_ENV}
 
 # Copy only what the app needs at runtime (no tests, docs, CI artifacts, etc.)
 COPY --chown=${APP_USER}:${APP_GROUP} app/ /src/app/
@@ -108,9 +112,5 @@ USER ${APP_USER}
 
 EXPOSE 8515
 WORKDIR ${PROJECT_DIR}
-
-ENV PYTHONPATH=${PROJECT_DIR} \
-    VIRTUAL_ENV=/src/.venv \
-    PATH="/src/.venv/bin:$PATH"
 
 CMD ["/docker-entrypoint.sh"]
