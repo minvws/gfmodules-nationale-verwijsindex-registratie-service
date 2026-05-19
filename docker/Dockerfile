@@ -6,6 +6,7 @@ ARG PYTHON_VERSION=3.14
 FROM python:${PYTHON_VERSION}-slim AS base
 
 ARG PROJECT_DIR="/src"
+ARG VIRTUAL_ENV_PATH="/opt/app/docker-venv"
 ARG APP_USER="app"
 ARG APP_GROUP="app"
 ARG NEW_UID
@@ -13,7 +14,7 @@ ARG NEW_GID
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    POETRY_VERSION=1.8.2
+    POETRY_VERSION=2.3.3
 
 # Create a non-privileged user that the app will run under.
 RUN groupadd --system ${APP_GROUP} --gid=${NEW_GID} && \
@@ -34,8 +35,8 @@ RUN apt-get update && \
 
 WORKDIR ${PROJECT_DIR}
 
-# Builder stage for compilation and dependencies
-FROM base AS builder
+# Builder base stage for compilation and dependency installation
+FROM base AS builder-base
 
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt,sharing=locked \
@@ -50,7 +51,11 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
         swig \
     && rm -rf /var/lib/apt/lists/*
 
-# Install poetry
+# Create virtualenv used by runtime stages
+RUN --mount=type=cache,target=/root/.cache/pip \
+    python -m venv ${VIRTUAL_ENV_PATH}
+
+# Install poetry globally for builder stages
 RUN --mount=type=cache,target=/root/.cache/pip \
     pip install --upgrade pip && \
     pip install poetry==${POETRY_VERSION}
@@ -66,26 +71,45 @@ WORKDIR ${PROJECT_DIR}
 COPY ./pyproject.toml ./poetry.lock ./
 
 ENV POETRY_CACHE_DIR=/tmp/poetry-cache \
-    POETRY_VIRTUALENVS_CREATE=true \
-    POETRY_VIRTUALENVS_IN_PROJECT=true
+    POETRY_VIRTUALENVS_CREATE=false
+
+# Production dependencies builder (main deps only)
+FROM builder-base AS builder-runtime
+
+ARG VIRTUAL_ENV_PATH
+ENV VIRTUAL_ENV="${VIRTUAL_ENV_PATH}"
+ENV PATH="${VIRTUAL_ENV}/bin:$PATH"
 
 RUN --mount=type=cache,target=${POETRY_CACHE_DIR} \
     poetry install --no-root --no-interaction --only main
 
-# Final stage
-FROM base AS final
+# Development dependencies builder (full deps, poetry available)
+FROM builder-base AS builder-dev
 
-# Copy compiled libraries
-COPY --from=builder /liboprf/src/noise_xk/lib*.so /usr/local/lib/
-COPY --from=builder /liboprf/src/lib*.so /usr/local/lib/
-RUN ldconfig
-
-# Set different virtualenv path for runtime to avoid issues when mounting source code
-ENV VIRTUAL_ENV="/opt/app/docker-venv"
+ARG VIRTUAL_ENV_PATH
+ENV VIRTUAL_ENV="${VIRTUAL_ENV_PATH}"
 ENV PATH="${VIRTUAL_ENV}/bin:$PATH"
 
-# Copy only the virtualenv — no pip, no poetry, no build tools
-COPY --from=builder --chown=${APP_USER}:${APP_GROUP} /src/.venv ${VIRTUAL_ENV}
+RUN --mount=type=cache,target=${POETRY_CACHE_DIR} \
+    poetry install --no-root --no-interaction
+
+# Production runtime stage
+FROM base AS runtime
+
+ARG VIRTUAL_ENV_PATH
+
+# Copy compiled libraries
+COPY --from=builder-runtime /liboprf/src/noise_xk/lib*.so /usr/local/lib/
+COPY --from=builder-runtime /liboprf/src/lib*.so /usr/local/lib/
+RUN ldconfig
+
+# Reuse the same virtualenv path from builder in runtime
+ENV VIRTUAL_ENV="${VIRTUAL_ENV_PATH}"
+ENV PATH="${VIRTUAL_ENV}/bin:$PATH" \
+    PYTHONPATH="${PROJECT_DIR}"
+
+# Copy only the virtualenv — no pip, no build tools
+COPY --from=builder-runtime --chown=${APP_USER}:${APP_GROUP} ${VIRTUAL_ENV} ${VIRTUAL_ENV}
 
 # Copy only what the app needs at runtime (no tests, docs, CI artifacts, etc.)
 COPY --chown=${APP_USER}:${APP_GROUP} app/ /src/app/
@@ -113,6 +137,12 @@ USER ${APP_USER}
 EXPOSE 8515
 WORKDIR ${PROJECT_DIR}
 
-ENV PYTHONPATH=${PROJECT_DIR}
+ENTRYPOINT ["/docker-entrypoint.sh"]
 
-CMD ["/docker-entrypoint.sh"]
+# Development runtime stage (extends production runtime)
+FROM runtime AS dev
+COPY --from=builder-dev --chown=${APP_USER}:${APP_GROUP} ${VIRTUAL_ENV} ${VIRTUAL_ENV}
+RUN ${VIRTUAL_ENV}/bin/pip install poetry==${POETRY_VERSION}
+
+# Backward-compatible default final target
+FROM runtime AS final

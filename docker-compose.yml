@@ -6,11 +6,9 @@ services:
         NEW_UID: ${NEW_UID:-1000}
         NEW_GID: ${NEW_GID:-1000}
       dockerfile: docker/Dockerfile
+      target: dev
     volumes:
       - ./:/src
-      - ./secrets:/src/secrets
-    environment:
-      FASTAPI_CONFIG_PATH: /src/app.conf
     ports:
       - "8515:8515"
     healthcheck:
@@ -29,7 +27,3 @@ services:
     depends_on:
       app:
         condition: service_healthy
-
-volumes:
-  secrets:
-    name: secrets2
