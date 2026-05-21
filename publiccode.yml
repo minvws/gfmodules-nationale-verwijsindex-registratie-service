@@ -1,5 +1,5 @@
 publiccodeYmlVersion: "0.5"
-name: Nationale Verwijsindex Registratie Service
+name: Generieke Functies Nationale Verwijsindex Registratie Service
 url: https://github.com/minvws/gfmodules-nationale-verwijsindex-registratie-service
 platforms:
   - web
