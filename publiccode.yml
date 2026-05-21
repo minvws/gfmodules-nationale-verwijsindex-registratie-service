@@ -1,0 +1,64 @@
+publiccodeYmlVersion: "0.5"
+name: Nationale Verwijsindex Registratie Service
+url: https://github.com/minvws/gfmodules-nationale-verwijsindex-registratie-service
+platforms:
+  - web
+categories:
+  - application-development
+developmentStatus: development
+softwareType: standalone/backend
+intendedAudience:
+  countries:
+    - NL
+  scope:
+    - government
+    - healthcare
+
+description:
+  nl:
+    shortDescription: >-
+      Registratieservice die verwijzingen uit FHIR-stores leest en
+      registreert in de Nationale Verwijsindex.
+    longDescription: |
+      De Nationale Verwijsindex Registratie Service (NVI-RS) is onderdeel
+      van het 'Generieke Functies, lokalisatie en addressering' project van
+      het Ministerie van Volksgezondheid, Welzijn en Sport. De service leest
+      verwijzingen uit FHIR-stores en registreert deze in de Nationale
+      Verwijs Index (NVI). De NVI-RS koppelt zorgverleners aan pseudoniemen
+      en zorgdomeinen via de pseudoniemendienst. Communicatie met de NVI
+      vereist een UZI Server Certificaat voor wederzijdse TLS-authenticatie.
+    features:
+      - Lezen van verwijzingen uit FHIR-stores
+      - Registratie van verwijzingen in de NVI
+      - Integratie met pseudoniemendienst voor veilige pseudoniemen
+  en:
+    shortDescription: >-
+      Registration service that reads referrals from FHIR stores and
+      registers them in the Nationale Verwijsindex.
+    longDescription: |
+      The Nationale Verwijsindex Registratie Service (NVI-RS) is part of the
+      'Generieke Functies, lokalisatie en addressering' project of the
+      Ministry of Health, Welfare and Sport. The service reads referrals from
+      FHIR stores and registers them in the Nationale Verwijs Index (NVI).
+      The NVI-RS links healthcare providers to pseudonyms and care domains
+      via the pseudonymization service. Communication with the NVI requires
+      a UZI Server Certificate for mutual TLS authentication.
+    features:
+      - Reading referrals from FHIR stores
+      - Registration of referrals in the NVI
+      - Integration with pseudonymization service for secure pseudonyms
+
+legal:
+  license: EUPL-1.2
+  mainCopyrightOwner: Ministerie van Volksgezondheid, Welzijn en Sport
+
+maintenance:
+  type: internal
+  contacts:
+    - name: irealisatie.nl
+      email: helpdesk@irealisatie.nl
+
+localisation:
+  localisationReady: false
+  availableLanguages:
+    - nl
