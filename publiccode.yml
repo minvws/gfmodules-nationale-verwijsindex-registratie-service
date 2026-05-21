@@ -25,8 +25,7 @@ description:
       het Ministerie van Volksgezondheid, Welzijn en Sport. De service leest
       verwijzingen uit FHIR-stores en registreert deze in de Nationale
       Verwijs Index (NVI). De NVI-RS koppelt zorgverleners aan pseudoniemen
-      en zorgdomeinen via de pseudoniemendienst. Communicatie met de NVI
-      vereist een UZI Server Certificaat voor wederzijdse TLS-authenticatie.
+      en zorgdomeinen via de pseudoniemendienst.
     features:
       - Lezen van verwijzingen uit FHIR-stores
       - Registratie van verwijzingen in de NVI
@@ -41,8 +40,7 @@ description:
       Ministry of Health, Welfare and Sport. The service reads referrals from
       FHIR stores and registers them in the Nationale Verwijs Index (NVI).
       The NVI-RS links healthcare providers to pseudonyms and care domains
-      via the pseudonymization service. Communication with the NVI requires
-      a UZI Server Certificate for mutual TLS authentication.
+      via the pseudonymization service. 
     features:
       - Reading referrals from FHIR stores
       - Registration of referrals in the NVI
