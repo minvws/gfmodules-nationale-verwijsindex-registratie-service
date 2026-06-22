@@ -11,13 +11,13 @@ packages = [{ include = "app" }]
 [tool.poetry.dependencies]
 python = "^3.11"
 uvicorn = "^0.40"
-fastapi = "^0.128"
+fastapi = "^0.138"
 pydantic-settings = "^2.12.0"
 inject = "^5.3.0"
 requests = "^2.32.5"
 fhir-resources = "8.1"
 puzi = { git = "https://github.com/minvws/puzi-python" }
-cryptography = "^46.0.5"
+cryptography = "^48.0"
 pyoprf = "^0.9.3"
 pyjwt = "^2.11.0"
 fhir-core = "=1.1.4"
