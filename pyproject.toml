@@ -10,7 +10,7 @@ packages = [{ include = "app" }]
 
 [tool.poetry.dependencies]
 python = "^3.11"
-uvicorn = "^0.40"
+uvicorn = ">=0.40,<0.50"
 fastapi = "^0.138"
 pydantic-settings = "^2.12.0"
 inject = "^5.3.0"
@@ -20,7 +20,7 @@ puzi = { git = "https://github.com/minvws/puzi-python" }
 cryptography = "^48.0"
 pyoprf = "^0.9.3"
 pyjwt = "^2.11.0"
-fhir-core = "=1.1.4"
+fhir-core = "=1.1.9"
 rfc8785 = "^0.1.4"
 
 [tool.poetry.group.dev.dependencies]
@@ -31,7 +31,7 @@ pytest = "^9.0.2"
 pytest-cov = "^7.0.0"
 pytest-mock = "^3.15.1"
 httpx = "^0.28.1"
-ruff = "0.15.0"
+ruff = "0.15.20"
 codespell = "^2.4.1"
 pip-audit = "^2.10.0"
 
