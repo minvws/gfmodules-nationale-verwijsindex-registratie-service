@@ -20,15 +20,13 @@ class OAuth:
         mtls_cert: str,
         mtls_key: str,
         verify_ca: str | bool,
-        jwt_builder: JWTBuilder,
     ) -> None:
         self.endpoint = endpoint
         self._mtls_cert = mtls_cert
         self._mtls_key = mtls_key
         self._verify_ca = verify_ca
-        self._jwt_builder = jwt_builder
 
-    def get_bearer_token(self, scope: str, target_audience: str, with_jwt: bool) -> str:
+    def get_bearer_token(self, scope: str, target_audience: str) -> str:
         """
         Get OAuth access token
         """
@@ -37,17 +35,6 @@ class OAuth:
             "scope": scope,
             "target_audience": target_audience,
         }
-        if with_jwt:
-            print("creating client assertion type...")
-            data["client_assertion_type"] = (
-                "urn:ietf:params:oauth:client-assertion-type:jwt-bearer"
-            )
-            token = self._jwt_builder.build(
-                scope=scope, target_audience=target_audience
-            )
-            print("creating jwt token...")
-            print(token)
-            data["client_assertion"] = token
 
         print("payload:")
         print(data)
@@ -66,18 +53,11 @@ class OAuth:
 
 
 if __name__ == "__main__":
-    jwt_builder = JWTBuilder(
-        token_url=f"{OAUTH_ENDPOINT}/oauth/token",
-        mtls_cert_path=MTLS_CERT_PATH,
-        signing_cert_path=SINGING_CERT_PATH,
-        signing_key_path=SINGING_KEY_PATH,
-    )
     oauth_service = OAuth(
         endpoint=OAUTH_ENDPOINT,
         mtls_cert=MTLS_CERT_PATH,
         mtls_key=MTLS_KEY_PATH,
         verify_ca=VERIFY_CA_PATH,
-        jwt_builder=jwt_builder,
     )
 
     # retrieving Token for Pseudoniemendienst

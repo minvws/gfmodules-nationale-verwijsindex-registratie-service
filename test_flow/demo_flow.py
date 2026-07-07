@@ -88,13 +88,8 @@ class DemoFlow:
     ) -> None:
         self.nvi = NVI(NVI_ENDPOINT, MTLS_CERT_PATH, MTLS_KEY_PATH, VERIFY_CA_PATH)
         self.nvi_list = NVIList(NVI_ENDPOINT, MTLS_CERT_PATH, MTLS_KEY_PATH, VERIFY_CA_PATH)
-        jwt_builder = JWTBuilder(
-            token_url=f"{OAUTH_ENDPOINT}/oauth/token",
-            mtls_cert_path=MTLS_CERT_PATH,
-            signing_cert_path=SINGING_CERT_PATH,
-            signing_key_path=SINGING_KEY_PATH,
-        )
-        self.oauth = OAuth(OAUTH_ENDPOINT, MTLS_CERT_PATH, MTLS_KEY_PATH, VERIFY_CA_PATH, jwt_builder)
+        
+        self.oauth = OAuth(OAUTH_ENDPOINT, MTLS_CERT_PATH, MTLS_KEY_PATH, VERIFY_CA_PATH)
         self.prs = PRS(PRS_ENDPOINT, MTLS_CERT_PATH, MTLS_KEY_PATH, VERIFY_CA_PATH)
 
     def step_1_request_oprf_token(self, value=TO_BE_REGISTERED_BSN) -> tuple[str, str]:

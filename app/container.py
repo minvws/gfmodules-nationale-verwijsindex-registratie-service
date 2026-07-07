@@ -5,7 +5,6 @@ from app.models.ura_number import UraNumber
 from app.services.fhir.nvi_data_reference import NviDataReferenceMapper
 from app.services.metadata import MetadataService
 from app.services.nvi import NviService
-from app.services.oauth import jwt_builder_factory
 from app.services.oauth.oauth_service import OauthService
 from app.services.pseudonym import PseudonymService
 from app.services.registration.bundle import BundleRegistrationService
@@ -19,25 +18,9 @@ from app.services.ura import UraNumberService
 def container_config(binder: inject.Binder) -> None:
     config = get_config()
 
-    if config.referral_api.mtls_cert is not None and jwt_builder_factory.is_uzi_cert(config.referral_api.mtls_cert):
-        ura_number = UraNumberService.get_ura_number(config.referral_api.mtls_cert)
-        binder.bind(UraNumber, ura_number)
-    elif config.app.uzi_cert_path is not None and jwt_builder_factory.is_uzi_cert(config.app.uzi_cert_path):
-        ura_number = UraNumberService.get_ura_number(config.app.uzi_cert_path)
-        binder.bind(UraNumber, ura_number)
-    else:
-        raise ValueError("An UZI certificate must be provided for UraNumber extraction")
+    ura_number = UraNumberService.get_ura_number(config.app.uzi_cert_path or "")
+    binder.bind(UraNumber, ura_number)
 
-    if config.oauth_api.mtls_cert is None:
-        raise ValueError("An LDN or UZI mTLS certificate must be provided for OAuth API")
-    jwt_builder = jwt_builder_factory.initialize_jwt_builder(
-        endpoint=config.oauth_api.endpoint,
-        ura_number=ura_number,
-        mtls_cert=config.oauth_api.mtls_cert,
-        uzi_cert_path=config.app.uzi_cert_path,
-        uzi_key_path=config.app.uzi_key_path,
-        include_x5c=config.oauth_api.include_x5c,
-    )
     oauth_service = OauthService(
         endpoint=config.oauth_api.endpoint,
         timeout=config.oauth_api.timeout,
@@ -45,7 +28,6 @@ def container_config(binder: inject.Binder) -> None:
         mtls_cert=config.oauth_api.mtls_cert,
         mtls_key=config.oauth_api.mtls_key,
         verify_ca=config.oauth_api.verify_ca,
-        jwt_builder=jwt_builder,
     )
 
     pseudonym_service = PseudonymService(
