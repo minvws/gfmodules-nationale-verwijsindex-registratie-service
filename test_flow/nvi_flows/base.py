@@ -33,18 +33,11 @@ from test_flow.PRS import PRS
 
 
 def main(arg: str, kwargs: Dict[str, Any]) -> None:
-    jwt_builder = JWTBuilder(
-        token_url=f"{OAUTH_ENDPOINT}/oauth/token",
-        mtls_cert_path=MTLS_CERT_PATH,
-        signing_cert_path=SINGING_CERT_PATH,
-        signing_key_path=SINGING_KEY_PATH,
-    )
     oauth_service = OAuth(
         endpoint=OAUTH_ENDPOINT,
         mtls_cert=MTLS_CERT_PATH,
         mtls_key=MTLS_KEY_PATH,
         verify_ca=VERIFY_CA_PATH,
-        jwt_builder=jwt_builder,
     )
     prs_service = PRS(
         endpoint=PRS_ENDPOINT,

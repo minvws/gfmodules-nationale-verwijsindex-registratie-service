@@ -22,11 +22,9 @@ class LogLevel(str, Enum):
 
 class ConfigApp(BaseModel):
     loglevel: LogLevel = Field(default=LogLevel.info)
-    provider_id: str
     data_domains: List[DataDomain] = Field(default=[])
     default_organization_type: str = Field(default="ziekenhuis")
-    uzi_cert_path: str | None = Field(default=None)
-    uzi_key_path: str | None = Field(default=None)
+    ura_number: str = Field(default="12345678")
 
     @field_validator("data_domains", mode="before")
     @classmethod
