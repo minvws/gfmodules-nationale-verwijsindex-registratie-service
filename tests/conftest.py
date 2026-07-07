@@ -84,9 +84,8 @@ def fhir_http_service(mock_url: str) -> FhirHttpService:
 
 
 @pytest.fixture
-def pseudonym_service(mock_url: str, mock_ura_number: UraNumber, oauth_service: OauthService) -> PseudonymService:
+def pseudonym_service(mock_url: str, oauth_service: OauthService) -> PseudonymService:
     return PseudonymService(
-        provider_id=mock_ura_number.value,
         endpoint=mock_url,
         timeout=1,
         mtls_cert=None,

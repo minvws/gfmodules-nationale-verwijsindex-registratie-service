@@ -12,13 +12,12 @@ from app.services.registration.referrals import ReferralRegistrationService
 from app.services.synchronization.domain_map import DomainsMapService
 from app.services.synchronization.scheduler import Scheduler
 from app.services.synchronization.synchronizer import Synchronizer
-from app.services.ura import UraNumberService
 
 
 def container_config(binder: inject.Binder) -> None:
     config = get_config()
 
-    ura_number = UraNumberService.get_ura_number(config.app.uzi_cert_path or "")
+    ura_number = UraNumber(config.app.ura_number)
     binder.bind(UraNumber, ura_number)
 
     oauth_service = OauthService(
@@ -36,7 +35,6 @@ def container_config(binder: inject.Binder) -> None:
         mtls_cert=config.pseudonym_api.mtls_cert,
         mtls_key=config.pseudonym_api.mtls_key,
         verify_ca=config.pseudonym_api.verify_ca,
-        provider_id=config.app.provider_id,
         oauth_service=oauth_service,
     )
     binder.bind(PseudonymService, pseudonym_service)

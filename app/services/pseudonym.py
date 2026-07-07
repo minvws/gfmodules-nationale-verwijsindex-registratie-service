@@ -15,7 +15,6 @@ class PseudonymError(Exception):
 class PseudonymService:
     def __init__(
         self,
-        provider_id: str,
         endpoint: str,
         timeout: int,
         mtls_cert: str | None,
@@ -32,7 +31,6 @@ class PseudonymService:
             verify_ca=verify_ca,
         )
         self._oauth_service = oauth_service
-        self._provider_id = provider_id
 
     def submit(self, data: PseudonymRequest) -> OprfPseudonymJWE:
         """
