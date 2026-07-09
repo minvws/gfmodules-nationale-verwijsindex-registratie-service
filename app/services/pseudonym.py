@@ -1,7 +1,5 @@
 import logging
 
-from app.models.pseudonym import OprfPseudonymJWE
-from app.models.pseudonym import PseudonymRequest
 from app.services.api.http_service import GfHttpService
 from app.services.oauth.oauth_service import OauthService
 
@@ -32,21 +30,21 @@ class PseudonymService:
         )
         self._oauth_service = oauth_service
 
-    def submit(self, data: PseudonymRequest) -> OprfPseudonymJWE:
-        """
-        Request OPRF blinded JWE from the pseudonym service.
-        """
-        logger.info(
-            f"Request OPRF JWE for organisation {data.recipient_organization} with scope {data.recipient_scope}"
-        )
+    def evaluate(self, blinded_input: str, recipient_organization: str, recipient_scope: str) -> str:
+        logger.info("Request OPRF JWE for organisation")
 
-        token = self._oauth_service.fetch_token(scope="prs:read", target_audience=self._endpoint)
+        token = self._oauth_service.fetch_token(scope="prs:read")
 
+        contents = {
+            "encryptedPersonalId": blinded_input,
+            "recipientOrganization": recipient_organization,
+            "recipientScope": recipient_scope,
+        }
         try:
             response = self.http_service.do_request(
                 method="POST",
                 sub_route="oprf/eval",
-                json=data.model_dump(by_alias=True),
+                json=contents,
                 headers={"Authorization": f"Bearer {token.access_token}"},
             )
             response.raise_for_status()
@@ -59,7 +57,7 @@ class PseudonymService:
 
         try:
             response_data = response.json()
-            return OprfPseudonymJWE(jwe=response_data.get("jwe"))
+            return response_data.get("jwe")  # type: ignore
         except ValueError:
             raise PseudonymError("Failed to exchange BSN for pseudonym: invalid pseudonym")
 

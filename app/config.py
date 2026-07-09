@@ -5,8 +5,6 @@ from typing import Any, List
 
 from pydantic import BaseModel, Field, field_validator
 
-from app.models.data_domain import DataDomain
-
 _PATH = "app.conf"
 _CONFIG = None
 _ENVIRONMENT_CONFIG_PATH_NAME = "FASTAPI_CONFIG_PATH"
@@ -22,19 +20,21 @@ class LogLevel(str, Enum):
 
 class ConfigApp(BaseModel):
     loglevel: LogLevel = Field(default=LogLevel.info)
-    data_domains: List[DataDomain] = Field(default=[])
-    default_organization_type: str = Field(default="ziekenhuis")
-    ura_number: str = Field(default="12345678")
+    data_domains: List[str] = Field(default=[])
+    org_registration_ura: str = Field(default="")
+    org_registration_oin: str = Field(default="")
+    client_oin: str = Field(default="")
+    source_id: str = Field(default="")
 
     @field_validator("data_domains", mode="before")
     @classmethod
-    def split_values(cls, value: object) -> List[DataDomain]:
+    def split_values(cls, value: object) -> List[str]:
         if isinstance(value, str):
             value = "".join(value.split())
             value_list = [] if value == "" else value.split(",")
-            return [DataDomain(data_domain) for data_domain in value_list]
+            return [data_domain for data_domain in value_list]
 
-        if not isinstance(value, list) or not all(isinstance(item, DataDomain) for item in value):
+        if not isinstance(value, list) or not all(isinstance(item, str) for item in value):
             return []
 
         return value
@@ -47,7 +47,7 @@ class ConfigScheduler(BaseModel):
 
 class ConfigMetadataApi(BaseModel):
     mock: bool = Field(default=False)
-    endpoint: str
+    endpoint: str = Field(default="")
     timeout: int = Field(default=30, gt=0)
     mtls_cert: str | None = Field(default=None)
     mtls_key: str | None = Field(default=None)
@@ -56,7 +56,7 @@ class ConfigMetadataApi(BaseModel):
 
 class ConfigPseudonymApi(BaseModel):
     mock: bool = Field(default=False)
-    endpoint: str
+    endpoint: str = Field(default="")
     timeout: int = Field(default=30, gt=0)
     mtls_cert: str | None = Field(default=None)
     mtls_key: str | None = Field(default=None)
@@ -65,17 +65,20 @@ class ConfigPseudonymApi(BaseModel):
 
 class ConfigReferralApi(BaseModel):
     mock: bool = Field(default=False)
-    endpoint: str
+    endpoint: str = Field(default="")
     timeout: int = Field(default=30, gt=0)
     mtls_cert: str | None = Field(default=None)
     mtls_key: str | None = Field(default=None)
     verify_ca: str | bool = Field(default=True)
-    nvi_ura_number: str
+    nvi_oin: str = Field(default="")
 
 
 class ConfigOauthApi(BaseModel):
     mock: bool = Field(default=False)
-    endpoint: str
+    nvi_endpoint: str = Field(default="")
+    prs_endpoint: str = Field(default="")
+    nvi_audience: str = Field(default="")
+    prs_audience: str = Field(default="")
     timeout: int = Field(default=30, gt=0)
     mtls_cert: str | None = Field(default=None)
     mtls_key: str | None = Field(default=None)
@@ -83,11 +86,16 @@ class ConfigOauthApi(BaseModel):
     include_x5c: bool = Field(default=True)
 
 
-class ConfigFhirSystems(BaseModel):
-    pseudonym_system: str
-    source_system: str
-    organization_type_system: str
-    care_context_system: str
+class NviFhirSystems(BaseModel):
+    extension_identifier: str = Field(default="http://fhir.nl/fhir/NamingSystem/ura")
+    extension_url: str = Field(
+        default="http://minvws.github.io/generiekefuncties-docs/StructureDefinition/nl-gf-localization-custodian"
+    )
+    subject_system: str = Field(default="http://minvws.github.io/generiekefuncties-docs/NamingSystem/nvi-identifier")
+    source_system: str = Field(default="urn:ietf:rfc:3986")
+    coding_system: str = Field(
+        default="http://minvws.github.io/generiekefuncties-docs/CodeSystem/nl-gf-data-categories-cs"
+    )
 
 
 class ConfigUvicorn(BaseModel):
@@ -112,8 +120,8 @@ class Config(BaseModel):
     uvicorn: ConfigUvicorn
     pseudonym_api: ConfigPseudonymApi
     referral_api: ConfigReferralApi
-    nvi_fhir_systems: ConfigFhirSystems
     oauth_api: ConfigOauthApi
+    nvi_fhir_systems: NviFhirSystems
 
 
 def read_ini_file(path: str) -> Any:

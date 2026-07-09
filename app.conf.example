@@ -3,8 +3,11 @@
 loglevel=debug
 # List of FHIR Resource types that the application is going to register patients from
 data_domains = ImagingStudy
-# Default type of this registering organization
-default_organization_type = ziekenhuis
+# Org and client, optional source_id needs to be registered in the beheer-apis
+org_registration_oin=00000099000000003000
+org_registration_ura=12345678
+client_oin=00000099000000002000
+source_id=software-identifier
 
 [scheduler]
 # the amount of seconds the update will run in the background
@@ -14,50 +17,43 @@ scheduled_delay=5
 automatic_background_update = False
 
 [metadata_api]
-# The base URLs of FHIR stores (metadata registers)
-# For local development, use the local metadata service
 endpoint=http://localhost:9500/fhir
-# timeout in seconds
 timeout=10
 # mtls_cert=secrets/ssl/metadata_api.cert
 # mtls_key=secrets/ssl/metadata_api.key
 # verify_ca=secrets/ssl/metadata_api_ca.cert
 
 [pseudonym_api]
-# For local development, use the pseudonym stub service
-endpoint=http://localhost:8504
+endpoint=https://prs
 timeout=10
-# mtls_cert=secrets/ssl/pseudonym_api.cert
-# mtls_key=secrets/ssl/pseudonym_api.key
-# verify_ca=secrets/ssl/pseudonym_api_ca.cert
+mtls_cert=secrets/ssl/pseudonym_api.cert
+mtls_key=secrets/ssl/pseudonym_api.key
+verify_ca=secrets/ssl/pseudonym_api_ca.cert
 
 [referral_api]
-# For local development, use the local NVI service
-endpoint=http://localhost:8501
+endpoint=https://nvi
 timeout=10
-# mtls_cert=secrets/ssl/referral_api.cert
-# mtls_key=secrets/ssl/referral_api.key
-# verify_ca=secrets/ssl/referral_api_ca.cert
-# ura number of the NVI
-nvi_ura_number = 90000002
+mtls_cert=secrets/ssl/referral_api.cert
+mtls_key=secrets/ssl/referral_api.key
+verify_ca=secrets/ssl/referral_api_ca.cert
+# OIN of the NVI
+nvi_oin = 00000099000000001000
 
 [oauth_api]
-endpoint=http://localhost:8501/oauth/token
+nvi_endpoint=https://nvi-oauth
+prs_endpoint=https://prs-oauth
+nvi_audience=https://nvi
+prs_audience=https://prs
 timeout=10
 mtls_cert=secrets/dummy-uzi.crt
 mtls_key=secrets/dummy-uzi.key
-# verify_ca=secrets/uzi-server-ca.crt
-# include_x5c=True
+verify_ca=secrets/uzi-server-ca.crt
 
 [nvi_fhir_systems]
-# FHIR NamingSystem for pseudonyms
-pseudonym_system = https://nvi.proeftuin.gf.irealisatie.nl/fhir/NamingSystem/nvi-pseudonym
-# OID for URA numbers
-source_system = urn:oid:2.16.528.1.1007.3.3
-# CodeSystem for organization types
-organization_type_system = https://nvi.proeftuin.gf.irealisatie.nl/fhir/CodeSystem/nvi-organization-types
-# CodeSystem for care context
-care_context_system = https://nvi.proeftuin.gf.irealisatie.nl/fhir/CodeSystem/care-context-type
+extension_identifier=http://fhir.nl/fhir/NamingSystem/ura
+extension_url=http://minvws.github.io/generiekefuncties-docs/StructureDefinition/nl-gf-localization-custodian
+subject_system=http://minvws.github.io/generiekefuncties-docs/NamingSystem/nvi-identifier
+source_system=urn:ietf:rfc:3986
 
 [uvicorn]
 # If true, the api docs will be enabled

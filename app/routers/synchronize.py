@@ -5,7 +5,6 @@ from urllib.parse import quote
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 
 from app.container import get_synchronizer
-from app.models.data_domain import DataDomain
 from app.models.update_scheme import UpdateScheme
 from app.services.synchronization.synchronizer import Synchronizer
 
@@ -99,11 +98,11 @@ def synchronize_domain(
 ) -> Dict[str, List[UpdateScheme]]:
     if data_domain is not None:
         allowed_domains = service.get_allowed_domains()
-        if DataDomain(data_domain) not in allowed_domains:
+        if data_domain not in allowed_domains:
             raise HTTPException(
                 status_code=400,
                 detail=f"Invalid data_domain. Must be one of: {', '.join(str(data_domain) for data_domain in allowed_domains)}",
             )
-        return service.synchronize_domain(DataDomain(quote(data_domain)))
+        return service.synchronize_domain(quote(data_domain))
     else:
         return service.synchronize_all_domains()

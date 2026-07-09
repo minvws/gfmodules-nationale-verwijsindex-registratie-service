@@ -3,7 +3,6 @@ from textwrap import dedent
 from fastapi import APIRouter, Depends, Query
 
 from app.container import get_synchronizer
-from app.models.data_domain import DataDomain
 from app.models.domains_map import DomainsMap
 from app.services.synchronization.synchronizer import Synchronizer
 
@@ -63,4 +62,4 @@ def clear_cache(
     ),
     service: Synchronizer = Depends(get_synchronizer),
 ) -> DomainsMap:
-    return service.clear_cache(DataDomain(data_domain))
+    return service.clear_cache(data_domain)

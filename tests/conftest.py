@@ -18,7 +18,7 @@ from app.models.update_scheme import BsnUpdateScheme
 from app.models.ura_number import UraNumber
 from app.services.api.fhir import FhirHttpService
 from app.services.api.http_service import HttpService
-from app.services.fhir.nvi_data_reference import NviDataReferenceMapper
+from app.services.fhir.fhir_mapper import NviDataReferenceMapper
 from app.services.metadata import MetadataService
 from app.services.nvi import NviService
 from app.services.oauth.oauth_service import OauthService
@@ -145,7 +145,6 @@ def registration_service(
         nvi_service=nvi_service,
         pseudonym_service=pseudonym_service,
         ura_number=mock_ura_number,
-        default_organization_type="ziekenhuis",
         nvi_ura_number=mock_nvi_ura_number,
     )
 

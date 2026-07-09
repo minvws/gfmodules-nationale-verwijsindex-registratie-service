@@ -3,7 +3,6 @@ from typing import List, Tuple
 from fhir.resources.R4B.patient import Patient
 
 from app.data import BSN_SYSTEM
-from app.models.data_domain import DataDomain
 from app.models.metadata.params import MetadataResourceParams
 from app.services.api.fhir import FhirHttpService
 from app.services.parsers.bundle import BundleParser
@@ -45,9 +44,7 @@ class MetadataService:
         except Exception as e:
             raise MetadataError from e
 
-    def get_update_scheme(
-        self, resource_type: DataDomain, last_updated: str | None = None
-    ) -> Tuple[List[str], str | None]:
+    def get_update_scheme(self, resource_type: str, last_updated: str | None = None) -> Tuple[List[str], str | None]:
         params = MetadataResourceParams(
             _lastUpdated=f"ge{last_updated}" if last_updated else None,
             _include=f"{resource_type}:subject",

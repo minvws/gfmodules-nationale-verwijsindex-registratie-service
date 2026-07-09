@@ -4,7 +4,7 @@ from app.models.data_domain import DataDomain
 from app.models.pseudonym import OprfPseudonymJWE
 from app.models.referrals import CreateReferralRequest
 from app.models.ura_number import UraNumber
-from app.services.fhir.nvi_data_reference import NviDataReferenceMapper
+from app.services.fhir.fhir_mapper import NviDataReferenceMapper
 
 
 @pytest.fixture
