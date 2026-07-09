@@ -1,6 +1,5 @@
 from textwrap import dedent
 from typing import Dict, List
-from urllib.parse import quote
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 
@@ -103,6 +102,6 @@ def synchronize_domain(
                 status_code=400,
                 detail=f"Invalid data_domain. Must be one of: {', '.join(str(data_domain) for data_domain in allowed_domains)}",
             )
-        return service.synchronize_domain(quote(data_domain))
+        return service.synchronize_domain(data_domain)
     else:
         return service.synchronize_all_domains()

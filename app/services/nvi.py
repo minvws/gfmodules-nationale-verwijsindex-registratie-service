@@ -111,7 +111,7 @@ class NviService:
             subject=subject,
             source_id=self.source_id,
         )
-        token = self._fetch_token(scope="nvi:write")
+        token = self._fetch_token(scope="nvi:create")
         resp = self._access_nvi_api(data=list_res, token=token)
         referral = self.fhir_mapper.from_list_resource(resp)
         logger.info("Updated NVI with referral: %s", referral)
