@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Any, Dict, List
 from uuid import UUID
 
@@ -205,12 +205,12 @@ def mock_bsn(mock_bsn_number: str) -> BSN:
 
 @pytest.fixture
 def datetime_past() -> str:
-    return datetime(2022, 12, 10, 12, 0, 0, 0).isoformat()
+    return datetime(2022, 12, 10, 12, 0, 0, 0, tzinfo=timezone.utc).isoformat()
 
 
 @pytest.fixture
 def datetime_now() -> str:
-    return datetime(2025, 12, 10, 12, 0, 0, 0).isoformat()
+    return datetime(2025, 12, 10, 12, 0, 0, 0, tzinfo=timezone.utc).isoformat()
 
 
 @pytest.fixture
