@@ -1,7 +1,6 @@
 from app.config import (
     Config,
     ConfigApp,
-    ConfigFhirSystems,
     ConfigMetadataApi,
     ConfigPseudonymApi,
     ConfigReferralApi,
@@ -9,6 +8,7 @@ from app.config import (
     ConfigScheduler,
     ConfigUvicorn,
     LogLevel,
+    NviFhirSystems,
 )
 
 
@@ -20,7 +20,7 @@ def get_test_config() -> Config:
         pseudonym_api=ConfigPseudonymApi(endpoint="http://example.com", mtls_key=""),
         referral_api=ConfigReferralApi(
             endpoint="http://example.com",
-            nvi_ura_number="000000124",
+            nvi_oin="000000124",
         ),
         uvicorn=ConfigUvicorn(
             swagger_enabled=False,
@@ -34,7 +34,11 @@ def get_test_config() -> Config:
             ssl_cert_file=None,
             ssl_key_file=None,
         ),
-        oauth_api=ConfigOauthApi(endpoint="http://example.com/oauth/token", timeout=30),
+        oauth_api=ConfigOauthApi(
+            nvi_endpoint="http://example.com/oauth/token",
+            prs_endpoint="http://example.com/oauth/token",
+            timeout=30,
+        ),
         metadata_api=ConfigMetadataApi(
             mock=True,
             endpoint="http://example.com",
@@ -44,10 +48,5 @@ def get_test_config() -> Config:
             verify_ca=True,
         ),
         scheduler=ConfigScheduler(scheduled_delay=5),
-        nvi_fhir_systems=ConfigFhirSystems(
-            pseudonym_system="pseudonym-system",
-            source_system="urn:oid:ura-number",
-            organization_type_system="org-type-system",
-            care_context_system="care-context-system",
-        ),
+        nvi_fhir_systems=NviFhirSystems(),
     )

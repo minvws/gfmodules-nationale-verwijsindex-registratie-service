@@ -19,6 +19,7 @@ from app.routers.health import router as health_router
 from app.routers.registration import router as registration_router
 from app.routers.scheduler import router as scheduler_router
 from app.routers.synchronize import router as synchronization_router
+from app.routers.test import test_router
 
 
 def get_uvicorn_params() -> dict[str, Any]:
@@ -92,6 +93,7 @@ def setup_fastapi() -> FastAPI:
         synchronization_router,
         cache_router,
         scheduler_router,
+        test_router,
     ]
     for router in routers:
         fastapi.include_router(router)

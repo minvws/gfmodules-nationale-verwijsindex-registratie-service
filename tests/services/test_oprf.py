@@ -1,15 +1,14 @@
 import base64
 
-from app.models.pseudonym import PersonalIdentifier
 from app.services.oprf import OprfService
 
 
 def test_create_blinded_input() -> None:
-    personal_identifier = PersonalIdentifier(
-        land_code="NL",
-        type="bsn",
-        value="123456789",
-    )
+    personal_identifier = {
+        "landCode": "NL",
+        "type": "BSN",
+        "value": "123456789",
+    }
     recipient_organization = "test_org"
     recipient_scope = "test_scope"
 

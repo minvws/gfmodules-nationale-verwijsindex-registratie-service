@@ -1,120 +1,103 @@
+from typing import Any, Dict
 from unittest.mock import MagicMock, patch
+from uuid import UUID
 
 import pytest
 from requests.exceptions import ConnectionError, HTTPError, Timeout
 
-from app.models.referrals import ReferralQuery, CreateReferralRequest
 from app.services.nvi import NviService
 
 PATCHED_MODULE = "app.services.nvi.GfHttpService.do_request"
 PATCHED_OAUTH = "app.services.oauth.oauth_service.OauthService.fetch_token"
 
+LIST_ID = "123e4567-e89b-12d3-a456-426614174000"
 
-@patch(PATCHED_MODULE)
-@patch(PATCHED_OAUTH)
-def test_get_referrals_should_succeed(
-    fetch_token: MagicMock,
-    mock_post: MagicMock,
-    nvi_service: NviService,
-    referral_query: ReferralQuery,
-) -> None:
-    expected_registered = True
 
-    mock_response = MagicMock()
-    mock_response.status_code = 200
-    mock_response.json.return_value = {
-        "resourceType": "Bundle",
-        "type": "searchset",
-        "entry": [
-            {
-                "resource": "some referral data",
-            }
-        ],
+def _list_resource() -> Dict[str, Any]:
+    return {
+        "resourceType": "List",
+        "id": LIST_ID,
+        "extension": [{"valueReference": {"identifier": {"system": "sys", "value": "12345678"}}, "url": "u"}],
+        "source": {"identifier": {"system": "src", "value": "some_source"}},
     }
-    mock_post.return_value = mock_response
-    fetch_token.return_value = MagicMock(access_token="some_access_token")
-
-    actual = nvi_service.is_referral_registered(referral_query)
-
-    mock_post.assert_called_once_with(
-        method="GET",
-        sub_route="NVIDataReference",
-        params=referral_query.model_dump(mode="json", by_alias=True),
-        headers={"Authorization": "Bearer some_access_token", "Content-Type": "application/x-www-form-urlencoded"},
-    )
-    assert actual == expected_registered
 
 
 @patch(PATCHED_MODULE)
 @patch(PATCHED_OAUTH)
-def test_get_referrals_should_return_none_if_not_found(
+def test_get_registered_referrals_should_return_referrals(
     fetch_token: MagicMock,
-    mock_post: MagicMock,
+    mock_request: MagicMock,
     nvi_service: NviService,
-    referral_query: ReferralQuery,
 ) -> None:
     mock_response = MagicMock()
     mock_response.status_code = 200
     mock_response.json.return_value = {
         "resourceType": "Bundle",
         "type": "searchset",
-        "entry": [
-            # No entries found
-        ],
+        "entry": [{"resource": _list_resource()}],
     }
-    mock_post.return_value = mock_response
+    mock_request.return_value = mock_response
     fetch_token.return_value = MagicMock(access_token="some_access_token")
 
-    actual = nvi_service.is_referral_registered(referral_query)
+    actual = nvi_service.get_registered_referrals(subject="some_subject")
 
-    mock_post.assert_called_once_with(
-        method="GET",
-        sub_route="NVIDataReference",
-        params=referral_query.model_dump(mode="json", by_alias=True),
-        headers={"Authorization": "Bearer some_access_token", "Content-Type": "application/x-www-form-urlencoded"},
-    )
-
-    assert actual is False
+    assert len(actual) == 1
+    assert actual[0].id == UUID(LIST_ID)
+    assert actual[0].ura_number == "12345678"
+    mock_request.assert_called_once()
 
 
 @patch(PATCHED_MODULE)
-def test_register_should_fail_when_record_already_exist(
-    mock_post: MagicMock,
+@patch(PATCHED_OAUTH)
+def test_get_registered_referrals_should_return_empty_when_no_entries(
+    fetch_token: MagicMock,
+    mock_request: MagicMock,
     nvi_service: NviService,
-    create_referral_dto: CreateReferralRequest,
 ) -> None:
-    mock_post.side_effect = HTTPError("Conflict")
+    mock_response = MagicMock()
+    mock_response.status_code = 200
+    mock_response.json.return_value = {"resourceType": "Bundle", "type": "searchset", "entry": []}
+    mock_request.return_value = mock_response
+    fetch_token.return_value = MagicMock(access_token="some_access_token")
 
-    with pytest.raises(HTTPError):
-        nvi_service.submit(create_referral_dto)
+    actual = nvi_service.get_registered_referrals(subject="some_subject")
 
-    mock_post.assert_called_once()
+    assert actual == []
 
 
 @patch(PATCHED_MODULE)
-def test_register_should_fail_when_connection_times_out(
-    mock_post: MagicMock,
+@patch(PATCHED_OAUTH)
+def test_add_referral_should_return_referral(
+    fetch_token: MagicMock,
+    mock_request: MagicMock,
     nvi_service: NviService,
-    create_referral_dto: CreateReferralRequest,
 ) -> None:
-    mock_post.side_effect = Timeout("Request timed out")
+    mock_response = MagicMock()
+    mock_response.status_code = 201
+    mock_response.json.return_value = _list_resource()
+    mock_request.return_value = mock_response
+    fetch_token.return_value = MagicMock(access_token="some_access_token")
 
-    with pytest.raises(Timeout):
-        nvi_service.submit(create_referral_dto)
+    actual = nvi_service.add_referral(subject="some_subject")
 
-    mock_post.assert_called_once()
+    assert actual.id == UUID(LIST_ID)
+    assert actual.ura_number == "12345678"
+    mock_request.assert_called_once()
 
 
+@pytest.mark.parametrize("error", [HTTPError("Conflict"), Timeout("timed out"), ConnectionError()])
 @patch(PATCHED_MODULE)
-def test_register_should_fail_when_no_connection_is_established(
-    mock_post: MagicMock,
+@patch(PATCHED_OAUTH)
+def test_add_referral_should_propagate_errors(
+    fetch_token: MagicMock,
+    mock_request: MagicMock,
     nvi_service: NviService,
-    create_referral_dto: CreateReferralRequest,
+    error: Exception,
 ) -> None:
-    mock_response = MagicMock(side_effect=ConnectionError)
-    mock_post.side_effect = mock_response
+    fetch_token.return_value = MagicMock(access_token="some_access_token")
+    mock_request.side_effect = error
 
-    with pytest.raises(ConnectionError):
-        nvi_service.submit(create_referral_dto)
+    with pytest.raises(type(error)):
+        nvi_service.add_referral(subject="some_subject")
 
-    mock_post.assert_called_once()
+    mock_request.assert_called_once()

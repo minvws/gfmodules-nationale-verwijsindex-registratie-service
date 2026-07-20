@@ -10,15 +10,12 @@ from fhir.resources.R4B.patient import Patient
 from app.config import ConfigPseudonymApi
 from app.data import BSN_SYSTEM
 from app.models.bsn import BSN
-from app.models.data_domain import DataDomain
 from app.models.metadata.params import MetadataResourceParams
-from app.models.pseudonym import OprfPseudonymJWE
-from app.models.referrals import ReferralQuery, CreateReferralRequest, ReferralEntity
+from app.models.referrals import Referral
 from app.models.update_scheme import BsnUpdateScheme
-from app.models.ura_number import UraNumber
 from app.services.api.fhir import FhirHttpService
 from app.services.api.http_service import HttpService
-from app.services.fhir.nvi_data_reference import NviDataReferenceMapper
+from app.services.fhir.fhir_mapper import FhirMapper
 from app.services.metadata import MetadataService
 from app.services.nvi import NviService
 from app.services.oauth.oauth_service import OauthService
@@ -28,6 +25,9 @@ from app.services.registration.referrals import ReferralRegistrationService
 from app.services.synchronization.domain_map import DomainsMapService
 from app.services.synchronization.synchronizer import Synchronizer
 from tests.services.api_services.test_api_service import MockHttpService
+
+TARGET_AUDIENCE = "http://example.org/api"
+NVI_OIN = "00000004003214345001"
 
 
 @pytest.fixture
@@ -59,22 +59,22 @@ def mock_url() -> str:
 
 
 @pytest.fixture
-def mock_ura_number() -> UraNumber:
-    return UraNumber("12345678")
+def mock_ura_number() -> str:
+    return "12345678"
 
 
 @pytest.fixture
-def mock_nvi_ura_number() -> UraNumber:
-    return UraNumber("87654321")
+def mock_nvi_ura_number() -> str:
+    return "87654321"
 
 
 @pytest.fixture
-def data_domains() -> List[DataDomain]:
-    return [DataDomain("ImagingStudy"), DataDomain("MedicationStatement")]
+def data_domains() -> List[str]:
+    return ["ImagingStudy", "MedicationStatement"]
 
 
 @pytest.fixture
-def domains_map_service(data_domains: List[DataDomain]) -> DomainsMapService:
+def domains_map_service(data_domains: List[str]) -> DomainsMapService:
     return DomainsMapService(data_domains)
 
 
@@ -96,20 +96,22 @@ def pseudonym_service(mock_url: str, oauth_service: OauthService) -> PseudonymSe
 
 
 @pytest.fixture
-def fhir_mapper() -> NviDataReferenceMapper:
-    return NviDataReferenceMapper(
-        pseudonym_system="http://example.com/pseudonym",
+def fhir_mapper() -> FhirMapper:
+    return FhirMapper(
+        extension_identifier="http://example.com/ura",
+        extension_url="http://example.com/custodian",
+        subject_system="http://example.com/pseudonym",
         source_system="http://example.com/source",
-        organization_type_system="http://example.com/organization-type",
-        care_context_system="http://example.com/care-context",
     )
 
 
 @pytest.fixture
-def oauth_service(mock_url: str) -> OauthService:
+def oauth_service(mock_url: str, mock_ura_number: str) -> OauthService:
     return OauthService(
         endpoint=mock_url,
         timeout=1,
+        org_register_id=mock_ura_number,
+        target_audience=TARGET_AUDIENCE,
         mtls_cert=None,
         mtls_key=None,
         verify_ca=True,
@@ -117,7 +119,9 @@ def oauth_service(mock_url: str) -> OauthService:
 
 
 @pytest.fixture
-def nvi_service(mock_url: str, fhir_mapper: NviDataReferenceMapper, oauth_service: OauthService) -> NviService:
+def nvi_service(
+    mock_url: str, fhir_mapper: FhirMapper, oauth_service: OauthService, mock_ura_number: str
+) -> NviService:
     return NviService(
         endpoint=mock_url,
         timeout=1,
@@ -126,6 +130,7 @@ def nvi_service(mock_url: str, fhir_mapper: NviDataReferenceMapper, oauth_servic
         verify_ca=True,
         fhir_mapper=fhir_mapper,
         oauth_service=oauth_service,
+        org_registration_ura=mock_ura_number,
     )
 
 
@@ -138,15 +143,11 @@ def metadata_service(mock_url: str) -> MetadataService:
 def registration_service(
     nvi_service: NviService,
     pseudonym_service: PseudonymService,
-    mock_ura_number: UraNumber,
-    mock_nvi_ura_number: UraNumber,
 ) -> ReferralRegistrationService:
     return ReferralRegistrationService(
         nvi_service=nvi_service,
         pseudonym_service=pseudonym_service,
-        ura_number=mock_ura_number,
-        default_organization_type="ziekenhuis",
-        nvi_ura_number=mock_nvi_ura_number,
+        nvi_oin=NVI_OIN,
     )
 
 
@@ -171,29 +172,6 @@ def synchronizer(
 
 
 @pytest.fixture
-def mock_oprf_pseudonym_jwe() -> OprfPseudonymJWE:
-    return OprfPseudonymJWE(jwe="some_oprf_pseudonym_jwe")
-
-
-@pytest.fixture
-def referral_query(mock_oprf_pseudonym_jwe: OprfPseudonymJWE) -> ReferralQuery:
-    return ReferralQuery(
-        oprf_jwe=mock_oprf_pseudonym_jwe,
-        blind_factor="some_blind_fator",
-        data_domain=DataDomain("some_domain"),
-        ura_number=UraNumber("12345678"),
-    )
-
-
-@pytest.fixture
-def create_referral_dto(referral_query: ReferralQuery) -> CreateReferralRequest:
-    return CreateReferralRequest(
-        **referral_query.model_dump(mode="python"),
-        organization_type="ziekenhuis",
-    )
-
-
-@pytest.fixture
 def mock_bsn_number() -> str:
     return "200060429"
 
@@ -214,22 +192,21 @@ def datetime_now() -> str:
 
 
 @pytest.fixture
-def mock_pseudonym_jwe() -> OprfPseudonymJWE:
-    return OprfPseudonymJWE(jwe="some_pseudonym")
+def mock_pseudonym_jwe() -> str:
+    return "some_pseudonym"
 
 
 @pytest.fixture
-def mock_referral(mock_ura_number: UraNumber) -> ReferralEntity:
-    return ReferralEntity(
+def mock_referral(mock_ura_number: str) -> Referral:
+    return Referral(
         id=UUID("123e4567-e89b-12d3-a456-426614174000"),
         ura_number=mock_ura_number,
-        data_domain=DataDomain("beeldbank"),
-        organization_type="some_organization_type",
+        source_id="some_source_id",
     )
 
 
 @pytest.fixture
-def bsn_update_scheme(mock_bsn_number: str, mock_referral: ReferralEntity) -> BsnUpdateScheme:
+def bsn_update_scheme(mock_bsn_number: str, mock_referral: Referral) -> BsnUpdateScheme:
     return BsnUpdateScheme(bsn=mock_bsn_number, referral=mock_referral)
 
 

@@ -1,49 +1,56 @@
 from unittest.mock import MagicMock, patch
 
-from app.models.bsn import BSN
-from app.models.data_domain import DataDomain
-from app.models.pseudonym import OprfPseudonymJWE
-from app.models.referrals import ReferralEntity
+from app.models.referrals import Referral
 from app.services.registration.referrals import ReferralRegistrationService
 
-PATCHED_NVI = "app.services.registration.referrals.NviService"
-PATCHED_PSEUDONYM = "app.services.registration.referrals.PseudonymService.submit"
+PATCHED_OPRF = "app.services.registration.referrals.OprfService.create_blinded_input"
+PATCHED_PSEUDONYM = "app.services.registration.referrals.PseudonymService.evaluate"
+PATCHED_GET = "app.services.registration.referrals.NviService.get_registered_referrals"
+PATCHED_ADD = "app.services.registration.referrals.NviService.add_referral"
+
+BSN = "200060429"
 
 
-@patch(f"{PATCHED_NVI}.submit")
-@patch(f"{PATCHED_NVI}.is_referral_registered")
+@patch(PATCHED_ADD)
+@patch(PATCHED_GET)
 @patch(PATCHED_PSEUDONYM)
+@patch(PATCHED_OPRF)
 def test_register_should_succeed(
-    pseudonym_response: MagicMock,
-    referral_query_response: MagicMock,
-    new_referral_response: MagicMock,
+    mock_oprf: MagicMock,
+    mock_evaluate: MagicMock,
+    mock_get_registered: MagicMock,
+    mock_add_referral: MagicMock,
     registration_service: ReferralRegistrationService,
-    mock_referral: ReferralEntity,
-    mock_pseudonym_jwe: OprfPseudonymJWE,
-    mock_bsn: BSN,
+    mock_referral: Referral,
 ) -> None:
-    pseudonym_response.return_value = mock_pseudonym_jwe
-    referral_query_response.return_value = None
-    new_referral_response.return_value = mock_referral
+    mock_oprf.return_value = ("blind_factor", "blinded_input")
+    mock_evaluate.return_value = "evaluated_output"
+    mock_get_registered.return_value = []
+    mock_add_referral.return_value = mock_referral
 
-    actual = registration_service.register(mock_bsn, DataDomain("ImagingStudy"))
+    actual = registration_service.register(BSN)
 
-    assert mock_referral == actual
+    assert actual == mock_referral
+    mock_add_referral.assert_called_once()
 
 
-@patch(f"{PATCHED_NVI}.is_referral_registered")
+@patch(PATCHED_ADD)
+@patch(PATCHED_GET)
 @patch(PATCHED_PSEUDONYM)
+@patch(PATCHED_OPRF)
 def test_register_should_return_none_if_referral_exists(
-    pseudonym_response: MagicMock,
-    referral_query_response: MagicMock,
+    mock_oprf: MagicMock,
+    mock_evaluate: MagicMock,
+    mock_get_registered: MagicMock,
+    mock_add_referral: MagicMock,
     registration_service: ReferralRegistrationService,
-    mock_referral: ReferralEntity,
-    mock_pseudonym_jwe: OprfPseudonymJWE,
-    mock_bsn: BSN,
+    mock_referral: Referral,
 ) -> None:
-    pseudonym_response.return_value = mock_pseudonym_jwe
-    referral_query_response.return_value = mock_referral
+    mock_oprf.return_value = ("blind_factor", "blinded_input")
+    mock_evaluate.return_value = "evaluated_output"
+    mock_get_registered.return_value = [mock_referral]
 
-    actual = registration_service.register(mock_bsn, DataDomain("ImagingStudy"))
+    actual = registration_service.register(BSN)
 
     assert actual is None
+    mock_add_referral.assert_not_called()
