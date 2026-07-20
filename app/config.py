@@ -24,6 +24,7 @@ class ConfigApp(BaseModel):
     org_registration_ura: str = Field(default="")
     org_registration_oin: str = Field(default="")
     client_oin: str = Field(default="")
+    client_common_name: str = Field(default="")
     source_id: str = Field(default="")
 
     @field_validator("data_domains", mode="before")

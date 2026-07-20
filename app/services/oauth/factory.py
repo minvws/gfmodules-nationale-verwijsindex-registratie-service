@@ -16,6 +16,8 @@ def create_oauth_classes(config: Config) -> Tuple[OauthService, OauthService]:
         org_register_id=config.app.org_registration_ura,
         source_id=config.app.source_id,
         target_audience=oauth_conf.nvi_audience,
+        client_oin=config.app.client_oin,
+        client_common_name=config.app.client_common_name,
     )
     prs_oauth = OauthService(
         endpoint=oauth_conf.prs_endpoint,
@@ -25,7 +27,8 @@ def create_oauth_classes(config: Config) -> Tuple[OauthService, OauthService]:
         mtls_key=oauth_conf.mtls_key,
         verify_ca=oauth_conf.verify_ca,
         org_register_id=config.app.org_registration_oin,
-        source_id=config.app.source_id,
         target_audience=oauth_conf.prs_audience,
+        client_oin=config.app.client_oin,
+        client_common_name=config.app.client_common_name,
     )
     return nvi_oauth, prs_oauth

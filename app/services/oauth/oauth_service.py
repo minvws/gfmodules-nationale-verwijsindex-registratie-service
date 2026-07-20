@@ -20,6 +20,8 @@ class OauthService:
         mtls_key: str | None = None,
         verify_ca: str | bool = True,
         source_id: str | None = None,
+        client_oin: str | None = None,
+        client_common_name: str | None = None,
     ):
         self._endpoint = endpoint
         self.mock = mock
@@ -29,6 +31,8 @@ class OauthService:
             mtls_cert=mtls_cert,
             mtls_key=mtls_key,
             verify_ca=verify_ca,
+            client_oin=client_oin,
+            client_common_name=client_common_name,
         )
         self._org_register_id = org_register_id
         self._source_id = source_id

@@ -25,6 +25,8 @@ def container_config(binder: inject.Binder) -> None:
         mtls_key=config.pseudonym_api.mtls_key,
         verify_ca=config.pseudonym_api.verify_ca,
         oauth_service=prs_oauth_service,
+        client_oin=config.app.client_oin,
+        client_common_name=config.app.client_common_name,
     )
     binder.bind(PseudonymService, pseudonym_service)
 
@@ -46,6 +48,8 @@ def container_config(binder: inject.Binder) -> None:
         fhir_mapper=fhir_mapper,
         source_id=config.app.source_id,
         org_registration_ura=config.app.org_registration_ura,
+        client_oin=config.app.client_oin,
+        client_common_name=config.app.client_common_name,
     )
     binder.bind(NviService, nvi_service)
 

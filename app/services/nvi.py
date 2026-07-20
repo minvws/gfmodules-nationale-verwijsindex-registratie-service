@@ -23,6 +23,8 @@ class NviService:
         mtls_key: str | None = None,
         verify_ca: str | bool = True,
         source_id: str | None = None,
+        client_oin: str | None = None,
+        client_common_name: str | None = None,
     ):
         self.endpoint = endpoint
         self.http_service = GfHttpService(
@@ -31,6 +33,8 @@ class NviService:
             mtls_cert=mtls_cert,
             mtls_key=mtls_key,
             verify_ca=verify_ca,
+            client_oin=client_oin,
+            client_common_name=client_common_name,
         )
         self.oauth_service = oauth_service
         self.fhir_mapper = fhir_mapper
