@@ -19,8 +19,7 @@ class PseudonymService:
         mtls_key: str | None,
         verify_ca: str | bool,
         oauth_service: OauthService,
-        client_oin: str | None = None,
-        client_common_name: str | None = None,
+        extra_headers: dict[str, str] | None = None,
     ) -> None:
         self._endpoint = endpoint
         self.http_service = GfHttpService(
@@ -29,8 +28,7 @@ class PseudonymService:
             mtls_cert=mtls_cert,
             mtls_key=mtls_key,
             verify_ca=verify_ca,
-            client_oin=client_oin,
-            client_common_name=client_common_name,
+            extra_headers=extra_headers,
         )
         self._oauth_service = oauth_service
 

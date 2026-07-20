@@ -23,8 +23,6 @@ class ConfigApp(BaseModel):
     data_domains: List[str] = Field(default=[])
     org_registration_ura: str = Field(default="")
     org_registration_oin: str = Field(default="")
-    client_oin: str = Field(default="")
-    client_common_name: str = Field(default="")
     source_id: str = Field(default="")
 
     @field_validator("data_domains", mode="before")
@@ -123,6 +121,7 @@ class Config(BaseModel):
     referral_api: ConfigReferralApi
     oauth_api: ConfigOauthApi
     nvi_fhir_systems: NviFhirSystems
+    overwrite_headers: dict[str, str] = Field(default_factory=dict)
 
 
 def read_ini_file(path: str) -> Any:

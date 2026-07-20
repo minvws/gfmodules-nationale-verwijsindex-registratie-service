@@ -16,24 +16,14 @@ class HttpService(ABC):
         mtls_cert: str | None,
         mtls_key: str | None,
         verify_ca: str | bool,
-        client_oin: str | None = None,
-        client_common_name: str | None = None,
+        extra_headers: dict[str, str] | None = None,
     ):
         self._endpoint = endpoint
         self._timeout = timeout
         self._mtls_cert = mtls_cert
         self._mtls_key = mtls_key
         self._verify_ca = verify_ca
-        self._client_oin = client_oin
-        self._client_common_name = client_common_name
-
-    def _identity_headers(self) -> dict[str, str]:
-        if self._client_oin and self._client_common_name:
-            return {
-                "x-gf-client-organization-id": self._client_oin,
-                "x-gf-client-common-name": self._client_common_name,
-            }
-        return {}
+        self._extra_headers = extra_headers or {}
 
     @abstractmethod
     def server_healthy(self) -> bool: ...
@@ -58,12 +48,12 @@ class HttpService(ABC):
     ) -> Response:
         try:
             cert = (self._mtls_cert, self._mtls_key) if self._mtls_cert and self._mtls_key else None
-            request_headers = {**self._identity_headers(), **(headers or {})}
+            request_headers = {**self._extra_headers, **(headers or {})}
             response = request(
                 method=method,
                 url=f"{self._endpoint}/{sub_route}" if sub_route else self._endpoint,
                 params=params,
-                headers=request_headers or None,
+                headers=request_headers,
                 json=json,
                 data=data,
                 timeout=self._timeout,
