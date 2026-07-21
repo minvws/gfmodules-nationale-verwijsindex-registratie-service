@@ -21,7 +21,7 @@ def mock_token_request_data() -> str:
             "grant_type": "client_credentials",
             "scope": "some_scope",
             "target_audience": TARGET_AUDIENCE,
-            "org_ura": ORG_URA,
+            "organization_id": ORG_URA,
         }
     )
 

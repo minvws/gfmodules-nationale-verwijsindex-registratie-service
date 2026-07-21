@@ -77,13 +77,10 @@ class OauthService:
             "grant_type": "client_credentials",
             "scope": scope,
             "target_audience": self._target_audience,
+            "organization_id": self._org_register_id,
         }
         if self._source_id:
             data["source_id"] = self._source_id
-        if len(self._org_register_id) > 8:
-            data["org_oin"] = self._org_register_id
-        else:
-            data["org_ura"] = self._org_register_id
 
         logger.debug(f"Requesting token with data: {data}")
         try:
