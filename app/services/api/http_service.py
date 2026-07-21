@@ -16,12 +16,14 @@ class HttpService(ABC):
         mtls_cert: str | None,
         mtls_key: str | None,
         verify_ca: str | bool,
+        extra_headers: dict[str, str] | None = None,
     ):
         self._endpoint = endpoint
         self._timeout = timeout
         self._mtls_cert = mtls_cert
         self._mtls_key = mtls_key
         self._verify_ca = verify_ca
+        self._extra_headers = extra_headers or {}
 
     @abstractmethod
     def server_healthy(self) -> bool: ...
@@ -46,11 +48,12 @@ class HttpService(ABC):
     ) -> Response:
         try:
             cert = (self._mtls_cert, self._mtls_key) if self._mtls_cert and self._mtls_key else None
+            request_headers = {**self._extra_headers, **(headers or {})}
             response = request(
                 method=method,
                 url=f"{self._endpoint}/{sub_route}" if sub_route else self._endpoint,
                 params=params,
-                headers=headers,
+                headers=request_headers,
                 json=json,
                 data=data,
                 timeout=self._timeout,

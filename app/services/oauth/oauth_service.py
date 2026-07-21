@@ -20,6 +20,7 @@ class OauthService:
         mtls_key: str | None = None,
         verify_ca: str | bool = True,
         source_id: str | None = None,
+        extra_headers: dict[str, str] | None = None,
     ):
         self._endpoint = endpoint
         self.mock = mock
@@ -29,6 +30,7 @@ class OauthService:
             mtls_cert=mtls_cert,
             mtls_key=mtls_key,
             verify_ca=verify_ca,
+            extra_headers=extra_headers,
         )
         self._org_register_id = org_register_id
         self._source_id = source_id
@@ -75,13 +77,10 @@ class OauthService:
             "grant_type": "client_credentials",
             "scope": scope,
             "target_audience": self._target_audience,
+            "organization_id": self._org_register_id,
         }
         if self._source_id:
             data["source_id"] = self._source_id
-        if len(self._org_register_id) > 8:
-            data["org_oin"] = self._org_register_id
-        else:
-            data["org_ura"] = self._org_register_id
 
         logger.debug(f"Requesting token with data: {data}")
         try:

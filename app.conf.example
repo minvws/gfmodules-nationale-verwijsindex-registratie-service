@@ -6,7 +6,6 @@ data_domains = ImagingStudy
 # Org and client, optional source_id needs to be registered in the beheer-apis
 org_registration_oin=00000099000000003000
 org_registration_ura=12345678
-client_oin=00000099000000002000
 source_id=software-identifier
 
 [scheduler]
@@ -54,6 +53,11 @@ extension_identifier=http://fhir.nl/fhir/NamingSystem/ura
 extension_url=http://minvws.github.io/generiekefuncties-docs/StructureDefinition/nl-gf-localization-custodian
 subject_system=http://minvws.github.io/generiekefuncties-docs/NamingSystem/nvi-identifier
 source_system=urn:ietf:rfc:3986
+
+# Headers sent verbatim on every outgoing request. Optional; omit the section entirely
+# [overwrite_headers]
+# user-agent=some-agent
+# other-header=some-value
 
 [uvicorn]
 # If true, the api docs will be enabled
