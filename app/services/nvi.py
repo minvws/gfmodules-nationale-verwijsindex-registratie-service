@@ -99,7 +99,7 @@ class NviService:
         self,
         subject: str,
     ) -> List[Referral]:
-        token = self._fetch_token(scope="nvi:localize")
+        token = self._fetch_token(scope="nvi:read")
         referrals = self._query_referrals(token, subject, self.source_id)
         logger.info("Fetched %d referrals: %s", len(referrals), referrals)
         return referrals
