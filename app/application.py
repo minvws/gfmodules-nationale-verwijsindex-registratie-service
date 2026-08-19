@@ -8,6 +8,7 @@ from starlette.responses import JSONResponse
 
 from app.config import get_config
 from app.container import get_scheduler, setup_container
+from app.correlation import CorrelationMiddleware
 from app.exceptions.fhir_exception import (
     OperationOutcome,
     OperationOutcomeDetail,
@@ -97,6 +98,9 @@ def setup_fastapi() -> FastAPI:
     ]
     for router in routers:
         fastapi.include_router(router)
+
+    if config.app.correlation_id_enabled:
+        fastapi.add_middleware(CorrelationMiddleware)
 
     fastapi.add_exception_handler(Exception, default_fhir_exception_handler)
 

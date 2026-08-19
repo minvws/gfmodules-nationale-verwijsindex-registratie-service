@@ -5,6 +5,8 @@ from typing import Any, Literal
 from requests import HTTPError, Response, request
 from requests.exceptions import ConnectionError, Timeout
 
+from app.correlation import correlation_headers, correlation_id_var
+
 logger = logging.getLogger(__name__)
 
 
@@ -48,10 +50,12 @@ class HttpService(ABC):
     ) -> Response:
         try:
             cert = (self._mtls_cert, self._mtls_key) if self._mtls_cert and self._mtls_key else None
-            request_headers = {**self._extra_headers, **(headers or {})}
+            url = f"{self._endpoint}/{sub_route}" if sub_route else self._endpoint
+            request_headers = {**self._extra_headers, **(headers or {}), **correlation_headers()}
+            logger.info("%s %s correlation_id=%s", method, url, correlation_id_var.get())
             response = request(
                 method=method,
-                url=f"{self._endpoint}/{sub_route}" if sub_route else self._endpoint,
+                url=url,
                 params=params,
                 headers=request_headers,
                 json=json,
