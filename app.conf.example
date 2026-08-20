@@ -7,6 +7,9 @@ data_domains = ImagingStudy
 org_registration_oin=00000099000000003000
 org_registration_ura=12345678
 source_id=software-identifier
+# Bind an X-GF-Correlation-ID per request and forward it on every outbound call,
+# so a single request can be traced across services.
+correlation_id_enabled=False
 
 [scheduler]
 # the amount of seconds the update will run in the background
