@@ -1,7 +1,6 @@
 import requests
 
 from test_flow.OPRF import OPRF
-from test_flow.JWT import JWTBuilder
 from test_flow.OAuth import OAuth
 from test_flow.data import (
     MTLS_CERT_PATH,
@@ -9,8 +8,6 @@ from test_flow.data import (
     NVI_URA_NUMBER,
     OAUTH_ENDPOINT,
     PRS_ENDPOINT,
-    SINGING_CERT_PATH,
-    SINGING_KEY_PATH,
     VERIFY_CA_PATH,
 )
 

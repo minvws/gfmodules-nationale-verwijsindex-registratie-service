@@ -6,9 +6,6 @@ MTLS_CERT_PATH = "/path/to/my-ldn-chain.crt"
 MTLS_KEY_PATH = "/path/to/my-ldn.key"
 # VERIFY_CA_PATH = "/path/to/ca.pem"
 VERIFY_CA_PATH = True
-SINGING_CERT_PATH = "/path/to/my-uzi-chain.crt"
-SINGING_KEY_PATH = "/path/to/my-uzi.key"
-
 
 # Demo constants
 NVI_URA_NUMBER = "90000901"
