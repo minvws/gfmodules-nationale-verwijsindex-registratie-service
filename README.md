@@ -29,30 +29,24 @@ In order for the application to run properly, a few external components needs to
 
 The NVI-RS connects to the [NVI](https://github.com/minvws/gfmodules-national-referral-index) to register the referrals. Depending on the environment of the 'Registratie service' it needs to connect to either a hosted (eq. production or test) NVI or a local NVI.
 
-The connection to the NVI **MUST** be established with an UZI Server Certificate. See section [Connecting with an UZI Server Certificate](#connecting-with-an-uzi-server-certificate) on how to obtain such a certificate.
+The connection to the NVI **MUST** be established with a PKIoverheid Server Certificate. See section [Connecting with a PKIoverheid Server Certificate](#connecting-with-a-pkioverheid-server-certificate) on how to obtain such a certificate.
 
-On bootstrap, the app will look for the URA number associated with the certificate, then it will start. An Example of the full
+On bootstrap, the app will look for the OIN number associated with the certificate, then it will start. An example of the full
 setup with mock certificates script can be found in [gfmodules-coordination-repo](https://github.com/minvws/gfmodules-coordination),
 where a certificates generation [script](https://github.com/minvws/gfmodules-coordination/blob/main/tools/generate_certs.sh) will allocate certificates accordingly.
 
 You can find related configuration properties for NVI in the [app.conf.example file](app.conf.example) in the `[referral_api]` section.
 
 > [!IMPORTANT]
-> It is important to note that the URA number in the certificate needs to match the FHIR Store which the application
+> It is important to note that the OIN number in the certificate needs to match the FHIR Store which the application
 > is pulling data from and register in the NVI.
 
 ### Pseudoniemendienst
 
-The NVI-RS requires a [pseudonymization service](https://github.com/minvws/gfmodules-pseudoniemendienst) in order for it to work. The PRS is used to create safe and secure pseudonyms to communicate with the NVI and OTV.
+The NVI-RS requires a [pseudonymization service](https://github.com/minvws/gfmodules-pseudoniemendienst) in order for it to work. The PRS is used to create safe and secure pseudonyms to communicate with the NVI.
 You can find related configuration properties in the [app.conf.example file](app.conf.example) in the `[pseudonym_api]` section.
 
-The connection to the PRS **MUST** be established with an UZI Server Certificate. See section [Connecting with an UZI Server Certificate](#connecting-with-an-uzi-server-certificate) on how to obtain such a certificate.
-
-### OTV
-
-The NVI-RS also uses an permission service, also called the online-toestemmingsvoorziening-portaal (OTV). The OTV is used to check if Patients have given consent for sharing their registered referral with a certain organization. The NVI-RS is set up to use the [OTV-stub](https://github.com/minvws/gfmodules-online-toestemmingsvoorziening-portaal-stub). You can find related configuration properties in the [app.conf.example file](app.conf.example) in the `[otv_stub_api]` section.
-
-The GFmodules OTV-stub does not require mutual TLS authentication, but in order to create OTV-specific pseudonyms the URA number of the OTV needs to be known. For this either an UZI server certificate or an hardcoded URA needs to be present. See the `[otv_stub_certificate]` section in the [app.conf.example file](app.conf.example) for more information.
+The connection to the PRS **MUST** be established with a PKIoverheid Server Certificate. See section [Connecting with a PKIoverheid Server Certificate](#connecting-with-a-pkioverheid-server-certificate) on how to obtain such a certificate.
 
 ### FHIR Store
 
@@ -153,11 +147,13 @@ When enabled, the application will run a background job at intervals specified b
 
 See the [interface-definitions](#interface-and-specifications-definitions) for more information on the API endpoints available to start or stop synchronization manually.
 
-## Connecting with an UZI Server Certificate
+## Connecting with a PKIoverheid Server Certificate
 
-Some services that the application connects to, such as the NVI and PRS, require mutual TLS authentication using [UZI Server Certificates](https://www.uziregister.nl/softwareleveranciers/testmiddelen-en-testomgeving). To establish a secure connection, you must obtain an UZI Server Certificate from the UZI Register.
+Some services that the application connects to, such as the NVI and PRS, require mutual TLS authentication using PKIoverheid Server Certificates. To establish a secure connection, you must obtain a valid PKIoverheid client certificate.
 
-To request a test set with UZI server certificates see section [Testset met servercertificaat](https://www.uziregister.nl/documenten/2019/07/12/testset-met-servercertificaat).
+For more information about PKIoverheid certificates, refer to the [Logius website](https://www.logius.nl/onze-dienstverlening/toegang/pkioverheid).
+
+For testing purposes, certificate requests can be made through organizations listed in the [g4-trial repository](https://github.com/pkioverheid/g4-trial).
 
 ## Supported data domains
 
