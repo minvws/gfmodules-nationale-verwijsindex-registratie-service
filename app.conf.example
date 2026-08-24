@@ -47,9 +47,9 @@ prs_endpoint=https://prs-oauth
 nvi_audience=https://nvi
 prs_audience=https://prs
 timeout=10
-mtls_cert=secrets/dummy-uzi.crt
-mtls_key=secrets/dummy-uzi.key
-verify_ca=secrets/uzi-server-ca.crt
+mtls_cert=secrets/dummy-oin.crt
+mtls_key=secrets/dummy-oin.key
+verify_ca=secrets/oin-server-ca.crt
 
 [nvi_fhir_systems]
 extension_identifier=http://fhir.nl/fhir/NamingSystem/ura

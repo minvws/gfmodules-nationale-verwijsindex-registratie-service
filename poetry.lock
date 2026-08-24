@@ -1508,25 +1508,6 @@ dev = ["pre-commit", "tox"]
 testing = ["coverage", "pytest", "pytest-benchmark"]
 
 [[package]]
-name = "puzi"
-version = "0.1.0"
-description = "Python 3 UZI card reader lib"
-optional = false
-python-versions = ">=3.6"
-groups = ["main"]
-files = []
-develop = false
-
-[package.dependencies]
-cryptography = ">=3.1"
-
-[package.source]
-type = "git"
-url = "https://github.com/minvws/puzi-python"
-reference = "HEAD"
-resolved_reference = "bd9858d557f8892a252c7e6f277616828d6197d5"
-
-[[package]]
 name = "py-serializable"
 version = "2.1.0"
 description = "Library for serializing and deserializing Python Objects to and from JSON and XML."
@@ -2650,4 +2631,4 @@ all = ["winrt-Windows.Foundation.Collections[all] (>=3.2.1.0,<3.3.0.0)", "winrt-
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.11"
-content-hash = "0705350a623df806b68c30375ac4de000551b8fa1bf471164d5d3745cbbb3b07"
+content-hash = "6bc1f29b5db122889e1d4bc2e8e2beb7eb3d551ffb8bf7a717769c76efa1d08b"

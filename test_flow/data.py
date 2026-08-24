@@ -2,13 +2,10 @@
 PRS_ENDPOINT = "https://pseudoniemendienst.proeftuin.gf.irealisatie.nl"
 OAUTH_ENDPOINT = "https://oauth.proeftuin.gf.irealisatie.nl"
 NVI_ENDPOINT = "https://nvi.proeftuin.gf.irealisatie.nl"
-MTLS_CERT_PATH = "/path/to/my-ldn-chain.crt"
-MTLS_KEY_PATH = "/path/to/my-ldn.key"
+MTLS_CERT_PATH = "/path/to/my-oin-cert-with-chain.crt"
+MTLS_KEY_PATH = "/path/to/my-oin.key"
 # VERIFY_CA_PATH = "/path/to/ca.pem"
 VERIFY_CA_PATH = True
-SINGING_CERT_PATH = "/path/to/my-uzi-chain.crt"
-SINGING_KEY_PATH = "/path/to/my-uzi.key"
-
 
 # Demo constants
 NVI_URA_NUMBER = "90000901"

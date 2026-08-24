@@ -1,14 +1,11 @@
 from urllib.parse import urlencode
 import requests
 
-from test_flow.JWT import JWTBuilder
 from test_flow.data import (
     MTLS_CERT_PATH,
     MTLS_KEY_PATH,
     OAUTH_ENDPOINT,
     PRS_ENDPOINT,
-    SINGING_CERT_PATH,
-    SINGING_KEY_PATH,
     VERIFY_CA_PATH,
 )
 

@@ -29,14 +29,11 @@ from test_flow.data import (
     NVI_URA_NUMBER,
     OAUTH_ENDPOINT,
     PRS_ENDPOINT,
-    SINGING_CERT_PATH,
-    SINGING_KEY_PATH,
     SUBJECT_IDENTIFIER_SYSTEM,
     TO_BE_REGISTERED_BSN,
     TO_BE_REGISTERED_CARE_CONTEXT,
     VERIFY_CA_PATH,
 )
-from test_flow.JWT import JWTBuilder
 from test_flow.NVI import NVI
 from test_flow.NVIList import NVIList
 from test_flow.OAuth import OAuth
@@ -88,7 +85,7 @@ class DemoFlow:
     ) -> None:
         self.nvi = NVI(NVI_ENDPOINT, MTLS_CERT_PATH, MTLS_KEY_PATH, VERIFY_CA_PATH)
         self.nvi_list = NVIList(NVI_ENDPOINT, MTLS_CERT_PATH, MTLS_KEY_PATH, VERIFY_CA_PATH)
-        
+
         self.oauth = OAuth(OAUTH_ENDPOINT, MTLS_CERT_PATH, MTLS_KEY_PATH, VERIFY_CA_PATH)
         self.prs = PRS(PRS_ENDPOINT, MTLS_CERT_PATH, MTLS_KEY_PATH, VERIFY_CA_PATH)
 
