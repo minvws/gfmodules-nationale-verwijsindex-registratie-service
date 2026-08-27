@@ -73,6 +73,9 @@ def setup_logging() -> None:
         level=loglevel,
         datefmt="%m/%d/%Y %I:%M:%S %p",
     )
+    # inject logs every binding at DEBUG including full instance reprs,
+    # which would expose configuration secrets
+    logging.getLogger("inject").setLevel(logging.INFO)
 
 
 def setup_fastapi() -> FastAPI:
