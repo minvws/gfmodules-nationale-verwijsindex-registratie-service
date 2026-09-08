@@ -18,10 +18,11 @@ from test_flow.data import (
     KETENPARTIJ_URA_NUMBER,
     MTLS_CERT_PATH,
     MTLS_KEY_PATH,
-    NVI_ENDPOINT,
+    NVI_API_ENDPOINT,
+    NVI_OAUTH_ENDPOINT,
     NVI_URA_NUMBER,
-    OAUTH_ENDPOINT,
-    PRS_ENDPOINT,
+    PRS_API_ENDPOINT,
+    PRS_OAUTH_ENDPOINT,
     SUBJECT_IDENTIFIER_SYSTEM,
     TO_BE_REGISTERED_BSN,
     VERIFY_CA_PATH,
@@ -46,20 +47,30 @@ class DemoFlow:
     def __init__(
         self,
     ) -> None:
-        self.nvi_list = NVIList(NVI_ENDPOINT, MTLS_CERT_PATH, MTLS_KEY_PATH, VERIFY_CA_PATH)
+        self.nvi_list = NVIList(NVI_API_ENDPOINT, MTLS_CERT_PATH, MTLS_KEY_PATH, VERIFY_CA_PATH)
 
-        self.oauth = OAuth(OAUTH_ENDPOINT, MTLS_CERT_PATH, MTLS_KEY_PATH, VERIFY_CA_PATH)
-        self.prs = PRS(PRS_ENDPOINT, MTLS_CERT_PATH, MTLS_KEY_PATH, VERIFY_CA_PATH)
+        self.prs_oauth = OAuth(
+            endpoint=PRS_OAUTH_ENDPOINT,
+            mtls_cert=MTLS_CERT_PATH,
+            mtls_key=MTLS_KEY_PATH,
+            verify_ca=VERIFY_CA_PATH,
+            target_audience=PRS_API_ENDPOINT,
+        )
+        self.nvi_oauth = OAuth(
+            endpoint=NVI_OAUTH_ENDPOINT,
+            mtls_cert=MTLS_CERT_PATH,
+            mtls_key=MTLS_KEY_PATH,
+            verify_ca=VERIFY_CA_PATH,
+            target_audience=NVI_API_ENDPOINT,
+        )
+        self.prs = PRS(PRS_API_ENDPOINT, MTLS_CERT_PATH, MTLS_KEY_PATH, VERIFY_CA_PATH)
 
     def step_1_request_oprf_token(self, value=TO_BE_REGISTERED_BSN) -> tuple[str, str]:
         """
         Step 1: Request OPRF token at PRS.
         Returns blind_factor and oprf_jwe.
         """
-        bearer_token = self.oauth.get_bearer_token(
-            scope="prs:oprf",
-            target_audience=PRS_ENDPOINT
-        )
+        bearer_token = self.prs_oauth.get_bearer_token(scope="prs:oprf")
         blind_factor, blinded_input = OPRF.create_blinded_input(
             personal_identifier={
                 "landCode": "NL",
@@ -98,10 +109,7 @@ class DemoFlow:
             oprf_jwe=oprf_jwe,
             blind_factor=blind_factor,
         )
-        bearer_token = self.oauth.get_bearer_token(
-            scope="epd:write",
-            target_audience=NVI_ENDPOINT
-        )
+        bearer_token = self.nvi_oauth.get_bearer_token(scope="epd:write")
         body = {
             "resourceType": "List",
             "extension": [
@@ -154,10 +162,7 @@ class DemoFlow:
         """
         Step 3: Get a FHIR List entry by ID.
         """
-        bearer_token = self.oauth.get_bearer_token(
-            scope="epd:read",
-            target_audience=NVI_ENDPOINT
-        )
+        bearer_token = self.nvi_oauth.get_bearer_token(scope="epd:read")
         return self.nvi_list.get_by_id(list_id=list_id, bearer_token=bearer_token)
 
     def step_4_query_list_entries(
@@ -173,10 +178,7 @@ class DemoFlow:
             oprf_jwe=oprf_jwe,
             blind_factor=blind_factor,
         )
-        bearer_token = self.oauth.get_bearer_token(
-            scope="epd:read",
-            target_audience=NVI_ENDPOINT
-        )
+        bearer_token = self.nvi_oauth.get_bearer_token(scope="epd:read")
         return self.nvi_list.query(
             bearer_token=bearer_token,
             subject_system=SUBJECT_IDENTIFIER_SYSTEM,
@@ -188,20 +190,14 @@ class DemoFlow:
         """
         Step 5: Delete a FHIR List entry by ID.
         """
-        bearer_token = self.oauth.get_bearer_token(
-            scope="epd:write",
-            target_audience=NVI_ENDPOINT
-        )
+        bearer_token = self.nvi_oauth.get_bearer_token(scope="epd:write")
         return self.nvi_list.delete_by_id(list_id=list_id, bearer_token=bearer_token)
 
     def step_6_list_transaction_bundle(self, subject_identifier: str, reference_id: str) -> Any:
         """
         Step 6: Execute a FHIR transaction bundle for List operations.
         """
-        bearer_token = self.oauth.get_bearer_token(
-            scope="epd:write",
-            target_audience=NVI_ENDPOINT
-        )
+        bearer_token = self.nvi_oauth.get_bearer_token(scope="epd:write")
         bundle = {
             "resourceType": "Bundle",
             "type": "transaction",

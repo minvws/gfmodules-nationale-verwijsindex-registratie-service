@@ -1,7 +1,10 @@
 # Connection constants
-PRS_ENDPOINT = "https://pseudoniemendienst.proeftuin.gf.irealisatie.nl"
-OAUTH_ENDPOINT = "https://oauth.proeftuin.gf.irealisatie.nl"
-NVI_ENDPOINT = "https://nvi.proeftuin.gf.irealisatie.nl"
+PRS_ENDPOINT = "https://pseudoniemendienst.proeftuin.gf.irealisatie.nl/v0.2"
+PRS_OAUTH_ENDPOINT = f"{PRS_ENDPOINT}/oauth"
+PRS_API_ENDPOINT = f"{PRS_ENDPOINT}/api"
+NVI_ENDPOINT = "https://nvi.proeftuin.gf.irealisatie.nl/v0.2"
+NVI_OAUTH_ENDPOINT = f"{NVI_ENDPOINT}/oauth"
+NVI_API_ENDPOINT = f"{NVI_ENDPOINT}/api"
 MTLS_CERT_PATH = "/path/to/my-oin-cert-with-chain.crt"
 MTLS_KEY_PATH = "/path/to/my-oin.key"
 # VERIFY_CA_PATH = "/path/to/ca.pem"

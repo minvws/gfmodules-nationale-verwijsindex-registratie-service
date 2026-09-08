@@ -1,15 +1,15 @@
 import requests
 
-from test_flow.OPRF import OPRF
-from test_flow.OAuth import OAuth
 from test_flow.data import (
     MTLS_CERT_PATH,
     MTLS_KEY_PATH,
     NVI_URA_NUMBER,
-    OAUTH_ENDPOINT,
-    PRS_ENDPOINT,
+    PRS_API_ENDPOINT,
+    PRS_OAUTH_ENDPOINT,
     VERIFY_CA_PATH,
 )
+from test_flow.OAuth import OAuth
+from test_flow.OPRF import OPRF
 
 
 class PRS:
@@ -42,19 +42,20 @@ class PRS:
 
 if __name__ == "__main__":
     oauth_service = OAuth(
-        endpoint=OAUTH_ENDPOINT,
+        endpoint=PRS_OAUTH_ENDPOINT,
         mtls_cert=MTLS_CERT_PATH,
         mtls_key=MTLS_KEY_PATH,
         verify_ca=VERIFY_CA_PATH,
+        target_audience=PRS_API_ENDPOINT,
     )
     prs_service = PRS(
-        endpoint=PRS_ENDPOINT,
+        endpoint=PRS_API_ENDPOINT,
         mtls_cert=MTLS_CERT_PATH,
         mtls_key=MTLS_KEY_PATH,
         verify_ca=VERIFY_CA_PATH,
     )
 
-    token = oauth_service.get_bearer_token(scope="prs:oprf", target_audience=PRS_ENDPOINT)
+    token = oauth_service.get_bearer_token(scope="prs:oprf")
     recepient_org = f"ura:{NVI_URA_NUMBER}"
     _, blinded_input = OPRF.create_blinded_input(
         personal_identifier={
