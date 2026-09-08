@@ -10,13 +10,11 @@ class NVIList:
         mtls_cert: str,
         mtls_key: str,
         verify_ca: str | bool,
-        url_prefix: str = "/v1-poc",
     ) -> None:
         self.endpoint = endpoint.rstrip("/")
         self._mtls_cert = mtls_cert
         self._mtls_key = mtls_key
         self._verify_ca = verify_ca
-        self._url_prefix = url_prefix.rstrip("/")
 
     @staticmethod
     def _identifier_value(system: str, value: str) -> str:
@@ -33,7 +31,7 @@ class NVIList:
         Create a new FHIR List entry.
         """
         response = requests.post(
-            f"{self.endpoint}{self._url_prefix}/fhir/List",
+            f"{self.endpoint}/fhir/List",
             json=body,
             headers=self._headers(bearer_token, include_content_type=True),
             cert=(self._mtls_cert, self._mtls_key),
@@ -48,7 +46,7 @@ class NVIList:
         Get a specific FHIR List entry by its ID.
         """
         response = requests.get(
-            f"{self.endpoint}{self._url_prefix}/fhir/List/{list_id}",
+            f"{self.endpoint}/fhir/List/{list_id}",
             headers=self._headers(bearer_token),
             cert=(self._mtls_cert, self._mtls_key),
             verify=self._verify_ca,
@@ -79,10 +77,10 @@ class NVIList:
         if extra_params:
             params.update(extra_params)
         print("PARAMS:")
-        print(f"{self.endpoint}{self._url_prefix}/fhir/List")
+        print(f"{self.endpoint}/fhir/List")
         print(params)
         response = requests.get(
-            f"{self.endpoint}{self._url_prefix}/fhir/List",
+            f"{self.endpoint}/fhir/List",
             params=params,
             headers=self._headers(bearer_token),
             cert=(self._mtls_cert, self._mtls_key),
@@ -115,7 +113,7 @@ class NVIList:
             params.update(extra_params)
 
         response = requests.delete(
-            f"{self.endpoint}{self._url_prefix}/fhir/List",
+            f"{self.endpoint}/fhir/List",
             params=params,
             headers=self._headers(bearer_token),
             cert=(self._mtls_cert, self._mtls_key),
@@ -129,7 +127,7 @@ class NVIList:
         Delete a specific FHIR List entry by ID.
         """
         response = requests.delete(
-            f"{self.endpoint}{self._url_prefix}/fhir/List/{list_id}",
+            f"{self.endpoint}/fhir/List/{list_id}",
             headers=self._headers(bearer_token),
             cert=(self._mtls_cert, self._mtls_key),
             verify=self._verify_ca,
@@ -142,7 +140,7 @@ class NVIList:
         Execute a FHIR transaction bundle against the NVI FHIR endpoint.
         """
         response = requests.post(
-            f"{self.endpoint}{self._url_prefix}/fhir",
+            f"{self.endpoint}/fhir",
             json=bundle,
             headers=self._headers(bearer_token, include_content_type=True),
             cert=(self._mtls_cert, self._mtls_key),

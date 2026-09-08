@@ -1,7 +1,6 @@
 from test_flow.data import (
     CODE_CODING_SYSTEM,
     KETENPARTIJ_URA_NUMBER,
-    NVI_ENDPOINT,
     SOURCE_IDENTIFIER_SYSTEM,
     SUBJECT_IDENTIFIER_SYSTEM,
 )
@@ -10,7 +9,7 @@ from test_flow.OAuth import OAuth
 
 
 def create_list(
-    oauth_service: OAuth,
+    nvi_oauth_service: OAuth,
     nvi_list_service: NVIList,
     source: str,
     subject: str,
@@ -64,7 +63,7 @@ def create_list(
         },
     }
 
-    nvi_token = oauth_service.get_bearer_token(scope="epd:write", target_audience=NVI_ENDPOINT)
+    nvi_token = nvi_oauth_service.get_bearer_token(scope="epd:write")
     created = nvi_list_service.create(body=body, bearer_token=nvi_token)
     print("Created list entry:")
     print(created)

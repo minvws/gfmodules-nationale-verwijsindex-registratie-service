@@ -1,10 +1,10 @@
-from test_flow.data import NVI_ENDPOINT, SOURCE_IDENTIFIER_SYSTEM, SUBJECT_IDENTIFIER_SYSTEM
+from test_flow.data import SOURCE_IDENTIFIER_SYSTEM, SUBJECT_IDENTIFIER_SYSTEM
 from test_flow.NVIList import NVIList
 from test_flow.OAuth import OAuth
 
 
 def bundle_list_transaction(
-    oauth_service: OAuth,
+    nvi_oauth_service: OAuth,
     nvi_list_service: NVIList,
     ura_number: str,
     subject: str,
@@ -87,7 +87,7 @@ def bundle_list_transaction(
             },
         ],
     }
-    nvi_token = oauth_service.get_bearer_token(scope="epd:write", target_audience=NVI_ENDPOINT)
+    nvi_token = nvi_oauth_service.get_bearer_token(scope="epd:write")
     result = nvi_list_service.transaction(bundle=bundle, bearer_token=nvi_token)
     print("Transaction result:")
     print(result)
