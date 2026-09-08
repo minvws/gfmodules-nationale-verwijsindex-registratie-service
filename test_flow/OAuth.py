@@ -59,12 +59,7 @@ if __name__ == "__main__":
 
     # retrieving Token for Pseudoniemendienst
     bearer_token = oauth_service.get_bearer_token(
-        scope="prs:read", target_audience=PRS_ENDPOINT, with_jwt=True
+        scope="prs:oprf", target_audience=PRS_ENDPOINT
     )
 
     print("here is the token:", bearer_token)
-
-    bearer_token_with_jwt = oauth_service.get_bearer_token(
-        scope="prs:read", target_audience=PRS_ENDPOINT, with_jwt=True
-    )
-    print("here is the token with client assertion:", bearer_token_with_jwt)

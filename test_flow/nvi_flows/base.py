@@ -187,7 +187,7 @@ def optional_bsn_to_subject(oauth_service: OAuth, prs_service: PRS, bsn: str | N
 
 
 def bsn_to_subject(oauth_service: OAuth, prs_service: PRS, bsn: str) -> str:
-    prs_token = oauth_service.get_bearer_token(scope="prs:read", target_audience=PRS_ENDPOINT, with_jwt=True)
+    prs_token = oauth_service.get_bearer_token(scope="prs:oprf", target_audience=PRS_ENDPOINT)
     blind_factor, blinded_input = OPRF.create_blinded_input(
         personal_identifier={
             "landCode": "NL",

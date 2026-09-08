@@ -31,12 +31,12 @@ def delete(
             recipient_organization=recepient_org,
             recipient_scope=recipient_scope,
         )
-        prs_token = oauth_service.get_bearer_token(scope="prs:read", target_audience=PRS_ENDPOINT, with_jwt=True)
+        prs_token = oauth_service.get_bearer_token(scope="prs:oprf", target_audience=PRS_ENDPOINT)
         pseudonym_jwe = prs_service.evaluate_oprf(
             blinded_input=blinded_input, bearer_token=prs_token, recepient_org=recepient_org
         )
 
-    nvi_token = oauth_service.get_bearer_token(scope="epd:write", target_audience=NVI_ENDPOINT, with_jwt=True)
+    nvi_token = oauth_service.get_bearer_token(scope="epd:write", target_audience=NVI_ENDPOINT)
     resp = nvi_service.delete(
         ura_number=KETENPARTIJ_URA_NUMBER,
         bearer_token=nvi_token,

@@ -35,7 +35,7 @@ class PseudonymService:
     def evaluate(self, blinded_input: str, recipient_organization: str, recipient_scope: str) -> str:
         logger.info("Request OPRF JWE for organisation")
 
-        token = self._oauth_service.fetch_token(scope="prs:read")
+        token = self._oauth_service.fetch_token(scope="prs:oprf")
 
         contents = {
             "encryptedPersonalId": blinded_input,

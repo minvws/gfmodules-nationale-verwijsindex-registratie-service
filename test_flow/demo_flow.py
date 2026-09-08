@@ -95,9 +95,8 @@ class DemoFlow:
         Returns blind_factor and oprf_jwe.
         """
         bearer_token = self.oauth.get_bearer_token(
-            scope="prs:read",
-            target_audience=PRS_ENDPOINT,
-            with_jwt=True,
+            scope="prs:oprf",
+            target_audience=PRS_ENDPOINT
         )
         blind_factor, blinded_input = OPRF.create_blinded_input(
             personal_identifier={
@@ -122,8 +121,7 @@ class DemoFlow:
         """
         bearer_token = self.oauth.get_bearer_token(
             scope="epd:write",
-            target_audience=NVI_ENDPOINT,
-            with_jwt=True,
+            target_audience=NVI_ENDPOINT
         )
         response = self.nvi.register(
             ura_number=KETENPARTIJ_URA_NUMBER,
@@ -159,8 +157,7 @@ class DemoFlow:
         )
         bearer_token = self.oauth.get_bearer_token(
             scope="epd:write",
-            target_audience=NVI_ENDPOINT,
-            with_jwt=True,
+            target_audience=NVI_ENDPOINT
         )
         body = {
             "resourceType": "List",
@@ -216,8 +213,7 @@ class DemoFlow:
         """
         bearer_token = self.oauth.get_bearer_token(
             scope="epd:read",
-            target_audience=NVI_ENDPOINT,
-            with_jwt=True,
+            target_audience=NVI_ENDPOINT
         )
         return self.nvi_list.get_by_id(list_id=list_id, bearer_token=bearer_token)
 
@@ -236,8 +232,7 @@ class DemoFlow:
         )
         bearer_token = self.oauth.get_bearer_token(
             scope="epd:read",
-            target_audience=NVI_ENDPOINT,
-            with_jwt=True,
+            target_audience=NVI_ENDPOINT
         )
         return self.nvi_list.query(
             bearer_token=bearer_token,
@@ -252,8 +247,7 @@ class DemoFlow:
         """
         bearer_token = self.oauth.get_bearer_token(
             scope="epd:write",
-            target_audience=NVI_ENDPOINT,
-            with_jwt=True,
+            target_audience=NVI_ENDPOINT
         )
         return self.nvi_list.delete_by_id(list_id=list_id, bearer_token=bearer_token)
 
@@ -263,8 +257,7 @@ class DemoFlow:
         """
         bearer_token = self.oauth.get_bearer_token(
             scope="epd:write",
-            target_audience=NVI_ENDPOINT,
-            with_jwt=True,
+            target_audience=NVI_ENDPOINT
         )
         bundle = {
             "resourceType": "Bundle",

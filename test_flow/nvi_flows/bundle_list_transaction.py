@@ -87,7 +87,7 @@ def bundle_list_transaction(
             },
         ],
     }
-    nvi_token = oauth_service.get_bearer_token(scope="epd:write", target_audience=NVI_ENDPOINT, with_jwt=True)
+    nvi_token = oauth_service.get_bearer_token(scope="epd:write", target_audience=NVI_ENDPOINT)
     result = nvi_list_service.transaction(bundle=bundle, bearer_token=nvi_token)
     print("Transaction result:")
     print(result)

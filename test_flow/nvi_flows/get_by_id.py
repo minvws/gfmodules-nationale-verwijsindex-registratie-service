@@ -8,7 +8,7 @@ from test_flow.OAuth import OAuth
 @deprecated("Referrals API is going to be phased out")
 def get_by_id(oauth_service: OAuth, nvi_service: NVI, reference_id: str) -> None:
     print("Retrieving referral with ID:", reference_id)
-    nvi_token = oauth_service.get_bearer_token(scope="epd:read", target_audience=NVI_ENDPOINT, with_jwt=True)
+    nvi_token = oauth_service.get_bearer_token(scope="epd:read", target_audience=NVI_ENDPOINT)
     referral = nvi_service.get_by_id(
         reference_id=reference_id,
         bearer_token=nvi_token,
