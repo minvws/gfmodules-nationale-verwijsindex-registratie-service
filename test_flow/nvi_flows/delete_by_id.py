@@ -8,7 +8,7 @@ from test_flow.OAuth import OAuth
 @deprecated("Referrals API is going to be phased out")
 def delete_by_id(oauth_service: OAuth, nvi_service: NVI, reference_id: str) -> None:
     print("Deleting referral with ID:", reference_id)
-    nvi_token = oauth_service.get_bearer_token(scope="epd:write", target_audience=NVI_ENDPOINT, with_jwt=True)
+    nvi_token = oauth_service.get_bearer_token(scope="epd:write", target_audience=NVI_ENDPOINT)
     resp = nvi_service.delete_by_id(
         reference_id=reference_id,
         bearer_token=nvi_token,

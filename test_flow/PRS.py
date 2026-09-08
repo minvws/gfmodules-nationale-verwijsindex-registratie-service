@@ -54,7 +54,7 @@ if __name__ == "__main__":
         verify_ca=VERIFY_CA_PATH,
     )
 
-    token = oauth_service.get_bearer_token(scope="prs:read", target_audience=PRS_ENDPOINT)
+    token = oauth_service.get_bearer_token(scope="prs:oprf", target_audience=PRS_ENDPOINT)
     recepient_org = f"ura:{NVI_URA_NUMBER}"
     _, blinded_input = OPRF.create_blinded_input(
         personal_identifier={

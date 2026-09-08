@@ -12,7 +12,7 @@ def delete_list(
     code: str | None = None,
 ) -> None:
     print("Deleting FHIR List entries")
-    nvi_token = oauth_service.get_bearer_token(scope="epd:write", target_audience=NVI_ENDPOINT, with_jwt=True)
+    nvi_token = oauth_service.get_bearer_token(scope="epd:write", target_audience=NVI_ENDPOINT)
 
     if list_id:
         status = nvi_list_service.delete_by_id(list_id=list_id, bearer_token=nvi_token)

@@ -64,7 +64,7 @@ def create_list(
         },
     }
 
-    nvi_token = oauth_service.get_bearer_token(scope="epd:write", target_audience=NVI_ENDPOINT, with_jwt=True)
+    nvi_token = oauth_service.get_bearer_token(scope="epd:write", target_audience=NVI_ENDPOINT)
     created = nvi_list_service.create(body=body, bearer_token=nvi_token)
     print("Created list entry:")
     print(created)
