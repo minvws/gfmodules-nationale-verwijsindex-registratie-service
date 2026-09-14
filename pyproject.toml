@@ -9,7 +9,7 @@ readme = "README.md"
 packages = [{ include = "app" }]
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.14"
 uvicorn = ">=0.40,<0.53"
 fastapi = ">=0.138,<0.142"
 pydantic-settings = "^2.12.0"
@@ -45,7 +45,7 @@ line-length = 120
 
 [tool.mypy]
 files = "app,tests"
-python_version = "3.11"
+python_version = "3.14"
 strict = true
 cache_dir = "~/.cache/mypy"
 ignore_missing_imports = true

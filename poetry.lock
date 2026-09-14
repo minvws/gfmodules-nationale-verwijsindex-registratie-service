@@ -38,7 +38,6 @@ files = [
 
 [package.dependencies]
 idna = ">=2.8"
-typing_extensions = {version = ">=4.5", markers = "python_version < \"3.13\""}
 
 [package.extras]
 trio = ["trio (>=0.32.0)"]
@@ -147,7 +146,6 @@ dbus-fast = {version = ">=1.83.0", markers = "sys_platform == \"linux\""}
 pyobjc-core = {version = ">=10.3", markers = "sys_platform == \"darwin\""}
 pyobjc-framework-corebluetooth = {version = ">=10.3", markers = "sys_platform == \"darwin\""}
 pyobjc-framework-libdispatch = {version = ">=10.3", markers = "sys_platform == \"darwin\""}
-typing-extensions = {version = ">=4.7.0", markers = "python_full_version < \"3.12.0\""}
 winrt-runtime = {version = ">=3.1", markers = "sys_platform == \"win32\""}
 winrt-windows-devices-bluetooth = {version = ">=3.1", markers = "sys_platform == \"win32\""}
 winrt-windows-devices-bluetooth-advertisement = {version = ">=3.1", markers = "sys_platform == \"win32\""}
@@ -705,7 +703,6 @@ license-expression = ">=30,<31"
 packageurl-python = ">=0.11,<2"
 py-serializable = ">=2.1.0,<3.0.0"
 sortedcontainers = ">=2.4.0,<3.0.0"
-typing_extensions = {version = ">=4.6,<5.0", markers = "python_version < \"3.13\""}
 
 [package.extras]
 json-validation = ["jsonschema[format-nongpl] (>=4.25,<5.0)", "referencing (>=0.28.4)"]
@@ -2149,7 +2146,6 @@ files = [
 
 [package.dependencies]
 anyio = ">=3.6.2,<5"
-typing-extensions = {version = ">=4.10.0", markers = "python_version < \"3.13\""}
 
 [package.extras]
 full = ["httpx (>=0.27.0,<0.29.0)", "httpx2 (>=2.0.0)", "itsdangerous", "jinja2", "python-multipart (>=0.0.18)", "pyyaml"]
@@ -2638,5 +2634,5 @@ all = ["winrt-Windows.Foundation.Collections[all] (>=3.2.1.0,<3.3.0.0)", "winrt-
 
 [metadata]
 lock-version = "2.1"
-python-versions = "^3.11"
-content-hash = "7bbd97eedbb8f9149418b4301391edd9e612897d9e8283109b83da56d19948cc"
+python-versions = "^3.14"
+content-hash = "31719b60c336b95b507f433eded091101bb3be462340567ee5737a14a415fa9a"
