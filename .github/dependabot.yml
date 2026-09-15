@@ -14,6 +14,8 @@ updates:
     commit-message:
       prefix: "deps(actions)"
     open-pull-requests-limit: 5
+    cooldown:
+      default-days: 5
     groups:
       actions: # action-bumps are one PR/week (low risk, large volume)
         patterns: ["actions/*"]
@@ -49,6 +51,8 @@ updates:
     commit-message:
       prefix: "deps(docker)"
     open-pull-requests-limit: 5
+    cooldown:
+      default-days: 5
     groups:
       docker-patch-minor:
         update-types: [patch, minor] # Major versions not grouped, one PR per breaking change
