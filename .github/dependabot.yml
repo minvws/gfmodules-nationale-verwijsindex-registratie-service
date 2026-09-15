@@ -11,7 +11,6 @@ updates:
       time: "05:00"
       timezone: Europe/Amsterdam
     labels: [dependencies, github-actions]
-    # assignees: [mgm-sec]
     commit-message:
       prefix: "deps(actions)"
     open-pull-requests-limit: 5
@@ -26,7 +25,6 @@ updates:
       time: "05:15"
       timezone: Europe/Amsterdam
     labels: [dependencies, python]
-    # assignees: [mgm-sec]
     commit-message:
       prefix: "deps(python)"
       include: scope
@@ -47,7 +45,6 @@ updates:
       time: "05:30"
       timezone: Europe/Amsterdam
     labels: [dependencies, docker]
-    # assignees: [mgm-sec]
     commit-message:
       prefix: "deps(docker)"
     open-pull-requests-limit: 5
