@@ -17,7 +17,6 @@ updates:
     open-pull-requests-limit: 5
     groups:
       actions: # action-bumps are one PR/week (low risk, large volume)
-        patterns: ["*"]
 
   - package-ecosystem: pip
     directory: / # Scans pyproject.toml + poetry.lock
@@ -39,7 +38,6 @@ updates:
     groups:
       python-patch-minor:
         update-types: [patch, minor] # Major versions not grouped, one PR per breaking change
-        patterns: ["*"]
 
   - package-ecosystem: docker
     directories: ["/", "/docker"]
@@ -56,4 +54,3 @@ updates:
     groups:
       docker-patch-minor:
         update-types: [patch, minor] # Major versions not grouped, one PR per breaking change
-        patterns: ["*"]
