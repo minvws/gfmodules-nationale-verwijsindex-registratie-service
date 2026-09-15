@@ -16,6 +16,7 @@ updates:
     open-pull-requests-limit: 5
     groups:
       actions: # action-bumps are one PR/week (low risk, large volume)
+        patterns: ["actions/*"]
 
   - package-ecosystem: pip
     directory: / # Scans pyproject.toml + poetry.lock
