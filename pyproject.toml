@@ -18,7 +18,6 @@ requests = "^2.32.5"
 fhir-resources = "8.3.0"
 cryptography = ">=50.0.0,<51.0.0"
 pyoprf = "^0.9.3"
-pyjwt = "^2.11.0"
 fhir-core = "=1.1.10"
 rfc8785 = "^0.1.4"
 
