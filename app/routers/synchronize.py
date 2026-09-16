@@ -1,5 +1,4 @@
 from textwrap import dedent
-from typing import Dict, List
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 
@@ -12,7 +11,7 @@ router = APIRouter(prefix="/synchronize", tags=["Synchronizer"])
 
 @router.post(
     "",
-    response_model=Dict[str, List[UpdateScheme]],
+    response_model=dict[str, list[UpdateScheme]],
     summary="Synchronize Data Domain",
     description=dedent(
         """
@@ -94,7 +93,7 @@ def synchronize_domain(
         example="ImagingStudy",
     ),
     service: Synchronizer = Depends(get_synchronizer),
-) -> Dict[str, List[UpdateScheme]]:
+) -> dict[str, list[UpdateScheme]]:
     if data_domain is not None:
         allowed_domains = service.get_allowed_domains()
         if data_domain not in allowed_domains:

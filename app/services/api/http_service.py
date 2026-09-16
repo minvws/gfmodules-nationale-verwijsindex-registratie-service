@@ -34,7 +34,7 @@ class HttpService(ABC):
         try:
             response = self.do_request(method="GET", sub_route=sub_route)
             response.raise_for_status()
-        except Exception as e:
+        except (ConnectionError, Timeout, HTTPError) as e:
             logger.error(e)
             return False
         return True
@@ -67,10 +67,10 @@ class HttpService(ABC):
             return response
         except (ConnectionError, Timeout) as e:
             logger.error(f"Request failed: {e}")
-            raise e
+            raise
         except HTTPError as e:
             logger.error(f"HTTP error occurred: {e}")
-            raise e
+            raise
 
 
 class GfHttpService(HttpService):

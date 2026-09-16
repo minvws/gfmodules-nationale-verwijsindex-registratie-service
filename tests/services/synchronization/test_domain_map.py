@@ -1,6 +1,5 @@
 import copy
-from datetime import datetime
-from typing import List
+from datetime import UTC, datetime
 
 import pytest
 
@@ -8,7 +7,7 @@ from app.models.domains_map import DomainMapEntry
 from app.services.synchronization.domain_map import DomainsMapService
 
 
-def test_get_domains_should_return_a_list(domains_map_service: DomainsMapService, data_domains: List[str]) -> None:
+def test_get_domains_should_return_a_list(domains_map_service: DomainsMapService, data_domains: list[str]) -> None:
     expected = data_domains
     actual = domains_map_service.get_domains()
 
@@ -17,7 +16,7 @@ def test_get_domains_should_return_a_list(domains_map_service: DomainsMapService
 
 
 def test_get_entry_should_return_an_entry_when_given_correct_domain(
-    domains_map_service: DomainsMapService, data_domains: List[str]
+    domains_map_service: DomainsMapService, data_domains: list[str]
 ) -> None:
     for domain in data_domains:
         entry = domains_map_service.get_entry(domain)
@@ -32,12 +31,12 @@ def test_get_entry_should_raise_exception_when_given_unknown_data_domain(
         domains_map_service.get_entry("SomeDomain")
 
 
-def test_clear_entry_timestamp_should_succeed(domains_map_service: DomainsMapService, data_domains: List[str]) -> None:
+def test_clear_entry_timestamp_should_succeed(domains_map_service: DomainsMapService, data_domains: list[str]) -> None:
     for data_domain in data_domains:
         actual_entry = copy.deepcopy(domains_map_service.get_entry(data_domain))
 
         entry = domains_map_service.get_entry(data_domain)
-        entry.last_resource_update = datetime.now().isoformat()
+        entry.last_resource_update = datetime.now(UTC).isoformat()
         assert entry.last_resource_update is not None
 
         domains_map_service.clear_entry_timestamp(data_domain)
@@ -54,11 +53,11 @@ def test_clear_entry_timestamp_should_raise_exception_when_given_unknown_data_do
 
 
 def test_clear_all_entries_timestamps_should_succeed(
-    domains_map_service: DomainsMapService, data_domains: List[str]
+    domains_map_service: DomainsMapService, data_domains: list[str]
 ) -> None:
     for data_domain in data_domains:
         entry = domains_map_service.get_entry(data_domain)
-        entry.last_resource_update = datetime.now().isoformat()
+        entry.last_resource_update = datetime.now(UTC).isoformat()
 
     domains_map_service.clear_all_entries_timestamp()
     for data_domain in data_domains:

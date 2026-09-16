@@ -1,4 +1,4 @@
-from typing import Any, Dict, List
+from typing import Any
 from uuid import UUID
 
 from app.models.referrals import Referral
@@ -17,7 +17,7 @@ class FhirMapper:
         self.subject_system = subject_system
         self.source_system = source_system
 
-    def from_fhir_bundle(self, bundle: Dict[str, Any]) -> List[Referral]:
+    def from_fhir_bundle(self, bundle: dict[str, Any]) -> list[Referral]:
         """
         Extracts relevant data from a FHIR bundle with List resources
         """
@@ -29,7 +29,7 @@ class FhirMapper:
                 referrals.append(referral)
         return referrals
 
-    def from_list_resource(self, resource: Dict[str, Any]) -> Referral:
+    def from_list_resource(self, resource: dict[str, Any]) -> Referral:
         """
         Extracts relevant data from a FHIR List resource
         """
@@ -48,7 +48,7 @@ class FhirMapper:
         ura_number: str,
         subject: str,
         source_id: str | None = None,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         resource = {
             "resourceType": "List",
             "extension": [

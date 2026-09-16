@@ -1,5 +1,3 @@
-from typing import List
-
 from pydantic import BaseModel
 
 from app.models.domains_map import DomainMapEntry
@@ -12,5 +10,5 @@ class BsnUpdateScheme(BaseModel):
 
 
 class UpdateScheme(BaseModel):
-    updated_data: List[BsnUpdateScheme]
+    updated_data: list[BsnUpdateScheme]
     domain_entry: DomainMapEntry

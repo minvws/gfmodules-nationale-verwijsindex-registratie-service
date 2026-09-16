@@ -1,6 +1,5 @@
 import logging
-from datetime import datetime
-from typing import Dict, List
+from datetime import UTC, datetime
 
 from app.data import (
     OutcomeResponseSeverity,
@@ -28,10 +27,10 @@ class Synchronizer:
         self._domain_map_service = domains_map_service
         self._last_run: str | None = None
 
-    def get_allowed_domains(self) -> List[str]:
+    def get_allowed_domains(self) -> list[str]:
         return self._domain_map_service.get_domains()
 
-    def _healthcheck_apis(self) -> Dict[str, bool]:
+    def _healthcheck_apis(self) -> dict[str, bool]:
         logger.info("Checking health of APIs")
         return {
             "nvi_api": self._registration_service.nvi_service.server_healthy(),
@@ -39,15 +38,15 @@ class Synchronizer:
             "metadata_api": self._metadata_api.server_healthy(),
         }
 
-    def synchronize_all_domains(self) -> Dict[str, List[UpdateScheme]]:
+    def synchronize_all_domains(self) -> dict[str, list[UpdateScheme]]:
         return {
             k: v
             for domain in self._domain_map_service.get_domains()
             for k, v in self.synchronize_domain(domain).items()
         }
 
-    def synchronize_domain(self, data_domain: str) -> Dict[str, List[UpdateScheme]]:
-        data: Dict[str, List[UpdateScheme]] = {f"{data_domain}": []}
+    def synchronize_domain(self, data_domain: str) -> dict[str, list[UpdateScheme]]:
+        data: dict[str, list[UpdateScheme]] = {f"{data_domain}": []}
         logger.info(f"Synchronizing: {data_domain}")
 
         entry = self._domain_map_service.get_entry(data_domain)
@@ -68,7 +67,7 @@ class Synchronizer:
                     msg=msg,
                 )
 
-        bsn_update_scheme: List[BsnUpdateScheme] = []
+        bsn_update_scheme: list[BsnUpdateScheme] = []
         updated_bsns, latest_timestamp = self._metadata_api.get_update_scheme(
             data_domain, domain_entry.last_resource_update
         )
@@ -79,15 +78,15 @@ class Synchronizer:
                 continue
 
             if latest_timestamp is not None and domain_entry.last_resource_update != latest_timestamp:
-                logging.info(
+                logger.info(
                     f"Updating timestamp for resource {data_domain} from {domain_entry.last_resource_update} to {latest_timestamp}"
                 )
                 domain_entry.last_resource_update = latest_timestamp
 
             bsn_update_scheme.append(BsnUpdateScheme(bsn=bsn, referral=new_referral))
 
-        self._last_run = datetime.now().isoformat()
-        logging.info(f"last run {self._last_run}")
+        self._last_run = datetime.now(UTC).isoformat()
+        logger.info(f"last run {self._last_run}")
         return UpdateScheme(updated_data=bsn_update_scheme, domain_entry=domain_entry)
 
     def clear_cache(self, data_domain: str | None = None) -> DomainsMap:

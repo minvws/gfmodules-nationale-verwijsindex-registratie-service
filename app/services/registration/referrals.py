@@ -1,7 +1,6 @@
-from base64 import urlsafe_b64encode
 import json
 import logging
-from typing import List
+from base64 import urlsafe_b64encode
 
 from fastapi.encoders import jsonable_encoder
 
@@ -77,11 +76,11 @@ class ReferralRegistrationService:
 
     ##################### TEST SECTION #####################
 
-    def localize(self, bsn: str) -> List[Referral]:
+    def localize(self, bsn: str) -> list[Referral]:
         subject = self.calculate_subject(bsn)
         return self.nvi_service.localize_referrals(subject=subject)
 
-    def query(self, bsn: str) -> List[Referral]:
+    def query(self, bsn: str) -> list[Referral]:
         subject = self.calculate_subject(bsn)
         return self.nvi_service.get_registered_referrals(
             subject=subject,

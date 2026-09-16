@@ -1,7 +1,6 @@
 import logging
 from urllib.parse import urlencode
 
-
 from app.models.token import AccessToken
 from app.services.api.http_service import GfHttpService
 

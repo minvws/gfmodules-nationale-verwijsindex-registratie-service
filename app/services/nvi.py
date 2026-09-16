@@ -1,6 +1,5 @@
 import logging
-from typing import Any, Dict, List
-
+from typing import Any
 
 from app.models.referrals import Referral
 from app.models.token import AccessToken
@@ -42,9 +41,9 @@ class NviService:
     def _access_nvi_api(
         self,
         token: AccessToken,
-        params: Dict[str, Any] | None = None,
-        data: Dict[str, Any] | None = None,
-    ) -> Dict[str, Any]:
+        params: dict[str, Any] | None = None,
+        data: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
         if params and data:
             raise ValueError("Cannot provide both params and data for the request.")
         try:
@@ -64,9 +63,9 @@ class NviService:
             logger.exception("Failed to access NVI API with params: %s and data: %s", params, data)
             raise
 
-    def _query_referrals(self, token: AccessToken, subject: str, source_id: str | None = None) -> List[Referral]:
+    def _query_referrals(self, token: AccessToken, subject: str, source_id: str | None = None) -> list[Referral]:
         try:
-            params: Dict[str, Any] = {"subject:identifier": f"{self.fhir_mapper.subject_system}|{subject}"}
+            params: dict[str, Any] = {"subject:identifier": f"{self.fhir_mapper.subject_system}|{subject}"}
             if source_id:
                 params["source:identifier"] = f"{self.fhir_mapper.source_system}|{source_id}"
             resp = self._access_nvi_api(
@@ -89,7 +88,7 @@ class NviService:
             logger.exception("Failed to fetch access token for scope: %s", scope)
             raise
 
-    def localize_referrals(self, subject: str) -> List[Referral]:
+    def localize_referrals(self, subject: str) -> list[Referral]:
         token = self._fetch_token(scope="nvi:localize")
         referrals = self._query_referrals(token, subject)
         logger.info("Localized %d referrals: %s", len(referrals), referrals)
@@ -98,7 +97,7 @@ class NviService:
     def get_registered_referrals(
         self,
         subject: str,
-    ) -> List[Referral]:
+    ) -> list[Referral]:
         token = self._fetch_token(scope="nvi:read")
         referrals = self._query_referrals(token, subject, self.source_id)
         logger.info("Fetched %d referrals: %s", len(referrals), referrals)

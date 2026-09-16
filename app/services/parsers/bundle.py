@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import List
 
 from fhir.resources.R4B.bundle import Bundle, BundleEntry
 from fhir.resources.R4B.domainresource import DomainResource
@@ -19,7 +18,7 @@ class BundleParser:
         if len(bundle.entry) == 0:
             return None
 
-        entries: List[BundleEntry] = bundle.entry
+        entries: list[BundleEntry] = bundle.entry
         update_timestamps = [BundleParser.get_timestamps(entry) for entry in entries if entry]
         filtered_update_timestamps = [ts for ts in update_timestamps if ts]
 
@@ -41,8 +40,8 @@ class BundleParser:
         return None
 
     @staticmethod
-    def get_patients(bundle: Bundle) -> List[Patient]:
-        patients: List[Patient] = []
+    def get_patients(bundle: Bundle) -> list[Patient]:
+        patients: list[Patient] = []
         if not bundle.entry:
             return []
 

@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -23,12 +23,12 @@ class MockHttpService(HttpService):
 
 
 @pytest.fixture
-def mock_body() -> Dict[str, Any]:
+def mock_body() -> dict[str, Any]:
     return {"some_key": "some_value"}
 
 
 @pytest.fixture
-def mock_params() -> Dict[str, Any]:
+def mock_params() -> dict[str, Any]:
     return {"param1": "value1", "param2": "value2"}
 
 
@@ -44,7 +44,7 @@ PATCHED_MODULE = "app.services.api.http_service.request"
 def test_do_request_should_succeed(
     mock_post: MagicMock,
     http_service: HttpService,
-    mock_body: Dict[str, Any],
+    mock_body: dict[str, Any],
 ) -> None:
     mock_request = MagicMock()
     mock_request.status_code = 200
@@ -62,8 +62,8 @@ def test_do_request_should_succeed(
 def test_do_request_should_succeed_with_query_params(
     mock_get: MagicMock,
     http_service: HttpService,
-    mock_params: Dict[str, Any],
-    mock_body: Dict[str, Any],
+    mock_params: dict[str, Any],
+    mock_body: dict[str, Any],
     mock_url: str,
 ) -> None:
     expected_url = f"{mock_url}?param1={mock_params['param1']}&param2={mock_params['param2']}"
@@ -131,7 +131,7 @@ def test_do_request_should_fail_on_connection_error(
 def do_request_should_fail_with_unkown_request_methods(
     http_service: HttpService,
 ) -> None:
-    with pytest.raises(Exception):
+    with pytest.raises(Exception, match=".*"):
         http_service.do_request("SOME-METHOD")  # type: ignore
 
 

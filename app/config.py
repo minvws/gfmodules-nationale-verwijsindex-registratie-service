@@ -1,7 +1,7 @@
 import configparser
 import os
 from enum import Enum
-from typing import Any, List
+from typing import Any
 
 from pydantic import BaseModel, Field, field_validator
 
@@ -20,7 +20,7 @@ class LogLevel(str, Enum):
 
 class ConfigApp(BaseModel):
     loglevel: LogLevel = Field(default=LogLevel.info)
-    data_domains: List[str] = Field(default=[])
+    data_domains: list[str] = Field(default=[])
     org_registration_ura: str = Field(default="")
     org_registration_oin: str = Field(default="")
     source_id: str = Field(default="")
@@ -28,7 +28,7 @@ class ConfigApp(BaseModel):
 
     @field_validator("data_domains", mode="before")
     @classmethod
-    def split_values(cls, value: object) -> List[str]:
+    def split_values(cls, value: object) -> list[str]:
         if isinstance(value, str):
             value = "".join(value.split())
             value_list = [] if value == "" else value.split(",")
@@ -148,7 +148,6 @@ def set_config(config: Config) -> None:
 
 def get_config(path: str | None = None) -> Config:
     global _CONFIG
-    global _PATH
 
     if _CONFIG is not None:
         return _CONFIG

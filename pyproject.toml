@@ -45,6 +45,9 @@ line-length = 120
 [tool.codespell]
 skip = "./publiccode.yml"
 
+[tool.ruff.lint.flake8-bugbear]
+extend-immutable-calls = ["fastapi.Depends", "fastapi.Body"]
+
 [tool.mypy]
 files = "app,tests"
 python_version = "3.14"

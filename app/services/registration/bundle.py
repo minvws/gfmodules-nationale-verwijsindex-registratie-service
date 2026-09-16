@@ -1,5 +1,3 @@
-from typing import Dict, List
-
 from fhir.resources.R4B.bundle import Bundle, BundleEntry, BundleEntryResponse
 from fhir.resources.R4B.domainresource import DomainResource
 from fhir.resources.R4B.patient import Patient
@@ -33,7 +31,7 @@ class BundleRegistrationService:
     def register(self, bundle: Bundle) -> Bundle:
         data = self.make_map_data(bundle)
 
-        responses: List[BundleEntryResponse] = []
+        responses: list[BundleEntryResponse] = []
         for res in data.values():
             # we skip patients in the map as we will handle them inside the register one
             if isinstance(res, Patient):
@@ -45,7 +43,7 @@ class BundleRegistrationService:
         results = BundleService.from_entry_response(responses)
         return results
 
-    def make_map_data(self, bundle: Bundle) -> Dict[str, DomainResource]:
+    def make_map_data(self, bundle: Bundle) -> dict[str, DomainResource]:
         if not bundle.entry:
             raise FHIRException(
                 status_code=OutcomeResponseStatusCode.BAD_REQUEST.value,
@@ -54,7 +52,7 @@ class BundleRegistrationService:
                 msg="Invalid bundle without entries",
             )
 
-        resources: List[DomainResource] = []
+        resources: list[DomainResource] = []
         for entry in bundle.entry:
             if not isinstance(entry, BundleEntry):
                 continue
@@ -69,7 +67,7 @@ class BundleRegistrationService:
 
         return data_map
 
-    def _register_one(self, res: DomainResource, data: Dict[str, DomainResource]) -> BundleEntryResponse:
+    def _register_one(self, res: DomainResource, data: dict[str, DomainResource]) -> BundleEntryResponse:
         # no reference for a patient
         reference = ReferenceParser.get_patient_reference(res)
         if reference is None:

@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Any, Dict, List
+from typing import Any
 
 import pytest
 from fhir.resources.R4B.allergyintolerance import AllergyIntolerance
@@ -38,7 +38,7 @@ from app.services.parsers.bundle import BundleParser
 
 
 @pytest.fixture
-def mock_bundle_without_entries() -> Dict[str, Any]:
+def mock_bundle_without_entries() -> dict[str, Any]:
     return {
         "resourceType": "Bundle",
         "type": "searchset",
@@ -47,7 +47,7 @@ def mock_bundle_without_entries() -> Dict[str, Any]:
 
 
 @pytest.fixture
-def bundle_without_entries(mock_bundle_without_entries: Dict[str, Any]) -> Bundle:
+def bundle_without_entries(mock_bundle_without_entries: dict[str, Any]) -> Bundle:
     return Bundle.model_validate(mock_bundle_without_entries)
 
 
@@ -96,7 +96,7 @@ def test_get_patients_should_succeed(regular_bundle: Bundle, patient: Patient) -
 def test_get_patients_should_return_empty_list_when_no_entries_in_bundle(
     bundle_without_entries: Bundle,
 ) -> None:
-    expected: List[Patient] = []
+    expected: list[Patient] = []
 
     actual = BundleParser.get_patients(bundle_without_entries)
 

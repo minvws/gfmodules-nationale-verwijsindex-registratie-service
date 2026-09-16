@@ -1,5 +1,5 @@
 from datetime import datetime, timezone
-from typing import Any, Dict, List
+from typing import Any
 from uuid import UUID
 
 import pytest
@@ -69,12 +69,12 @@ def mock_nvi_ura_number() -> str:
 
 
 @pytest.fixture
-def data_domains() -> List[str]:
+def data_domains() -> list[str]:
     return ["ImagingStudy", "MedicationStatement"]
 
 
 @pytest.fixture
-def domains_map_service(data_domains: List[str]) -> DomainsMapService:
+def domains_map_service(data_domains: list[str]) -> DomainsMapService:
     return DomainsMapService(data_domains)
 
 
@@ -211,7 +211,7 @@ def bsn_update_scheme(mock_bsn_number: str, mock_referral: Referral) -> BsnUpdat
 
 
 @pytest.fixture
-def mock_imaging_study(datetime_past: str) -> Dict[str, Any]:
+def mock_imaging_study(datetime_past: str) -> dict[str, Any]:
     return {
         "resourceType": "ImagingStudy",
         "id": "example-imagingstudy",
@@ -254,12 +254,12 @@ def mock_imaging_study(datetime_past: str) -> Dict[str, Any]:
 
 
 @pytest.fixture
-def imaging_study(mock_imaging_study: Dict[str, Any]) -> ImagingStudy:
+def imaging_study(mock_imaging_study: dict[str, Any]) -> ImagingStudy:
     return ImagingStudy.model_validate(mock_imaging_study)
 
 
 @pytest.fixture
-def mock_patient(mock_bsn_number: str, datetime_now: str) -> Dict[str, Any]:
+def mock_patient(mock_bsn_number: str, datetime_now: str) -> dict[str, Any]:
     return {
         "resourceType": "Patient",
         "id": "example-patient",
@@ -272,12 +272,12 @@ def mock_patient(mock_bsn_number: str, datetime_now: str) -> Dict[str, Any]:
 
 
 @pytest.fixture
-def patient(mock_patient: Dict[str, Any]) -> Patient:
+def patient(mock_patient: dict[str, Any]) -> Patient:
     return Patient.model_validate(mock_patient)
 
 
 @pytest.fixture
-def mock_patient_without_bsn_system(mock_bsn_number: str, datetime_past: str) -> Dict[str, Any]:
+def mock_patient_without_bsn_system(mock_bsn_number: str, datetime_past: str) -> dict[str, Any]:
     return {
         "resourceType": "Patient",
         "id": "example-patient",
@@ -290,7 +290,7 @@ def mock_patient_without_bsn_system(mock_bsn_number: str, datetime_past: str) ->
 
 
 @pytest.fixture
-def mock_bundle(mock_patient: Dict[str, Any], mock_imaging_study: Dict[str, Any]) -> Dict[str, Any]:
+def mock_bundle(mock_patient: dict[str, Any], mock_imaging_study: dict[str, Any]) -> dict[str, Any]:
     return {
         "resourceType": "Bundle",
         "type": "searchset",
@@ -305,14 +305,14 @@ def mock_bundle(mock_patient: Dict[str, Any], mock_imaging_study: Dict[str, Any]
 
 
 @pytest.fixture
-def regular_bundle(mock_bundle: Dict[str, Any]) -> Bundle:
+def regular_bundle(mock_bundle: dict[str, Any]) -> Bundle:
     return Bundle.model_validate(mock_bundle)
 
 
 @pytest.fixture
 def mock_bundle_without_bsn_system(
-    mock_imaging_study: Dict[str, Any], mock_patient_without_bsn_system: Dict[str, Any]
-) -> Dict[str, Any]:
+    mock_imaging_study: dict[str, Any], mock_patient_without_bsn_system: dict[str, Any]
+) -> dict[str, Any]:
     return {
         "resourceType": "Bundle",
         "type": "searchset",
@@ -326,13 +326,13 @@ def mock_bundle_without_bsn_system(
 
 @pytest.fixture
 def bundle_without_bsn_system(
-    mock_bundle_without_bsn_system: Dict[str, Any],
+    mock_bundle_without_bsn_system: dict[str, Any],
 ) -> Bundle:
     return Bundle.model_validate(mock_bundle_without_bsn_system)
 
 
 @pytest.fixture
-def mock_bundle_without_patient(mock_imaging_study: Dict[str, Any]) -> Dict[str, Any]:
+def mock_bundle_without_patient(mock_imaging_study: dict[str, Any]) -> dict[str, Any]:
     return {
         "resourceType": "Bundle",
         "type": "searchset",
@@ -342,24 +342,24 @@ def mock_bundle_without_patient(mock_imaging_study: Dict[str, Any]) -> Dict[str,
 
 
 @pytest.fixture
-def bundle_without_patient(mock_bundle_without_patient: Dict[str, Any]) -> Bundle:
+def bundle_without_patient(mock_bundle_without_patient: dict[str, Any]) -> Bundle:
     return Bundle.model_validate(mock_bundle_without_patient)
 
 
 @pytest.fixture
-def query_param() -> Dict[str, Any]:
-    return MetadataResourceParams(_include="ImagingStudy:subject", _lastUpdated=datetime.now().isoformat()).model_dump(
-        by_alias=True
-    )
+def query_param() -> dict[str, Any]:
+    return MetadataResourceParams(
+        _include="ImagingStudy:subject", _lastUpdated=datetime.now(timezone.utc).isoformat()
+    ).model_dump(by_alias=True)
 
 
 @pytest.fixture
-def query_params_without_last_update() -> Dict[str, Any]:
+def query_params_without_last_update() -> dict[str, Any]:
     return MetadataResourceParams(_include="ImagingStudy:subject").model_dump(by_alias=True, exclude_none=True)
 
 
 @pytest.fixture()
-def fhir_error() -> Dict[str, Any]:
+def fhir_error() -> dict[str, Any]:
     return {
         "resourceType": "OperationOutcome",
         "issue": [{"severity": "error", "code": "some_error", "diagnostics": "some_error"}],

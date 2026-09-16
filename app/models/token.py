@@ -1,5 +1,6 @@
-from pydantic import BaseModel, Field
 import time
+
+from pydantic import BaseModel, Field
 
 TOKEN_EXPIRES_IN = 600  # 10 minutes
 

@@ -1,5 +1,3 @@
-from typing import List
-
 from pydantic import AliasChoices, BaseModel, ConfigDict, Field
 
 # These are not actual represetations of FHIR resources and types.
@@ -33,7 +31,7 @@ class Resource(BaseModel):
     model_config = ConfigDict(extra="allow")
 
     meta: Meta
-    identifier: List[Identifier] | None = None
+    identifier: list[Identifier] | None = None
     resource_type: str = Field(
         alias="resourceType",
         validation_alias=AliasChoices("resourceType", "resource_type"),
@@ -50,5 +48,5 @@ class Entry(BaseModel):
 class Bundle(BaseModel):
     model_config = ConfigDict(extra="allow")
 
-    link: List[Link]
-    entry: List[Entry] | None = None
+    link: list[Link]
+    entry: list[Entry] | None = None
