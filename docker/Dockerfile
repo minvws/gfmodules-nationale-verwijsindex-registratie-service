@@ -62,7 +62,7 @@ RUN --mount=type=cache,target=/root/.cache/pip \
 
 # Compile liboprf
 WORKDIR /liboprf
-RUN git clone --depth 1 --branch v0.9.3 https://github.com/stef/liboprf.git . && \
+RUN git clone --depth 1 --branch v0.9.4 https://github.com/stef/liboprf.git . && \
     cd src && \
     make
 

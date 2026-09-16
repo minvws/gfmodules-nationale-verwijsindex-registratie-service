@@ -42,7 +42,7 @@ jobs:
                 python_version: "3.14"
 
             - name: Lint
-              run: poetry run $(make lint --just-print --silent)
+              run: make POETRY=true lint
 
     type-check:
         name: Check static types
@@ -59,7 +59,7 @@ jobs:
                 python_version: "3.14"
 
             - name: Check static types
-              run: poetry run $(make type-check --just-print --silent)
+              run: make POETRY=true type-check
 
     safety-check:
         name: Scan packages for vulnerabilities
@@ -76,7 +76,7 @@ jobs:
                 python_version: "3.14"
 
             - name: Scan packages for vulnerabilities
-              run: poetry run $(make safety-check --just-print --silent)
+              run: make POETRY=true safety-check
 
     spelling-check:
         name: Run spelling check
@@ -95,7 +95,7 @@ jobs:
             - uses: codespell-project/codespell-problem-matcher@v1
 
             - name: Run spelling check
-              run: poetry run $(make spelling-check --just-print --silent)
+              run: make POETRY=true spelling-check
 
     test:
         name: Run the tests
@@ -109,7 +109,7 @@ jobs:
               run: |
                 sudo apt update
                 sudo apt install -y build-essential libsodium-dev
-                git clone --depth 1 --branch v0.9.3 https://github.com/stef/liboprf.git
+                git clone --depth 1 --branch v0.9.4 https://github.com/stef/liboprf.git
                 cd liboprf/src
                 make
                 sudo make install

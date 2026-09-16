@@ -2620,4 +2620,4 @@ all = ["winrt-Windows.Foundation.Collections[all] (>=3.2.1.0,<3.3.0.0)", "winrt-
 [metadata]
 lock-version = "2.1"
 python-versions = "^3.14"
-content-hash = "9ef79a1533ebb44679b57a99c651182f11b1dd1f0be803a5aad6a8e7c9b0e22e"
+content-hash = "f5d066717919ea0ad6dc70b7363b1e83bc5a366719e9e622232bbe8e9cf1125f"
