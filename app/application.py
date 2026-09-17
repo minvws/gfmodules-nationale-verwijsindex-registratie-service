@@ -68,7 +68,7 @@ def setup_logging() -> None:
     loglevel = logging.getLevelName(get_config().app.loglevel.upper())
 
     if isinstance(loglevel, str):
-        raise ValueError(f"Invalid loglevel {loglevel.upper()}")
+        raise TypeError(f"Invalid loglevel {loglevel.upper()}")
     logging.basicConfig(
         level=loglevel,
         datefmt="%m/%d/%Y %I:%M:%S %p",

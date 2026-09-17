@@ -17,7 +17,7 @@ from app.models.bsn import BSN
 def test_valid_bsn_should_succeed(valid_bsn: Any) -> None:
     bsn = BSN(valid_bsn)
     assert str(bsn) == str(valid_bsn)
-    assert repr(bsn) == f"BSN({str(valid_bsn)})"
+    assert repr(bsn) == f"BSN({valid_bsn!s})"
     assert len(bsn.hash()) == 64
 
 

@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any
 
 from fhir.resources.R4B.bundle import Bundle
 
@@ -19,7 +19,7 @@ class FhirHttpService(HttpService):
     def server_healthy(self) -> bool:
         return self._server_healthy("metadata")
 
-    def search(self, resource_type: str, params: Dict[str, Any] | None = None) -> Bundle:
+    def search(self, resource_type: str, params: dict[str, Any] | None = None) -> Bundle:
         response = self.do_request(method="GET", sub_route=f"{resource_type}/_search", params=params)
         response.raise_for_status()
 

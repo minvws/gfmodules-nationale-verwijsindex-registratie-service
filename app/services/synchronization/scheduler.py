@@ -1,10 +1,10 @@
 import logging
 from collections.abc import Callable
-from datetime import datetime
+from datetime import UTC, datetime
 from threading import Event, Thread
 from typing import Any
 
-logger = logging.Logger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class Scheduler:
@@ -45,13 +45,13 @@ class Scheduler:
         while self.__stop_event.is_set() is False:
             try:
                 self.__function()
-            except Exception as e:
+            except Exception as e:  # noqa: BLE001 - must not let an arbitrary scheduled job kill the loop
                 logger.error(f"Error in scheduled function: {e}")
             self.__stop_event.wait(self.__delay)
             self.__update_runner()
 
     def __update_runner(self) -> None:
-        data = {"executed_at": datetime.now().isoformat()}
+        data = {"executed_at": datetime.now(UTC).isoformat()}
         if self.__thread is not None:
             data.update({"thread": self.__thread.getName()})
         self.__runners_history.append({self.__runner_id: data})

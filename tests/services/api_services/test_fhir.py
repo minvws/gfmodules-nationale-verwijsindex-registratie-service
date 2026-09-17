@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -15,7 +15,7 @@ def test_search_should_with_params_succed(
     mock_get: MagicMock,
     fhir_http_service: FhirHttpService,
     regular_bundle: Bundle,
-    query_param: Dict[str, Any],
+    query_param: dict[str, Any],
 ) -> None:
     mock_response = MagicMock()
     mock_response.status_code = 200
@@ -57,7 +57,7 @@ def test_get_resource_bundle_without_last_update_bundle_should_succeed(
     mock_get: MagicMock,
     fhir_http_service: FhirHttpService,
     regular_bundle: Bundle,
-    query_params_without_last_update: Dict[str, Any],
+    query_params_without_last_update: dict[str, Any],
 ) -> None:
     mock_response = MagicMock()
     mock_response.status_code = 200

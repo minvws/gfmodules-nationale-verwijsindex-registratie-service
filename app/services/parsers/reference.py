@@ -1,5 +1,4 @@
 import logging
-from typing import Tuple
 
 from fhir.resources.R4B.allergyintolerance import AllergyIntolerance
 from fhir.resources.R4B.bodystructure import BodyStructure
@@ -109,7 +108,7 @@ class ReferenceParser:
     @staticmethod
     def get_reference_type_and_id(
         reference: Reference,
-    ) -> Tuple[str, str] | Tuple[None, None]:
+    ) -> tuple[str, str] | tuple[None, None]:
         if reference.reference:
             try:
                 split_data = reference.reference.split("/")

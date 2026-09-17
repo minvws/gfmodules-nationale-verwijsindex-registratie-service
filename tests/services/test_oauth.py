@@ -1,5 +1,5 @@
 import time
-from typing import Any, Dict
+from typing import Any
 from unittest.mock import MagicMock, patch
 from urllib.parse import urlencode
 
@@ -27,7 +27,7 @@ def mock_token_request_data() -> str:
 
 
 @pytest.fixture
-def mock_token_response_body() -> Dict[str, Any]:
+def mock_token_response_body() -> dict[str, Any]:
     return {
         "access_token": "some_value",
         "scope": "some_scope",
@@ -47,7 +47,7 @@ def mock_oauth() -> OauthService:
 @patch(PATCHED_MODULE)
 def test_do_request_should_succeed(
     request: MagicMock,
-    mock_token_response_body: Dict[str, Any],
+    mock_token_response_body: dict[str, Any],
     mock_oauth: OauthService,
     mock_token_request_data: str,
 ) -> None:
@@ -75,7 +75,7 @@ def test_do_request_should_succeed(
 @patch(PATCHED_MODULE)
 def test_do_request_should_reuse_token(
     request: MagicMock,
-    mock_token_response_body: Dict[str, Any],
+    mock_token_response_body: dict[str, Any],
     mock_oauth: OauthService,
 ) -> None:
     mock_oauth._tokens.append(
@@ -97,7 +97,7 @@ def test_do_request_should_reuse_token(
 @patch(PATCHED_MODULE)
 def test_do_request_should_request_new_token_if_expired(
     request: MagicMock,
-    mock_token_response_body: Dict[str, Any],
+    mock_token_response_body: dict[str, Any],
     mock_oauth: OauthService,
 ) -> None:
     mock_oauth._tokens.extend(

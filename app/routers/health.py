@@ -1,6 +1,6 @@
 import logging
 from textwrap import dedent
-from typing import Any, Dict
+from typing import Any
 
 from fastapi import APIRouter, Depends, status
 
@@ -43,7 +43,7 @@ def ok_or_error(value: bool) -> str:
     - Manual service verification
     - Troubleshooting connectivity issues
     """),
-    response_model=Dict[str, Any],
+    response_model=dict[str, Any],
     status_code=status.HTTP_200_OK,
     responses={
         200: {
@@ -85,7 +85,7 @@ def health(
     pseudonym_service: PseudonymService = Depends(container.get_pseudonym_service),
     referral_service: NviService = Depends(container.get_nvi_service),
     metadata_service: MetadataService = Depends(container.get_metadata_service),
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     components = {
         "pseudonym_service": ok_or_error(pseudonym_service.server_healthy()),
         "referral_service": ok_or_error(referral_service.server_healthy()),

@@ -1,13 +1,11 @@
-from typing import List
-
 from app.models.domains_map import DomainMapEntry, DomainsMap
 
 
 class DomainsMapService:
-    def __init__(self, data_domains: List[str]) -> None:
+    def __init__(self, data_domains: list[str]) -> None:
         self.__domain_map: DomainsMap = {k: DomainMapEntry() for k in data_domains}
 
-    def get_domains(self) -> List[str]:
+    def get_domains(self) -> list[str]:
         return list(self.__domain_map.keys())
 
     def get_entry(self, data_domain: str) -> DomainMapEntry:

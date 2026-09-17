@@ -1,6 +1,6 @@
 import logging
 from textwrap import dedent
-from typing import Any, Dict
+from typing import Any
 
 from fastapi import APIRouter, Body, Depends, status
 from fhir.resources.R4B.bundle import Bundle
@@ -98,7 +98,7 @@ router = APIRouter(
     },
 )
 def create(
-    request: Dict[str, Any] | None = Body(
+    request: dict[str, Any] | None = Body(
         description="FHIR R4B Bundle resource containing referral information",
         example={
             "resourceType": "Bundle",

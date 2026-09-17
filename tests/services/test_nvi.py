@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any
 from unittest.mock import MagicMock, patch
 from uuid import UUID
 
@@ -13,7 +13,7 @@ PATCHED_OAUTH = "app.services.oauth.oauth_service.OauthService.fetch_token"
 LIST_ID = "123e4567-e89b-12d3-a456-426614174000"
 
 
-def _list_resource() -> Dict[str, Any]:
+def _list_resource() -> dict[str, Any]:
     return {
         "resourceType": "List",
         "id": LIST_ID,

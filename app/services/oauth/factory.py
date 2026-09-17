@@ -1,10 +1,8 @@
-from typing import Tuple
-
 from app.config import Config
 from app.services.oauth.oauth_service import OauthService
 
 
-def create_oauth_classes(config: Config) -> Tuple[OauthService, OauthService]:
+def create_oauth_classes(config: Config) -> tuple[OauthService, OauthService]:
     oauth_conf = config.oauth_api
     nvi_oauth = OauthService(
         endpoint=oauth_conf.nvi_endpoint,

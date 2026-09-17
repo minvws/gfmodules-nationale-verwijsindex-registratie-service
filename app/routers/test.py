@@ -1,11 +1,10 @@
-from typing import Annotated, List
+from typing import Annotated
 
 from fastapi import APIRouter, Depends
 
 from app.container import get_referral_registration_service
 from app.models.referrals import Referral
 from app.services.registration.referrals import ReferralRegistrationService
-
 
 test_router = APIRouter(
     prefix="/test",
@@ -31,7 +30,7 @@ def register_referrals(
 def query_referrals(
     bsn: str,
     referral_registration_service: Annotated[ReferralRegistrationService, Depends(get_referral_registration_service)],
-) -> List[Referral]:
+) -> list[Referral]:
     return referral_registration_service.query(bsn)
 
 
@@ -42,5 +41,5 @@ def query_referrals(
 def localize_referrals(
     bsn: str,
     referral_registration_service: Annotated[ReferralRegistrationService, Depends(get_referral_registration_service)],
-) -> List[Referral]:
+) -> list[Referral]:
     return referral_registration_service.localize(bsn)
