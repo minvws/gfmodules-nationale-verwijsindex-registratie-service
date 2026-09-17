@@ -185,11 +185,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Set release version
-        run: |
-          RELEASE_VERSION="${GITHUB_REF#refs/*/}"
-          echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_ENV
-
       - name: Extract metadata (tags, labels) for Docker
         id: meta
         uses: docker/metadata-action@v6
@@ -212,7 +207,7 @@ jobs:
             NEW_UID=${{ env.NEW_UID }}
             NEW_GID=${{ env.NEW_GID }}
             standalone=true
-            RELEASE_VERSION=${{ env.RELEASE_VERSION }}
+            RELEASE_VERSION=${{ github.ref_name }}
             GIT_SHA=${{ github.sha }}
 
       - name: Run Trivy vulnerability scanner
