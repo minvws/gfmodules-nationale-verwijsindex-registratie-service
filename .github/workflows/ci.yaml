@@ -98,7 +98,7 @@ jobs:
             - uses: codespell-project/codespell-problem-matcher@v1
 
             - name: Run spelling check (codespell)
-              run: poetry run codespell . --skip="./publiccode.yml"
+              run: poetry run codespell .
 
     test:
         name: Run the tests
