@@ -17,7 +17,7 @@ inject = "^5.3.0"
 requests = "^2.32.5"
 fhir-resources = "8.3.0"
 cryptography = ">=50.0.0,<51.0.0"
-pyoprf = "^0.9.3"
+pyoprf = "^0.9.4"
 fhir-core = "=1.1.10"
 rfc8785 = "^0.1.4"
 
@@ -41,6 +41,9 @@ build-backend = "poetry.core.masonry.api"
 cache-dir = "~/.cache/ruff"
 include = ["pyproject.toml", "app/*.py", "tests/*.py"]
 line-length = 120
+
+[tool.codespell]
+skip = "./publiccode.yml"
 
 [tool.mypy]
 files = "app,tests"

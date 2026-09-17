@@ -41,8 +41,11 @@ jobs:
               with:
                 python_version: "3.14"
 
-            - name: Lint
-              run: poetry run $(make lint --just-print --silent)
+            - name: Lint (ruff check)
+              run: poetry run ruff check
+
+            - name: Lint (ruff format)
+              run: poetry run ruff format --diff
 
     type-check:
         name: Check static types
@@ -58,8 +61,8 @@ jobs:
               with:
                 python_version: "3.14"
 
-            - name: Check static types
-              run: poetry run $(make type-check --just-print --silent)
+            - name: Check static types (mypy)
+              run: poetry run mypy app tests
 
     safety-check:
         name: Scan packages for vulnerabilities
@@ -75,8 +78,8 @@ jobs:
               with:
                 python_version: "3.14"
 
-            - name: Scan packages for vulnerabilities
-              run: poetry run $(make safety-check --just-print --silent)
+            - name: Scan packages for vulnerabilities (pip-audit)
+              run: poetry run pip-audit
 
     spelling-check:
         name: Run spelling check
@@ -94,8 +97,8 @@ jobs:
 
             - uses: codespell-project/codespell-problem-matcher@v1
 
-            - name: Run spelling check
-              run: poetry run $(make spelling-check --just-print --silent)
+            - name: Run spelling check (codespell)
+              run: poetry run codespell .
 
     test:
         name: Run the tests
@@ -109,7 +112,7 @@ jobs:
               run: |
                 sudo apt update
                 sudo apt install -y build-essential libsodium-dev
-                git clone --depth 1 --branch v0.9.3 https://github.com/stef/liboprf.git
+                git clone --depth 1 --branch v0.9.4 https://github.com/stef/liboprf.git
                 cd liboprf/src
                 make
                 sudo make install
@@ -121,7 +124,7 @@ jobs:
                 python_version: "3.14"
 
             - name: Run the tests
-              run: poetry run $(make test --just-print --silent)
+              run: poetry run pytest --cov --cov-report=term --cov-report=xml
 
             - name: Upload coverage report
               uses: actions/upload-artifact@v7
