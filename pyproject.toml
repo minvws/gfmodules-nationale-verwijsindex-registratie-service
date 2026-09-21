@@ -10,7 +10,7 @@ packages = [{ include = "app" }]
 
 [tool.poetry.dependencies]
 python = "^3.14"
-uvicorn = ">=0.40,<0.53"
+uvicorn = ">=0.40,<0.54"
 fastapi = ">=0.138,<0.142"
 pydantic-settings = "^2.12.0"
 inject = "^5.3.0"
@@ -18,7 +18,7 @@ requests = "^2.32.5"
 fhir-resources = "8.3.0"
 cryptography = ">=50.0.0,<51.0.0"
 pyoprf = "^0.9.4"
-fhir-core = "=1.1.10"
+fhir-core = "=1.1.11"
 rfc8785 = "^0.1.4"
 
 [tool.poetry.group.dev.dependencies]
