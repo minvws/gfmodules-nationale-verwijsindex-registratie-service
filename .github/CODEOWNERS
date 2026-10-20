@@ -1,2 +1,5 @@
 .github/CODEOWNERS @minvws/irealisatie-operations
 * @minvws/nl-rdo-zmodules-codeowners
+
+# Lockfiles: review by security
+poetry.lock @minvws/irealisatie-security-liaisons
