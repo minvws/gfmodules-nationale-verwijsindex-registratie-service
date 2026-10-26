@@ -1,5 +1,6 @@
-.github/CODEOWNERS @minvws/irealisatie-operations
 * @minvws/nl-rdo-zmodules-codeowners
+# Last match takes precedence
+.github/CODEOWNERS @minvws/irealisatie-operations
 
 # Lockfiles: review by security
 poetry.lock @minvws/irealisatie-security-liaisons
