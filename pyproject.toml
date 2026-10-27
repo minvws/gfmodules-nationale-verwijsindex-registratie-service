@@ -10,15 +10,15 @@ packages = [{ include = "app" }]
 
 [tool.poetry.dependencies]
 python = "^3.14"
-uvicorn = ">=0.40,<0.54"
-fastapi = ">=0.138,<0.142"
+uvicorn = ">=0.40,<0.55"
+fastapi = ">=0.138,<0.160"
 pydantic-settings = "^2.12.0"
 inject = "^5.3.0"
 requests = "^2.32.5"
 fhir-resources = "8.3.0"
 cryptography = ">=50.0.0,<51.0.0"
 pyoprf = "^0.9.4"
-fhir-core = "=1.1.11"
+fhir-core = "=1.1.12"
 rfc8785 = "^0.1.4"
 
 [tool.poetry.group.dev.dependencies]
@@ -29,7 +29,7 @@ pytest = "^9.0.2"
 pytest-cov = "^7.0.0"
 pytest-mock = "^3.15.1"
 httpx = "^0.28.1"
-ruff = "0.16.8"
+ruff = "0.17.1"
 codespell = "^2.4.1"
 pip-audit = "^2.10.0"
 
