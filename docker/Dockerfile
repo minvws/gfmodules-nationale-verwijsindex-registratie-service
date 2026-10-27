@@ -83,6 +83,10 @@ ENV PATH="${VIRTUAL_ENV}/bin:$PATH"
 RUN --mount=type=cache,target=${POETRY_CACHE_DIR} \
     poetry install --no-root --no-interaction --only main
 
+# pip is not needed at runtime. Its vendored dependencies (urllib3, msgpack, setuptools)
+# show up in image scans and lag behind the application's own pinned versions.
+RUN rm -rf ${VIRTUAL_ENV}/bin/pip* ${VIRTUAL_ENV}/lib/python*/site-packages/pip ${VIRTUAL_ENV}/lib/python*/site-packages/pip-*.dist-info
+
 # Development dependencies builder (full deps, poetry available)
 FROM builder-base AS builder-dev
 
@@ -107,6 +111,9 @@ RUN ldconfig
 ENV VIRTUAL_ENV="${VIRTUAL_ENV_PATH}"
 ENV PATH="${VIRTUAL_ENV}/bin:$PATH" \
     PYTHONPATH="${PROJECT_DIR}"
+
+# remove the base image's pip; the runtime image never installs packages
+RUN python -m pip uninstall -y pip
 
 # Copy only the virtualenv — no pip, no build tools
 COPY --from=builder-runtime --chown=${APP_USER}:${APP_GROUP} ${VIRTUAL_ENV} ${VIRTUAL_ENV}
